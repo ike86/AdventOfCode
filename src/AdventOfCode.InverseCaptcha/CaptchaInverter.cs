@@ -14,11 +14,6 @@ namespace AdventOfCode.InverseCaptcha
 
         internal int GetSum()
         {
-            if (!input.Any())
-            {
-                return 0;
-            }
-
             var sum = 0;
             for (int i = 0; i < input.Length; i++)
             {
