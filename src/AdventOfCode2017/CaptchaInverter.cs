@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Linq;
 
-namespace AdventOfCode.InverseCaptcha
+namespace AdventOfCode2017
 {
     internal class CaptchaInverter
     {

@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.InverseCaptcha", "AdventOfCode.InverseCaptcha\AdventOfCode.InverseCaptcha.csproj", "{CBE0ECF6-4539-44F1-AB69-228F407BF499}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode2017", "AdventOfCode2017\AdventOfCode2017.csproj", "{CBE0ECF6-4539-44F1-AB69-228F407BF499}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
