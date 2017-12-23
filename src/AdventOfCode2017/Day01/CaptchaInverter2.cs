@@ -21,14 +21,12 @@ namespace AdventOfCode2017.Day01
         {
             var sum = 0;
 
-            if (input.Count() > 0 && input[0] == input[0 + input.Count() / 2])
+            for (int i = 0; i < input.Count() / 2; i++)
             {
-                sum += int.Parse(input[0].ToString());
-            }
-
-            if (input.Count() > 2 && input[1] == input[1 + input.Count() / 2])
-            {
-                sum += int.Parse(input[1].ToString());
+                if (input[i] == input[i + input.Count() / 2])
+                {
+                    sum += int.Parse(input[i].ToString());
+                }
             }
 
             return sum;
