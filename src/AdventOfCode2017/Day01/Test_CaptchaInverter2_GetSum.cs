@@ -34,5 +34,16 @@ namespace AdventOfCode2017.Day01
 
             sum.Should().Be(2);
         }
+
+        [Theory]
+        [InlineData("1212", 3)]
+        public void ReturnsExpected(string input, int expected)
+        {
+            var inverter = new CaptchaInverter2(input);
+
+            var sum = inverter.GetSum();
+
+            sum.Should().Be(expected);
+        }
     }
 }
