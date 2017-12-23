@@ -32,11 +32,15 @@ namespace AdventOfCode2017.Day01
 
             var sum = inverter.GetSum();
 
-            sum.Should().Be(2);
+            sum.Should().Be(4);
         }
 
         [Theory]
-        [InlineData("1212", 3)]
+        [InlineData("1212", 6)]
+        [InlineData("1221", 0)]
+        [InlineData("123425", 4)]
+        [InlineData("123123", 12)]
+        [InlineData("12131415", 4)]
         public void ReturnsExpected(string input, int expected)
         {
             var inverter = new CaptchaInverter2(input);
