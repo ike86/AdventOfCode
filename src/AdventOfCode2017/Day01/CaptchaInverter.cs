@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace AdventOfCode2017.Day01
 {
     internal class CaptchaInverter

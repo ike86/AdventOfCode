@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Day01\CaptchaInverter.cs" />
-    <Compile Include="Day01\Test.cs" />
+    <Compile Include="Day01\Test_CaptchaInverter_GetSum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
