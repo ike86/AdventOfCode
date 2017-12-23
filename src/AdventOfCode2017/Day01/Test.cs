@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace AdventOfCode2017
+namespace AdventOfCode2017.Day01
 {
     public class Test
     {
