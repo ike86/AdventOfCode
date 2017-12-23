@@ -62,7 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Day01\CaptchaInverter2.cs" />
     <Compile Include="Day01\CaptchaInverter.cs" />
+    <Compile Include="Day01\Test_CaptchaInverter2_GetSum.cs" />
     <Compile Include="Day01\Test_CaptchaInverter_GetSum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
