@@ -8,9 +8,15 @@ namespace AdventOfCode2018.Day01
         {
         }
 
-        internal int Calibrate(string empty)
+        internal int Calibrate(string frequencyChanges)
         {
-            return 0;
+            if (frequencyChanges == string.Empty)
+            {
+                return 0;
+            }
+
+            var frequencyToken = frequencyChanges.Substring(1);
+            return int.Parse(frequencyToken);
         }
     }
 }
