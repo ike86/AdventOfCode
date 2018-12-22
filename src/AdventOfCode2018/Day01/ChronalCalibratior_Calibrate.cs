@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
@@ -52,6 +53,13 @@ namespace AdventOfCode2018.Day01
             var result = calibrator.Calibrate(frequencyChangesAsString);
 
             result.Should().Be(expected);
+        }
+
+        [Theory, AutoData]
+        public void Solves_day_1_problem_1(ChronalCalibrator calibrator)
+        {
+            var myPuzzleInput = File.ReadAllText("Day01/problem1.txt");
+            calibrator.Calibrate(myPuzzleInput).Should().Be(587);
         }
 
         private static string ToFrequencyChanges(bool[] signs, int[] numbers)
