@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -8,34 +6,30 @@ namespace AdventOfCode2018.Day01
 {
     public class ChronalCalibratior_Calibrate
     {
-        [Fact]
-        public void Returns_zero_for_no_input()
+        [Theory, AutoData]
+        public void Returns_zero_for_no_input(ChronalCalibrator calibrator)
         {
-            var calibrator = new ChronalCalibrator();
-
             var result = calibrator.Calibrate(string.Empty);
 
             result.Should().Be(0);
         }
 
-        [Fact]
-        public void Returns_single_positive_number()
+        [Theory, AutoData]
+        public void Returns_single_positive_number(ChronalCalibrator calibrator, int number)
         {
-            var calibrator = new ChronalCalibrator();
+            var result = calibrator.Calibrate($"+{number}");
 
-            var result = calibrator.Calibrate("+42");
-
-            result.Should().Be(42);
+            result.Should().Be(number);
         }
 
-        [Fact]
-        public void Returns_single_negative_number()
+        [Theory, AutoData]
+        public void Returns_single_negative_number(ChronalCalibrator calibrator, int number)
         {
-            var calibrator = new ChronalCalibrator();
+            number = -number;
 
-            var result = calibrator.Calibrate("-42");
+            var result = calibrator.Calibrate($"{number}");
 
-            result.Should().Be(-42);
+            result.Should().Be(number);
         }
     }
 }

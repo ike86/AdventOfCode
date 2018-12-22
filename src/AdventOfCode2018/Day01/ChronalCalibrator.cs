@@ -3,38 +3,42 @@ using System.Linq;
 
 namespace AdventOfCode2018.Day01
 {
-    internal class ChronalCalibrator
+    public class ChronalCalibrator
     {
-        public ChronalCalibrator()
-        {
-        }
-
-        internal int Calibrate(string frequencyChanges)
+        public int Calibrate(string frequencyChanges)
         {
             if (frequencyChanges == string.Empty)
             {
                 return 0;
             }
 
-            var signToken = frequencyChanges.First();
-            int sign = default;
+            var sign = ParseSign(frequencyChanges);
+            var frequencyChange = ParseFrequencyChange(frequencyChanges);
+            return sign * frequencyChange;
+        }
+
+        private static int ParseSign(string frequencyChange)
+        {
+            var signToken = frequencyChange.First();
             switch (signToken)
             {
                 case '+':
-                    sign = 1;
-                    break;
+                    return 1;
 
                 case '-':
-                    sign = -1;
-                    break;
+                    return -1;
 
                 default:
-                    break;
+                    throw new ArgumentException();
             }
+        }
 
+        private static int ParseFrequencyChange(string frequencyChanges)
+        {
             var frequencyToken = frequencyChanges.Substring(1);
 
-            return int.Parse(frequencyToken) * sign;
+            var frequencyChange = int.Parse(frequencyToken);
+            return frequencyChange;
         }
     }
 }
