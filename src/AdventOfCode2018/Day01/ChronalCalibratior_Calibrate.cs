@@ -27,5 +27,15 @@ namespace AdventOfCode2018.Day01
 
             result.Should().Be(42);
         }
+
+        [Fact]
+        public void Returns_single_negative_number()
+        {
+            var calibrator = new ChronalCalibrator();
+
+            var result = calibrator.Calibrate("-42");
+
+            result.Should().Be(-42);
+        }
     }
 }

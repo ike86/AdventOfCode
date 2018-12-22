@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace AdventOfCode2018.Day01
 {
@@ -15,8 +16,25 @@ namespace AdventOfCode2018.Day01
                 return 0;
             }
 
+            var signToken = frequencyChanges.First();
+            int sign = default;
+            switch (signToken)
+            {
+                case '+':
+                    sign = 1;
+                    break;
+
+                case '-':
+                    sign = -1;
+                    break;
+
+                default:
+                    break;
+            }
+
             var frequencyToken = frequencyChanges.Substring(1);
-            return int.Parse(frequencyToken);
+
+            return int.Parse(frequencyToken) * sign;
         }
     }
 }
