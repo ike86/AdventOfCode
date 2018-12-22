@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
+using static AdventOfCode2018.Day01.ChronalCalibrator;
 
 namespace AdventOfCode2018.Day01
 {
@@ -16,39 +17,47 @@ namespace AdventOfCode2018.Day01
         }
 
         [Theory, AutoData]
-        public void Returns_single_positive_number(ChronalCalibrator calibrator, int number)
+        public void Returns_single_positive_frequency_change(
+            ChronalCalibrator calibrator,
+            int change)
         {
-            var result = calibrator.Calibrate($"+{number}");
+            var result = calibrator.Calibrate($"+{change}");
 
-            result.Should().Be(number);
+            result.Should().Be(change);
         }
 
         [Theory, AutoData]
-        public void Returns_single_negative_number(ChronalCalibrator calibrator, int number)
+        public void Returns_single_negative_frequency_change(
+            ChronalCalibrator calibrator,
+            int change)
         {
-            number = -number;
+            var frequencyChange = -change;
 
-            var result = calibrator.Calibrate($"{number}");
+            var result = calibrator.Calibrate($"{frequencyChange}");
 
-            result.Should().Be(number);
+            result.Should().Be(frequencyChange);
         }
 
         [Theory, AutoData]
         public void Returns_sum_of_many_frequency_changes(
             ChronalCalibrator calibrator,
-            int[] numbers,
-            bool[] signs)
+            bool[] signs,
+            int[] changes)
         {
-            var frequencyChangeLines = signs
-                .Zip(numbers, (s, n) => $"{(s ? "+" : "-")}{n}");
-            var frequencyChangesAsString = string.Join("\r\n", frequencyChangeLines);
+            var frequencyChangesAsString = ToFrequencyChanges(signs, changes);
             var expected = signs
-                .Zip(numbers, (s, n) => (s ? 1 : -1) * n)
+                .Zip(changes, (s, n) => (s ? 1 : -1) * n)
                 .Sum();
 
             var result = calibrator.Calibrate(frequencyChangesAsString);
 
             result.Should().Be(expected);
+        }
+
+        private static string ToFrequencyChanges(bool[] signs, int[] numbers)
+        {
+            var frequencyChangeLines = signs.Zip(numbers, (s, n) => $"{(s ? "+" : "-")}{n}");
+            return string.Join(LineSeparator, frequencyChangeLines);
         }
     }
 }

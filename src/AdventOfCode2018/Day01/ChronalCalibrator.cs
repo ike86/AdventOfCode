@@ -5,25 +5,29 @@ namespace AdventOfCode2018.Day01
 {
     public class ChronalCalibrator
     {
+        public const string LineSeparator = "\r\n";
+
         public int Calibrate(string frequencyChanges)
         {
-            if (frequencyChanges == string.Empty)
-            {
-                return 0;
-            }
-
-            var lines = frequencyChanges
-                .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = Split(frequencyChanges);
 
             return lines
-                .Select(line =>
-                {
-                    var sign = ParseSign(line);
-                    var frequencyChange = ParseFrequencyChange(line);
-
-                    return sign * frequencyChange;
-                })
+                .Select(ParseFrequencyChange)
                 .Sum();
+        }
+
+        private static string[] Split(string frequencyChanges)
+        {
+            return frequencyChanges
+                .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static int ParseFrequencyChange(string line)
+        {
+            var sign = ParseSign(line);
+            var frequencyChange = ParseChange(line);
+
+            return sign * frequencyChange;
         }
 
         private static int ParseSign(string frequencyChange)
@@ -42,7 +46,7 @@ namespace AdventOfCode2018.Day01
             }
         }
 
-        private static int ParseFrequencyChange(string frequencyChanges)
+        private static int ParseChange(string frequencyChanges)
         {
             var frequencyToken = frequencyChanges.Substring(1);
 
