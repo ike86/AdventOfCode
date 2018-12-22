@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AdventOfCode2018.Day01
@@ -14,6 +15,29 @@ namespace AdventOfCode2018.Day01
             return lines
                 .Select(ParseFrequencyChange)
                 .Sum();
+        }
+
+        public int GetFirstFrequencyReachedTwice(string frequencyChanges)
+        {
+            var lines = Split(frequencyChanges);
+
+            var a = lines
+                .Select(ParseFrequencyChange)
+                .Aggregate(
+                    seed: (reachedFrequencies: new List<int> { 0 }, currentFrequency: 0),
+                    (previous, current) =>
+                    {
+                        var (reached, curr) = previous;
+                        curr += current;
+                        reached.Add(curr);
+
+                        return (reached, curr);
+                    });
+
+            return a.reachedFrequencies
+                .GroupBy(i => i)
+                .First(g => g.Count() >1)
+                .Key;
         }
 
         private static string[] Split(string frequencyChanges)
