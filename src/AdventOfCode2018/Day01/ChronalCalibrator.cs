@@ -12,9 +12,18 @@ namespace AdventOfCode2018.Day01
                 return 0;
             }
 
-            var sign = ParseSign(frequencyChanges);
-            var frequencyChange = ParseFrequencyChange(frequencyChanges);
-            return sign * frequencyChange;
+            var lines = frequencyChanges
+                .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            return lines
+                .Select(line =>
+                {
+                    var sign = ParseSign(line);
+                    var frequencyChange = ParseFrequencyChange(line);
+
+                    return sign * frequencyChange;
+                })
+                .Sum();
         }
 
         private static int ParseSign(string frequencyChange)
