@@ -21,22 +21,24 @@ namespace AdventOfCode2018.Day01
         {
             var lines = Split(frequencyChanges);
 
-            var a = lines
+            var reachedFrequencies =
+                lines
                 .Select(ParseFrequencyChange)
                 .Aggregate(
                     seed: (reachedFrequencies: new List<int> { 0 }, currentFrequency: 0),
                     (previous, current) =>
                     {
-                        var (reached, curr) = previous;
-                        curr += current;
-                        reached.Add(curr);
+                        var (reached, currentFrequency) = previous;
+                        currentFrequency += current;
+                        reached.Add(currentFrequency);
 
-                        return (reached, curr);
-                    });
+                        return (reached, currentFrequency);
+                    })
+                .reachedFrequencies;
 
-            return a.reachedFrequencies
+            return reachedFrequencies
                 .GroupBy(i => i)
-                .First(g => g.Count() >1)
+                .First(g => g.Count() > 1)
                 .Key;
         }
 
