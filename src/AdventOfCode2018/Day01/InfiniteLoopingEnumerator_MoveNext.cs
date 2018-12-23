@@ -66,5 +66,27 @@ namespace AdventOfCode2018.Day01
 
             result.Should().BeEquivalentTo(source.Concat(source));
         }
+
+        [Theory, AutoData]
+        internal void Enumerates_the_source_n_times(
+            int n,
+            [Frozen]IEnumerable<int> source,
+            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
+        {
+            var result = Enumerable
+                .Range(0, source.Count() * n)
+                .Select(_ =>
+                {
+                    enumerator.MoveNext();
+                    return enumerator.Current;
+                });
+            var expected = Enumerable
+                .Range(0, n - 1)
+                .Aggregate(
+                    seed: source,
+                    (prev, _) => prev.Concat(source));
+
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 }
