@@ -38,7 +38,7 @@ namespace AdventOfCode2018.Day01
                 enumerator.MoveNext();
             }
 
-            return true;
+            return b;
         }
 
         public void Reset()
