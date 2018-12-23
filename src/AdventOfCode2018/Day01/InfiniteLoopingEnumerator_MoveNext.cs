@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -22,6 +23,16 @@ namespace AdventOfCode2018.Day01
             [Frozen]InfiniteLoopingEnumerator<int> enumerator)
         {
             enumerator.MoveNext().Should().BeTrue();
+        }
+
+        [Theory, AutoData]
+        internal void Sets_current_to_first_element_of_source(
+            [Frozen]IEnumerable<int> source,
+            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
+        {
+            enumerator.MoveNext();
+            
+            enumerator.Current.Should().Be(source.First());
         }
     }
 }

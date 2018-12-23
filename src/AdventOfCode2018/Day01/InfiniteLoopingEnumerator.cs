@@ -15,7 +15,7 @@ namespace AdventOfCode2018.Day01
             enumerator = source.GetEnumerator();
         }
 
-        public TItem Current => throw new NotImplementedException();//// enumerator.Current;
+        public TItem Current => enumerator.Current;
 
         object IEnumerator.Current => throw new NotImplementedException();//// Current;
 
