@@ -50,5 +50,21 @@ namespace AdventOfCode2018.Day01
 
             result.Should().BeEquivalentTo(source);
         }
+
+        [Theory, AutoData]
+        internal void Enumerates_the_source_twice(
+            [Frozen]IEnumerable<int> source,
+            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
+        {
+            var result = Enumerable
+                .Range(0, source.Count() * 2)
+                .Select(_ =>
+                {
+                    enumerator.MoveNext();
+                    return enumerator.Current;
+                });
+
+            result.Should().BeEquivalentTo(source.Concat(source));
+        }
     }
 }
