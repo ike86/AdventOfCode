@@ -20,7 +20,7 @@ namespace AdventOfCode2018.Day01
         public int GetFirstFrequencyReachedTwice(string frequencyChangesAsString)
         {
             var lines = Split(frequencyChangesAsString);
-            var frequencyChanges = lines.Concat(lines);
+            var frequencyChanges = lines.Concat(lines).Concat(lines);
             var parsed = frequencyChanges.Select(ParseFrequencyChange);
             var reached = GetReachedFrequencies(parsed);
             return GetFirstReachedTwice(reached);
