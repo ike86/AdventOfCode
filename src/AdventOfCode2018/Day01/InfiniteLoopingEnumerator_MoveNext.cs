@@ -31,8 +31,24 @@ namespace AdventOfCode2018.Day01
             [Frozen]InfiniteLoopingEnumerator<int> enumerator)
         {
             enumerator.MoveNext();
-            
+
             enumerator.Current.Should().Be(source.First());
+        }
+
+        [Theory, AutoData]
+        internal void Enumerates_the_source(
+            [Frozen]IEnumerable<int> source,
+            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
+        {
+            var result = Enumerable
+                .Range(0, source.Count())
+                .Select(_ =>
+                {
+                    enumerator.MoveNext();
+                    return enumerator.Current;
+                });
+
+            result.Should().BeEquivalentTo(source);
         }
     }
 }
