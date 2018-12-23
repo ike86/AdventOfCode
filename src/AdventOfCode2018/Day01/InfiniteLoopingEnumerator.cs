@@ -7,12 +7,12 @@ namespace AdventOfCode2018.Day01
     internal class InfiniteLoopingEnumerator<TItem> : IEnumerator<TItem>
     {
         ////private readonly IEnumerable<TItem> source;
-        ////private IEnumerator<TItem> enumerator;
+        private IEnumerator<TItem> enumerator;
 
         public InfiniteLoopingEnumerator(IEnumerable<TItem> source)
         {
             ////this.source = source;
-            ////enumerator = source.GetEnumerator();
+            enumerator = source.GetEnumerator();
         }
 
         public TItem Current => throw new NotImplementedException();//// enumerator.Current;
@@ -27,8 +27,7 @@ namespace AdventOfCode2018.Day01
 
         public bool MoveNext()
         {
-            return false;
-            ////var b = enumerator.MoveNext();
+            return enumerator.MoveNext();
             ////if (b)
             ////{
             ////}
