@@ -19,32 +19,42 @@ namespace AdventOfCode2018.Day01
 
         public int GetFirstFrequencyReachedTwice(string frequencyChangesAsString)
         {
-            var lines = Split(frequencyChangesAsString);
-            var frequencyChanges = lines.Concat(lines).Concat(lines);
+            var frequencyChanges = Split(frequencyChangesAsString);
             var parsed = frequencyChanges.Select(ParseFrequencyChange);
-            var reached = GetReachedFrequencies(parsed);
-            return GetFirstReachedTwice(reached);
+            using (var infiniteLoopingEnumerator = new InfiniteLoopingEnumerator<int>(parsed))
+            {
+                var looping = infiniteLoopingEnumerator.AsEnumerable();
+                var reached = GetReachedFrequencies(looping);
+                return GetFirstReachedTwice(reached);
+            }
         }
 
-        private static List<int> GetReachedFrequencies(IEnumerable<int> frequencyChanges)
-            => frequencyChanges
-                .Aggregate(
-                    seed: (reachedFrequencies: new List<int> { 0 }, currentFrequency: 0),
-                    (previous, current) =>
-                    {
-                        var (reached, currentFrequency) = previous;
-                        currentFrequency += current;
-                        reached.Add(currentFrequency);
-
-                        return (reached, currentFrequency);
-                    })
-                .reachedFrequencies;
+        private static IEnumerable<int> GetReachedFrequencies(IEnumerable<int> frequencyChanges)
+        {
+            var currentFrequency = 0;
+            yield return currentFrequency;
+            foreach (var frequencyChange in frequencyChanges)
+            {
+                currentFrequency += frequencyChange;
+                yield return currentFrequency;
+            }
+        }
 
         private static int GetFirstReachedTwice(IEnumerable<int> reached)
-            => reached
-                .GroupBy(i => i)
-                .First(g => g.Count() > 1)
-                .Key;
+        {
+            var singleFrequencies = new HashSet<int>();
+            foreach (var frequency in reached)
+            {
+                if (singleFrequencies.Contains(frequency))
+                {
+                    return frequency;
+                }
+
+                singleFrequencies.Add(frequency);
+            }
+
+            throw new ArgumentException();
+        }
 
         private static string[] Split(string frequencyChanges)
             => frequencyChanges

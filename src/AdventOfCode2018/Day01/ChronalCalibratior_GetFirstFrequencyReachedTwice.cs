@@ -28,7 +28,7 @@ namespace AdventOfCode2018.Day01
             }
 
             [Theory, AutoData]
-            public void Returns_freqency_by_repeating_the_input_2(ChronalCalibrator calibrator)
+            public void Returns_freqency_by_repeating_the_input_twice(ChronalCalibrator calibrator)
             {
                 var result = calibrator.GetFirstFrequencyReachedTwice(
                     ToFrequencyChanges(-6, +3, +8, +5, -6));
@@ -36,12 +36,12 @@ namespace AdventOfCode2018.Day01
                 result.Should().Be(5);
             }
 
-            ////[Theory, AutoData]
-            ////public void Solves_day_1_problem_2(ChronalCalibrator calibrator)
-            ////{
-            ////    var myPuzzleInput = File.ReadAllText("Day01/problem1.txt");
-            ////    calibrator.GetFirstFrequencyReachedTwice(myPuzzleInput).Should().Be(0);
-            ////}
+            [Theory, AutoData]
+            public void Solves_day_1_problem_2(ChronalCalibrator calibrator)
+            {
+                var myPuzzleInput = File.ReadAllText("Day01/problem1.txt");
+                calibrator.GetFirstFrequencyReachedTwice(myPuzzleInput).Should().Be(83130);
+            }
         }
     }
 }
