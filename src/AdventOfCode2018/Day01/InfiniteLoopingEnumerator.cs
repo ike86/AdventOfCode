@@ -27,23 +27,17 @@ namespace AdventOfCode2018.Day01
 
         public bool MoveNext()
         {
-            var b = enumerator.MoveNext();
-            if (b)
-            {
-            }
-            else
+            var hasAdvanced = enumerator.MoveNext();
+            if (!hasAdvanced)
             {
                 enumerator.Dispose();
                 enumerator = source.GetEnumerator();
-                enumerator.MoveNext();
+                hasAdvanced = enumerator.MoveNext();
             }
 
-            return b;
+            return hasAdvanced;
         }
 
-        public void Reset()
-        {
-            ////enumerator.Reset();
-        }
+        public void Reset() => throw new NotImplementedException();
     }
 }

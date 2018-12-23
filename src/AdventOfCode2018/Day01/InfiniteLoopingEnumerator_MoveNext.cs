@@ -52,41 +52,16 @@ namespace AdventOfCode2018.Day01
         }
 
         [Theory, AutoData]
-        internal void Enumerates_the_source_twice(
-            [Frozen]IEnumerable<int> source,
-            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
-        {
-            var result = Enumerable
-                .Range(0, source.Count() * 2)
-                .Select(_ =>
-                {
-                    enumerator.MoveNext();
-                    return enumerator.Current;
-                });
-
-            result.Should().BeEquivalentTo(source.Concat(source));
-        }
-
-        [Theory, AutoData]
         internal void Enumerates_the_source_n_times(
-            int n,
             [Frozen]IEnumerable<int> source,
-            [Frozen]InfiniteLoopingEnumerator<int> enumerator)
+            [Frozen]InfiniteLoopingEnumerator<int> enumerator,
+            int n)
         {
-            var result = Enumerable
-                .Range(0, source.Count() * n)
-                .Select(_ =>
-                {
-                    enumerator.MoveNext();
-                    return enumerator.Current;
-                });
-            var expected = Enumerable
-                .Range(0, n - 1)
-                .Aggregate(
-                    seed: source,
-                    (prev, _) => prev.Concat(source));
+            var result = enumerator.AsEnumerable()
+                .Take(source.Count() * n);
 
-            result.Should().BeEquivalentTo(expected);
+            result.Should().BeEquivalentTo(
+                source.Multiply(times: n));
         }
     }
 }
