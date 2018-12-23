@@ -71,6 +71,9 @@ namespace AdventOfCode2018.Day01
                 signs
                 .Zip(numbers, (sign, number) => sign ? number : -number));
 
+        private static string ToFrequencyChanges(params int[] numbers)
+            => ToFrequencyChanges(numbers.AsEnumerable());
+
         private static string ToFrequencyChanges(IEnumerable<int> numbers)
         {
             var frequencyChangeLines = numbers.Select(ToString);

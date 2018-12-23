@@ -17,14 +17,17 @@ namespace AdventOfCode2018.Day01
                 .Sum();
         }
 
-        public int GetFirstFrequencyReachedTwice(string frequencyChanges)
+        public int GetFirstFrequencyReachedTwice(string frequencyChangesAsString)
         {
-            var lines = Split(frequencyChanges);
-            lines = lines.Concat(lines).ToArray();
+            var lines = Split(frequencyChangesAsString);
+            var frequencyChanges = lines.Concat(lines);
+            var parsed = frequencyChanges.Select(ParseFrequencyChange);
+            var reached = GetReachedFrequencies(parsed);
+            return GetFirstReachedTwice(reached);
+        }
 
-            var reachedFrequencies =
-                lines
-                .Select(ParseFrequencyChange)
+        private static List<int> GetReachedFrequencies(IEnumerable<int> frequencyChanges)
+            => frequencyChanges
                 .Aggregate(
                     seed: (reachedFrequencies: new List<int> { 0 }, currentFrequency: 0),
                     (previous, current) =>
@@ -37,17 +40,15 @@ namespace AdventOfCode2018.Day01
                     })
                 .reachedFrequencies;
 
-            return reachedFrequencies
+        private static int GetFirstReachedTwice(IEnumerable<int> reached)
+            => reached
                 .GroupBy(i => i)
                 .First(g => g.Count() > 1)
                 .Key;
-        }
 
         private static string[] Split(string frequencyChanges)
-        {
-            return frequencyChanges
+            => frequencyChanges
                 .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries);
-        }
 
         private static int ParseFrequencyChange(string line)
         {
@@ -76,9 +77,7 @@ namespace AdventOfCode2018.Day01
         private static int ParseChange(string frequencyChanges)
         {
             var frequencyToken = frequencyChanges.Substring(1);
-
-            var frequencyChange = int.Parse(frequencyToken);
-            return frequencyChange;
+            return int.Parse(frequencyToken);
         }
     }
 }
