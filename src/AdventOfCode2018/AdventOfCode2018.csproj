@@ -74,6 +74,9 @@
     <Compile Include="Day01\ChronalCalibratior_Calibrate.cs" />
     <Compile Include="Day01\ChronalCalibratior_GetFirstFrequencyReachedTwice.cs" />
     <Compile Include="Day01\ChronalCalibrator.cs" />
+    <Compile Include="Day01\IEnumeratorExtensions.cs" />
+    <Compile Include="Day01\InfiniteLoopingEnumerator.cs" />
+    <Compile Include="Day01\InfiniteLoopingEnumerator_MoveNext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
