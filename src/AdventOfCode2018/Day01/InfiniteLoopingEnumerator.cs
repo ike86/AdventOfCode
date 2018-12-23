@@ -21,8 +21,8 @@ namespace AdventOfCode2018.Day01
 
         public void Dispose()
         {
-            ////enumerator?.Dispose();
-            ////enumerator = null;
+            enumerator?.Dispose();
+            enumerator = null;
         }
 
         public bool MoveNext()
