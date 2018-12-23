@@ -16,6 +16,15 @@ namespace AdventOfCode2018.Day01
 
                 result.Should().Be(0);
             }
+
+            [Theory, AutoData]
+            public void Returns_freqency_by_repeating_the_input(ChronalCalibrator calibrator)
+            {
+                var result = calibrator.GetFirstFrequencyReachedTwice(
+                    ToFrequencyChanges(new[] { 3, 3, 4, -2, -4 }));
+
+                result.Should().Be(10);
+            }
         }
     }
 }
