@@ -9,14 +9,21 @@ namespace AoC18.Day02
 
         public static int GetCheckSum(string boxIdsAsString)
         {
-            return boxIdsAsString
+            var a = boxIdsAsString
                 .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s
-                    .GroupBy(ch => ch)
-                    .Select(gr => gr.Count())
-                    .GroupBy(c => c)
-                    .Count(gr => gr.Key > 1))
-                .Sum();
+                .Select(s =>
+                {
+                    var x = s
+                        .GroupBy(ch => ch)
+                        .Select(gr => gr.Count())
+                        .GroupBy(n => n)
+                        .Select(gr => gr.Key);
+                    return (numberOfDoubleFolds: x.Count(n => n == 2), numberOfTripleFolds: x.Count(n => n == 3));
+                });
+            var d = a.Sum(t => t.numberOfDoubleFolds);
+            var tr = a.Sum(t => t.numberOfTripleFolds);
+
+            return d * tr;
         }
     }
 }
