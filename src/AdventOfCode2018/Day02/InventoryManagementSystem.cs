@@ -9,21 +9,29 @@ namespace AoC18.Day02
 
         public static int GetCheckSum(string boxIdsAsString)
         {
-            var a = boxIdsAsString
-                .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s =>
-                {
-                    var x = s
-                        .GroupBy(ch => ch)
-                        .Select(gr => gr.Count())
-                        .GroupBy(n => n)
-                        .Select(gr => gr.Key);
-                    return (numberOfDoubleFolds: x.Count(n => n == 2), numberOfTripleFolds: x.Count(n => n == 3));
-                });
-            var d = a.Sum(t => t.numberOfDoubleFolds);
-            var tr = a.Sum(t => t.numberOfTripleFolds);
+            var numbersOfDoubleAndTripleFolds =
+                GetBoxIds(boxIdsAsString)
+                .Select(GetNumberOfDoubleAndTripleFolds);
 
-            return d * tr;
+            return numbersOfDoubleAndTripleFolds.Sum(t => t.numberOfDoubleFolds)
+                * numbersOfDoubleAndTripleFolds.Sum(t => t.numberOfTripleFolds);
+        }
+
+        private static string[] GetBoxIds(string boxIdsAsString)
+        {
+            return boxIdsAsString
+                .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private static (int numberOfDoubleFolds, int numberOfTripleFolds) GetNumberOfDoubleAndTripleFolds(string boxId)
+        {
+            var numbersOfManyFolds = boxId
+                .GroupBy(ch => ch)
+                .Select(gr => gr.Count())
+                .GroupBy(n => n)
+                .Select(gr => gr.Key);
+            return (numberOfDoubleFolds: numbersOfManyFolds.Count(n => n == 2),
+                    numberOfTripleFolds: numbersOfManyFolds.Count(n => n == 3));
         }
     }
 }
