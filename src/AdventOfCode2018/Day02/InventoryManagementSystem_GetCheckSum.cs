@@ -49,5 +49,22 @@ namespace AoC18.Day02
 
             checkSum.Should().Be(1);
         }
+
+        [Fact]
+        public void Returns_twelve_for_example_input()
+        {
+            var input =
+                "abcdef" + InventoryManagementSystem.LineSeparator +
+                "bababc" + InventoryManagementSystem.LineSeparator +
+                "abbcde" + InventoryManagementSystem.LineSeparator +
+                "abcccd" + InventoryManagementSystem.LineSeparator +
+                "aabcdd" + InventoryManagementSystem.LineSeparator +
+                "abcdee" + InventoryManagementSystem.LineSeparator +
+                "ababab" + InventoryManagementSystem.LineSeparator;
+
+            var checkSum = InventoryManagementSystem.GetCheckSum(input);
+
+            checkSum.Should().Be(12);
+        }
     }
 }
