@@ -5,10 +5,12 @@ namespace AoC18.Day02
 {
     public static class InventoryManagementSystem
     {
+        public const string LineSeparator = "/r/n";
+
         public static int GetCheckSum(string boxIdsAsString)
         {
             return boxIdsAsString
-                .Split(new[] { "/r/n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { LineSeparator }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(s => s
                     .GroupBy(ch => ch)
                     .Select(gr => gr.Count())
