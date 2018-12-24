@@ -15,7 +15,7 @@ namespace AoC18.Day02
 
         [Theory]
         [InlineData("aabcdef")]
-        [InlineData("aaabcdef")]
+        [InlineData("abbcdef")]
         [InlineData("aabbcdef")]
         [InlineData("aaabcdef")]
         [InlineData("aaabbbcdef")]
