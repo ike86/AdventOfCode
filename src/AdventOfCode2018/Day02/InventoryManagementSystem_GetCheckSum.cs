@@ -25,5 +25,15 @@ namespace AoC18.Day02
 
             checkSum.Should().Be(1);
         }
+
+        [Fact]
+        public void Returns_one_for_many_input()
+        {
+            var input = "abcdef" + "/r/n" + "aabcdef";
+
+            var checkSum = InventoryManagementSystem.GetCheckSum(input);
+
+            checkSum.Should().Be(1);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace AoC18.Day02
 {
@@ -7,10 +8,13 @@ namespace AoC18.Day02
         public static int GetCheckSum(string boxIdsAsString)
         {
             return boxIdsAsString
-                .GroupBy(ch => ch)
-                .Select(gr => gr.Count())
-                .GroupBy(c => c)
-                .Count(gr => gr.Key > 1);
+                .Split(new[] { "/r/n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s
+                    .GroupBy(ch => ch)
+                    .Select(gr => gr.Count())
+                    .GroupBy(c => c)
+                    .Count(gr => gr.Key > 1))
+                .Sum();
         }
     }
 }
