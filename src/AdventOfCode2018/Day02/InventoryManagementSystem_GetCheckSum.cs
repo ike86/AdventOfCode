@@ -28,5 +28,13 @@ namespace AoC18.Day02
 
             checkSum.Should().Be(1);
         }
+
+        [Fact]
+        public void Returns_one_for_single_input_with_two_characters_appearing_twice()
+        {
+            var checkSum = InventoryManagementSystem.GetCheckSum("aabbcdef");
+
+            checkSum.Should().Be(1);
+        }
     }
 }

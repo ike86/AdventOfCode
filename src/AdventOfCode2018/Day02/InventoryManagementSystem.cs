@@ -6,9 +6,11 @@ namespace AoC18.Day02
     {
         public static int GetCheckSum(string boxIdsAsString)
         {
-            return boxIdsAsString
+            var a = boxIdsAsString
                 .GroupBy(ch => ch)
-                .Count(gr => gr.Count() > 1);
+                .Select(gr => gr.Count())
+                .GroupBy(c => c);
+            return a.Count(gr => gr.Key > 1);
         }
     }
 }
