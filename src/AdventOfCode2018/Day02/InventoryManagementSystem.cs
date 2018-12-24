@@ -1,14 +1,8 @@
-﻿using System;
-
-namespace AoC18.Day02
+﻿namespace AoC18.Day02
 {
-    public class InventoryManagementSystem
+    public static class InventoryManagementSystem
     {
-        public InventoryManagementSystem()
-        {
-        }
-
-        public int GetCheckSum(string v)
+        public static int GetCheckSum(string boxIdsAsString)
         {
             return 0;
         }
