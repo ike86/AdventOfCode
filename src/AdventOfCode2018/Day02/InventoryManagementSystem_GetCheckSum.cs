@@ -17,7 +17,9 @@ namespace AoC18.Day02
         [InlineData("aabcdef")]
         [InlineData("aaabcdef")]
         [InlineData("aabbcdef")]
-        public void Returns_one_for_single_input_with_some_characters_appearing_twice(string input)
+        [InlineData("aaabcdef")]
+        [InlineData("aaabbbcdef")]
+        public void Returns_one_for_single_input_with_some_characters_appearing_twice_xor_three_times(string input)
         {
             var checkSum = InventoryManagementSystem.GetCheckSum(input);
 
