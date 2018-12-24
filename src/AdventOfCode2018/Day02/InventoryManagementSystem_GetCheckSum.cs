@@ -3,7 +3,7 @@ using Xunit;
 
 namespace AoC18.Day02
 {
-    public class InventoryManagementSystem_GetCheckSum
+    public class GetCheckSum
     {
         [Fact]
         public void Returns_zero_for_single_input_with_unique_characters()
@@ -13,26 +13,13 @@ namespace AoC18.Day02
             checkSum.Should().Be(0);
         }
 
-        [Fact]
-        public void Returns_one_for_single_input_with_a_character_appearing_twice()
+        [Theory]
+        [InlineData("aabcdef")]
+        [InlineData("aaabcdef")]
+        [InlineData("aabbcdef")]
+        public void Returns_one_for_single_input_with_some_characters_appearing_twice(string input)
         {
-            var checkSum = InventoryManagementSystem.GetCheckSum("aabcdef");
-
-            checkSum.Should().Be(1);
-        }
-
-        [Fact]
-        public void Returns_one_for_single_input_with_a_character_appearing_three_times()
-        {
-            var checkSum = InventoryManagementSystem.GetCheckSum("aaabcdef");
-
-            checkSum.Should().Be(1);
-        }
-
-        [Fact]
-        public void Returns_one_for_single_input_with_two_characters_appearing_twice()
-        {
-            var checkSum = InventoryManagementSystem.GetCheckSum("aabbcdef");
+            var checkSum = InventoryManagementSystem.GetCheckSum(input);
 
             checkSum.Should().Be(1);
         }
