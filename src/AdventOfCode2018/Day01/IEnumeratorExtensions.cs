@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AdventOfCode2018.Day01
+namespace AoC18.Day01
 {
     internal static class IEnumeratorExtensions
     {

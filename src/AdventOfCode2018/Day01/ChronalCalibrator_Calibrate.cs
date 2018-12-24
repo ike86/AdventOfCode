@@ -4,11 +4,11 @@ using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
-using static AdventOfCode2018.Day01.ChronalCalibrator;
+using static AoC18.Day01.ChronalCalibrator;
 
-namespace AdventOfCode2018.Day01
+namespace AoC18.Day01
 {
-    public partial class ChronalCalibratior_
+    public partial class ChronalCalibrator_
     {
         public class Calibrate
         {

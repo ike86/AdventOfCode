@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventOfCode2018.Day01
+namespace AoC18.Day01
 {
     public class ChronalCalibrator
     {

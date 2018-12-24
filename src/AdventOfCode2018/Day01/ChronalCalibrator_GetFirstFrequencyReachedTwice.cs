@@ -3,9 +3,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
-namespace AdventOfCode2018.Day01
+namespace AoC18.Day01
 {
-    public partial class ChronalCalibratior_
+    public partial class ChronalCalibrator_
     {
         public class GetFirstFrequencyReachedTwice
         {
