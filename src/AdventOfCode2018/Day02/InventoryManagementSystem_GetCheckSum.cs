@@ -20,5 +20,13 @@ namespace AoC18.Day02
 
             checkSum.Should().Be(1);
         }
+
+        [Fact]
+        public void Returns_one_for_single_input_with_a_character_appearing_three_times()
+        {
+            var checkSum = InventoryManagementSystem.GetCheckSum("aaabcdef");
+
+            checkSum.Should().Be(1);
+        }
     }
 }
