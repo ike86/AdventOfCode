@@ -7,38 +7,19 @@ namespace AoC18.Day02
     public class GetCommonLetters
     {
         [Fact]
-        public void Returns_empty_for_two_different_characters()
+        public void Returns_empty_for_two_different_strings()
         {
-            var result = GetCommonLetters("a", "b");
+            var result = GetCommonLetters("abcde", "fghij");
 
             result.Should().Be(string.Empty);
         }
 
         [Fact]
-        public void Returns_character_for_two_matcing_characters()
+        public void Returns_common_letters_for_strings_differing_in_some_letters()
         {
-            var result = GetCommonLetters("a", "a");
+            var result = GetCommonLetters("abcde", "aBcdE");
 
-            result.Should().Be("a");
-        }
-
-        /// <remarks>
-        /// Distance is <see href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming distance</see>
-        /// </remarks>
-        [Fact]
-        public void Returns_one_common_letter_for_strings_one_distance_away()
-        {
-            var result = GetCommonLetters("ab", "cb");
-
-            result.Should().Be("b");
-        }
-
-        [Fact]
-        public void Returns_two_common_letters_for_strings_two_distance_away()
-        {
-            var result = GetCommonLetters("abd", "acd");
-
-            result.Should().Be("ad");
+            result.Should().Be("acd");
         }
     }
 }
