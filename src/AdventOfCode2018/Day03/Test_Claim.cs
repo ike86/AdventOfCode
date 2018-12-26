@@ -64,7 +64,10 @@ namespace AoC18.Day03
             {
                 for (int x = xOffset; x < xOffset + width; x++)
                 {
-                    claim[x, yOffset].Should().Be(1);
+                    for (int y = yOffset; y < yOffset + height; y++)
+                    {
+                        claim[x, y].Should().Be(1);
+                    }
                 }
             }
         }
