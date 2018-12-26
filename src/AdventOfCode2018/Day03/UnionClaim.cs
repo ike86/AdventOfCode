@@ -1,20 +1,22 @@
-﻿namespace AoC18.Day03
+﻿using System.Linq;
+
+namespace AoC18.Day03
 {
     internal class UnionClaim
     {
-        private Claim claim;
+        private Claim[] claims;
 
-        public UnionClaim(Claim claim)
+        public UnionClaim(params Claim[] claims)
         {
-            this.claim = claim;
+            this.claims = claims;
         }
 
-        public int XOffset => claim.XOffset;
+        public int XOffset => claims.Min(c => c.XOffset);
 
-        public int YOffset => claim.YOffset;
+        public int YOffset => claims[0].YOffset;
 
-        public int Width => claim.Width;
+        public int Width => claims[0].Width;
 
-        public int Height => claim.Height;
+        public int Height => claims[0].Height;
     }
 }
