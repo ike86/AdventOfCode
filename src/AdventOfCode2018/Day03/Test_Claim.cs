@@ -38,8 +38,19 @@ namespace AoC18.Day03
 
             using (new AssertionScope())
             {
-                claim[xOffset + width -1, 3].Should().Be(1);
+                claim[xOffset + width - 1, 3].Should().Be(1);
                 claim[xOffset + width, 3].Should().Be(0);
+            }
+        }
+
+        [Theory, AutoData]
+        public void Parse_respects_height(int yOffset, int height)
+        {
+            var claim = Claim.Parse($"#1 @ 1,{yOffset}: 4x{height}");
+
+            using (new AssertionScope())
+            {
+                claim[1, yOffset + height - 1].Should().Be(1);
             }
         }
     }
