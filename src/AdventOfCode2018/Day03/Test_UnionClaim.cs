@@ -33,5 +33,23 @@ namespace AoC18.Day03
                 .Should().Be(
                     claims.Select(c => c.YOffset).Min());
         }
+
+        [Theory, AutoData]
+        public void Has_maximum_width(Claim[] claims)
+        {
+            new UnionClaim(claims)
+                .Width
+                .Should().Be(
+                    claims.Select(c => c.Width).Max());
+        }
+
+        [Theory, AutoData]
+        public void Has_maximum_height(Claim[] claims)
+        {
+            new UnionClaim(claims)
+                .Height
+                .Should().Be(
+                    claims.Select(c => c.Height).Max());
+        }
     }
 }

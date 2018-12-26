@@ -15,8 +15,8 @@ namespace AoC18.Day03
 
         public int YOffset => claims.Min(c => c.YOffset);
 
-        public int Width => claims[0].Width;
+        public int Width => claims.Max(c => c.Width);
 
-        public int Height => claims[0].Height;
+        public int Height => claims.Max(c => c.Height);
     }
 }
