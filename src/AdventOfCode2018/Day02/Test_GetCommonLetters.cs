@@ -22,6 +22,9 @@ namespace AoC18.Day02
             result.Should().Be("a");
         }
 
+        /// <remarks>
+        /// Distance is <see href="https://en.wikipedia.org/wiki/Hamming_distance">Hamming distance</see>
+        /// </remarks>
         [Fact]
         public void Returns_one_common_letter_for_strings_one_distance_away()
         {
