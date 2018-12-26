@@ -15,11 +15,11 @@ namespace AoC18.Day02
         }
 
         [Fact]
-        public void Returns_common_letters_for_strings_differing_in_some_letters()
+        public void Returns_empty_for_strings_differing_at_more_than_one_positions()
         {
             var result = GetCommonLetters("abcde", "aBcdE");
 
-            result.Should().Be("acd");
+            result.Should().Be(string.Empty);
         }
 
         [Theory]
