@@ -11,8 +11,11 @@ namespace AoC18.Day02
             {
                 foreach (var second in boxIds)
                 {
-                    if (GetCommonLetters(first, second) != string.Empty)
-                        return GetCommonLetters(first, second);
+                    var commonLetters = GetCommonLetters(first, second);
+                    if (commonLetters != string.Empty)
+                    {
+                        return commonLetters;
+                    }
                 }
             }
 
