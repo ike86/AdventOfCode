@@ -17,5 +17,16 @@ namespace AoC18.Day03
                 claim[1, 3].Should().Be(1);
             }
         }
+
+        [Fact]
+        public void Parse_respects_y_offset()
+        {
+            var claim = Claim.Parse("#1 @ 1,3: 4x4");
+
+            using (new AssertionScope())
+            {
+                claim[1, 0].Should().Be(0);
+            }
+        }
     }
 }
