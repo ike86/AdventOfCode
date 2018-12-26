@@ -4,6 +4,17 @@ namespace AoC18.Day02
 {
     internal class Part2
     {
+        ////internal static string GetCommonLetters(params string[] boxIds)
+        ////{
+        ////    foreach (var first in boxIds)
+        ////    {
+        ////        foreach (var second in boxIds)
+        ////        {
+
+        ////        }
+        ////    }
+        ////}
+
         internal static string GetCommonLetters(string first, string second)
         {
             var commonLetters =
@@ -14,7 +25,7 @@ namespace AoC18.Day02
                 .Where(ch => ch.HasValue)
                 .ToArray();
 
-            if (first.Count() - commonLetters.Count() > 1)
+            if (first.Count() - commonLetters.Count() != 1)
             {
                 return string.Empty;
             }

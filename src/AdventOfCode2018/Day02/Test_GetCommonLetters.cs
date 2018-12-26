@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.Xunit2;
+using FluentAssertions;
 using Xunit;
 using static AoC18.Day02.Part2;
 
@@ -22,6 +23,14 @@ namespace AoC18.Day02
             result.Should().Be(string.Empty);
         }
 
+        [Theory, AutoData]
+        public void Returns_empty_for_exactly_matching_strings(string s)
+        {
+            var result = GetCommonLetters(s, s);
+
+            result.Should().Be(string.Empty);
+        }
+
         [Theory]
         [InlineData("abcde", "aBcde", "acde")]
         [InlineData("abcde", "aBcdE", "")]
@@ -32,5 +41,14 @@ namespace AoC18.Day02
         {
             GetCommonLetters(first, second).Should().Be(commonLetters);
         }
+
+        ////[Theory]
+        ////[InlineData(
+        ////    "fgij",
+        ////    "abcde", "fghij", "klmno", "pqrst", "fguij", "axcye", "wvxyz")]
+        ////public void Returns_answer_for_example(string commonLetters, params string[] boxIds)
+        ////{
+        ////    GetCommonLetters(boxIds).Should().Be(commonLetters);
+        ////}
     }
 }
