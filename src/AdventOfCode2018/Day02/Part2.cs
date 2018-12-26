@@ -4,6 +4,9 @@
     {
         internal static string GetCommonLetters(string first, string second)
         {
+            if (first == second)
+                return first;
+
             return string.Empty;
         }
     }

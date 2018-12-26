@@ -13,5 +13,13 @@ namespace AoC18.Day02
 
             result.Should().Be(string.Empty);
         }
+
+        [Fact]
+        public void Returns_character_for_two_matcing_characters()
+        {
+            var result = GetCommonLetters("a", "a");
+
+            result.Should().Be("a");
+        }
     }
 }
