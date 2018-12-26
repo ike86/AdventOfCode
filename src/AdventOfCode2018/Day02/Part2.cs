@@ -4,10 +4,14 @@
     {
         internal static string GetCommonLetters(string first, string second)
         {
-            if (first == second)
-                return first;
+            var s = string.Empty;
+            if (first[0] == second[0])
+                s += first[0];
 
-            return string.Empty;
+            if (first.Length > 1 && first[1] == second[1])
+                s += first[1];
+
+            return s;
         }
     }
 }
