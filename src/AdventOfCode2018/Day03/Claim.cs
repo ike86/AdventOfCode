@@ -4,10 +4,10 @@ namespace AoC18.Day03
 {
     internal class Claim
     {
-        private int xOffset;
-        private int yOffset;
-        private int width;
-        private int height;
+        private readonly int xOffset;
+        private readonly int yOffset;
+        private readonly int width;
+        private readonly int height;
 
         public Claim(int xOffset, int yOffset, int width, int height)
         {
@@ -19,9 +19,10 @@ namespace AoC18.Day03
 
         internal static Claim Parse(string claim)
         {
-            // "#1 @ 1,3: 4x4"
-            var tokens = claim.Split(new[] { "@", ",", ":", "x" }, StringSplitOptions.RemoveEmptyEntries);
-            // "#1 ", " 1", "3", " 4", "4"
+            var tokens = claim.Split(
+                new[] { "@", ",", ":", "x" },
+                StringSplitOptions.RemoveEmptyEntries);
+
             return new Claim(
                 xOffset: int.Parse(tokens[1]),
                 yOffset: int.Parse(tokens[2]),

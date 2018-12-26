@@ -54,5 +54,19 @@ namespace AoC18.Day03
                 claim[1, yOffset + height].Should().Be(0);
             }
         }
+
+        [Theory, AutoData]
+        public void Is_one_between_its_bounds(int xOffset, int yOffset, int width, int height)
+        {
+            var claim = new Claim(xOffset, yOffset, width, height);
+
+            using (new AssertionScope())
+            {
+                for (int x = xOffset; x < xOffset + width; x++)
+                {
+                    claim[x, yOffset].Should().Be(1);
+                }
+            }
+        }
     }
 }
