@@ -2,7 +2,7 @@
 
 namespace AoC18.Day03
 {
-    internal class Claim
+    public class Claim
     {
         public Claim(int xOffset, int yOffset, int width, int height)
         {
