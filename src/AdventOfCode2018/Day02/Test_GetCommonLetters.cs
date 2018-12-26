@@ -32,5 +32,13 @@ namespace AoC18.Day02
 
             result.Should().Be("b");
         }
+
+        [Fact]
+        public void Returns_two_common_letters_for_strings_two_distance_away()
+        {
+            var result = GetCommonLetters("abd", "acd");
+
+            result.Should().Be("ad");
+        }
     }
 }

@@ -11,6 +11,9 @@
             if (first.Length > 1 && first[1] == second[1])
                 commonLetters += first[1];
 
+            if (first.Length > 2 && first[2] == second[2])
+                commonLetters += first[2];
+
             return commonLetters;
         }
     }
