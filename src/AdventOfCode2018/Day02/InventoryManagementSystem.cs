@@ -5,7 +5,7 @@ namespace AoC18.Day02
 {
     public static class InventoryManagementSystem
     {
-        public const string LineSeparator = "/r/n";
+        public const string LineSeparator = "\r\n";
 
         public static int GetCheckSum(string boxIdsAsString)
         {

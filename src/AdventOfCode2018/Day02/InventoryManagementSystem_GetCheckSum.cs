@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.IO;
+using FluentAssertions;
 using Xunit;
 
 namespace AoC18.Day02
@@ -65,6 +66,16 @@ namespace AoC18.Day02
             var checkSum = InventoryManagementSystem.GetCheckSum(input);
 
             checkSum.Should().Be(12);
+        }
+
+        [Fact]
+        public void Solves_day_2_problem_1()
+        {
+            var myPuzzleInput = File.ReadAllText("Day02/problem.txt");
+
+            var checkSum = InventoryManagementSystem.GetCheckSum(myPuzzleInput);
+
+            checkSum.Should().Be(0);
         }
     }
 }
