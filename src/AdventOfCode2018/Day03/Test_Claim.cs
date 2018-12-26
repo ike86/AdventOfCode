@@ -30,5 +30,16 @@ namespace AoC18.Day03
                 claim[1, yOffset].Should().Be(1);
             }
         }
+
+        [Theory, AutoData]
+        public void Parse_respects_width(int xOffset, int width)
+        {
+            var claim = Claim.Parse($"#1 @ {xOffset},3: {width}x4");
+
+            using (new AssertionScope())
+            {
+                claim[xOffset + width -1, 3].Should().Be(1);
+            }
+        }
     }
 }
