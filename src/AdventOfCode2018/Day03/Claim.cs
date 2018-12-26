@@ -4,11 +4,6 @@ namespace AoC18.Day03
 {
     internal class Claim
     {
-        private readonly int xOffset;
-        private readonly int yOffset;
-        private readonly int width;
-        private readonly int height;
-
         public Claim(int xOffset, int yOffset, int width, int height)
         {
             XOffset = xOffset;
@@ -40,8 +35,8 @@ namespace AoC18.Day03
 
         internal int this[int x, int y]
         {
-            get => x >= xOffset && x < xOffset + width
-                && y >= yOffset && y < yOffset + height
+            get => x >= XOffset && x < XOffset + Width
+                && y >= YOffset && y < YOffset + Height
                 ? 1
                 : 0;
         }
