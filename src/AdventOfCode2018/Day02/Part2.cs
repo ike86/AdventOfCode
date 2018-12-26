@@ -10,7 +10,6 @@ namespace AoC18.Day02
         ////    {
         ////        foreach (var second in boxIds)
         ////        {
-
         ////        }
         ////    }
         ////}
@@ -25,12 +24,12 @@ namespace AoC18.Day02
                 .Where(ch => ch.HasValue)
                 .ToArray();
 
-            if (first.Count() - commonLetters.Count() != 1)
+            if (first.Count() - commonLetters.Count() == 1)
             {
-                return string.Empty;
+                return string.Concat(commonLetters);
             }
 
-            return string.Concat(commonLetters);
+            return string.Empty;
         }
     }
 }
