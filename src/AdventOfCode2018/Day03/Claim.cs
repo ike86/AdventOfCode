@@ -20,6 +20,14 @@ namespace AoC18.Day03
 
         public int Height { get; }
 
+        internal int this[int x, int y]
+        {
+            get => x >= XOffset && x < XOffset + Width
+                && y >= YOffset && y < YOffset + Height
+                ? 1
+                : 0;
+        }
+
         internal static Claim Parse(string claim)
         {
             var tokens = claim.Split(
@@ -31,14 +39,6 @@ namespace AoC18.Day03
                 yOffset: int.Parse(tokens[2]),
                 width: int.Parse(tokens[3]),
                 height: int.Parse(tokens[4]));
-        }
-
-        internal int this[int x, int y]
-        {
-            get => x >= XOffset && x < XOffset + Width
-                && y >= YOffset && y < YOffset + Height
-                ? 1
-                : 0;
         }
     }
 }
