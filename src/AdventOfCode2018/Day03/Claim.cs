@@ -11,11 +11,19 @@ namespace AoC18.Day03
 
         public Claim(int xOffset, int yOffset, int width, int height)
         {
-            this.xOffset = xOffset;
-            this.yOffset = yOffset;
-            this.width = width;
-            this.height = height;
+            XOffset = xOffset;
+            YOffset = yOffset;
+            Width = width;
+            Height = height;
         }
+
+        public int XOffset { get; }
+
+        public int YOffset { get; }
+
+        public int Width { get; }
+
+        public int Height { get; }
 
         internal static Claim Parse(string claim)
         {

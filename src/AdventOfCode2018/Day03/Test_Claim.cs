@@ -8,6 +8,24 @@ namespace AoC18.Day03
     public class Test_Claim
     {
         [Theory, AutoData]
+        public void Parse_returns_claim_with_proper_attributes(
+            int xOffset,
+            int yOffset,
+            int width,
+            int height)
+        {
+            var claim = Claim.Parse($"#1 @ {xOffset},{yOffset}: {width}x{height}");
+
+            using (new AssertionScope())
+            {
+                claim.XOffset.Should().Be(xOffset);
+                claim.YOffset.Should().Be(yOffset);
+                claim.Width.Should().Be(width);
+                claim.Height.Should().Be(height);
+            }
+        }
+
+        [Theory, AutoData]
         public void Parse_respects_x_offset(int xOffset)
         {
             var claim = Claim.Parse($"#1 @ {xOffset},3: 4x4");
