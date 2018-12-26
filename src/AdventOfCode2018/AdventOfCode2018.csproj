@@ -80,6 +80,8 @@
     <Compile Include="Day01\InfiniteLoopingEnumerator_MoveNext.cs" />
     <Compile Include="Day02\InventoryManagementSystem.cs" />
     <Compile Include="Day02\InventoryManagementSystem_GetCheckSum.cs" />
+    <Compile Include="Day02\Part2.cs" />
+    <Compile Include="Day02\Test_GetCommonLetters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
