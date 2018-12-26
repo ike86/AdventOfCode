@@ -11,7 +11,13 @@ namespace AoC18.Day02
                 .Zip(
                     second,
                     (x, y) => x == y ? x : default(char?))
-                .Where(ch => ch.HasValue);
+                .ToArray();
+            if (commonLetters.Count(ch => !ch.HasValue) > 1)
+                return string.Empty;
+
+            commonLetters = commonLetters
+                .Where(ch => ch.HasValue)
+                .ToArray();
 
             return string.Concat(commonLetters);
         }

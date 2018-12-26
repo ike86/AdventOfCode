@@ -21,5 +21,16 @@ namespace AoC18.Day02
 
             result.Should().Be("acd");
         }
+
+        [Theory]
+        [InlineData("abcde", "aBcde", "acde")]
+        [InlineData("abcde", "aBcdE", "")]
+        public void Returns_common_letters_only_for_strings_differing_at_one_position(
+            string first,
+            string second,
+            string commonLetters)
+        {
+            GetCommonLetters(first, second).Should().Be(commonLetters);
+        }
     }
 }
