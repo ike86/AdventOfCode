@@ -39,6 +39,7 @@ namespace AoC18.Day03
             using (new AssertionScope())
             {
                 claim[xOffset + width -1, 3].Should().Be(1);
+                claim[xOffset + width, 3].Should().Be(0);
             }
         }
     }
