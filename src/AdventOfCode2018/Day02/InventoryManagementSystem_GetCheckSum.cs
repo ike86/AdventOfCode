@@ -38,30 +38,22 @@ namespace AoC18.Day02
             checkSum.Should().Be(1);
         }
 
-        [Fact]
-        public void Returns_one_for_many_input()
+        [Theory]
+        [InlineData("abcdef", "AAbcd", "AAAbcd")]
+        public void Returns_one_for_many_input(params string[] boxIds)
         {
-            var input =
-                "abcdef" + InventoryManagementSystem.LineSeparator +
-                "AAbcd" + InventoryManagementSystem.LineSeparator +
-                "AAAbcd";
+            var input = string.Join(InventoryManagementSystem.LineSeparator, boxIds);
 
             var checkSum = InventoryManagementSystem.GetCheckSum(input);
 
             checkSum.Should().Be(1);
         }
 
-        [Fact]
-        public void Returns_twelve_for_example_input()
+        [Theory]
+        [InlineData("abcdef", "bababc", "abbcde", "abcccd", "aabcdd", "abcdee", "ababab")]
+        public void Returns_twelve_for_example_input(params string[] boxIds)
         {
-            var input =
-                "abcdef" + InventoryManagementSystem.LineSeparator +
-                "bababc" + InventoryManagementSystem.LineSeparator +
-                "abbcde" + InventoryManagementSystem.LineSeparator +
-                "abcccd" + InventoryManagementSystem.LineSeparator +
-                "aabcdd" + InventoryManagementSystem.LineSeparator +
-                "abcdee" + InventoryManagementSystem.LineSeparator +
-                "ababab" + InventoryManagementSystem.LineSeparator;
+            var input = string.Join(InventoryManagementSystem.LineSeparator, boxIds);
 
             var checkSum = InventoryManagementSystem.GetCheckSum(input);
 
@@ -75,7 +67,7 @@ namespace AoC18.Day02
 
             var checkSum = InventoryManagementSystem.GetCheckSum(myPuzzleInput);
 
-            checkSum.Should().Be(0);
+            checkSum.Should().Be(6696);
         }
     }
 }
