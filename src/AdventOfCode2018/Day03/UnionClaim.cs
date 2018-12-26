@@ -13,7 +13,7 @@ namespace AoC18.Day03
 
         public int XOffset => claims.Min(c => c.XOffset);
 
-        public int YOffset => claims[0].YOffset;
+        public int YOffset => claims.Min(c => c.YOffset);
 
         public int Width => claims[0].Width;
 

@@ -24,5 +24,14 @@ namespace AoC18.Day03
                 .Should().Be(
                     claims.Select(c => c.XOffset).Min());
         }
+
+        [Theory, AutoData]
+        public void Has_minimal_y_offset(Claim[] claims)
+        {
+            new UnionClaim(claims)
+                .YOffset
+                .Should().Be(
+                    claims.Select(c => c.YOffset).Min());
+        }
     }
 }
