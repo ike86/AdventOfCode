@@ -26,6 +26,7 @@ namespace AoC18.Day03
             using (new AssertionScope())
             {
                 claim[1, 0].Should().Be(0);
+                claim[1, 3].Should().Be(1);
             }
         }
     }
