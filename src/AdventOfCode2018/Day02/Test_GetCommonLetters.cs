@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.IO;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 using static AoC18.Day02.Part2;
@@ -49,6 +50,16 @@ namespace AoC18.Day02
         public void Returns_answer_for_example(string commonLetters, params string[] boxIds)
         {
             GetCommonLetters(boxIds).Should().Be(commonLetters);
+        }
+
+        [Fact]
+        public void Solves_day_2_part_2()
+        {
+            var myPuzzleInput = File.ReadAllLines("Day02/problem.txt");
+
+            var checkSum = GetCommonLetters(myPuzzleInput);
+
+            checkSum.Should().Be("bvnfawcnyoeyudzrpgslimtkj");
         }
     }
 }
