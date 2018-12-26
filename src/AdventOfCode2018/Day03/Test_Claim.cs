@@ -51,6 +51,7 @@ namespace AoC18.Day03
             using (new AssertionScope())
             {
                 claim[1, yOffset + height - 1].Should().Be(1);
+                claim[1, yOffset + height].Should().Be(0);
             }
         }
     }
