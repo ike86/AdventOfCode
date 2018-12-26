@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace AoC18.Day03
@@ -10,8 +11,11 @@ namespace AoC18.Day03
         {
             var claim = Claim.Parse("#1 @ 1,3: 4x4");
 
-            claim[0, 3].Should().Be(0);
-            claim[1, 3].Should().Be(1);
+            using (new AssertionScope())
+            {
+                claim[0, 3].Should().Be(0);
+                claim[1, 3].Should().Be(1);
+            }
         }
     }
 }

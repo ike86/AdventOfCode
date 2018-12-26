@@ -21,7 +21,7 @@ namespace AoC18.Day03
 
         internal int this[int x, int y]
         {
-            get => x >= xOffset ? 1 :   0;
+            get => x >= xOffset ? 1 : 0;
         }
     }
 }
