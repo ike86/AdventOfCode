@@ -1,18 +1,23 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace AoC18.Day02
 {
     internal class Part2
     {
-        ////internal static string GetCommonLetters(params string[] boxIds)
-        ////{
-        ////    foreach (var first in boxIds)
-        ////    {
-        ////        foreach (var second in boxIds)
-        ////        {
-        ////        }
-        ////    }
-        ////}
+        internal static string GetCommonLetters(params string[] boxIds)
+        {
+            foreach (var first in boxIds)
+            {
+                foreach (var second in boxIds)
+                {
+                    if (GetCommonLetters(first, second) != string.Empty)
+                        return GetCommonLetters(first, second);
+                }
+            }
+
+            throw new ArgumentException();
+        }
 
         internal static string GetCommonLetters(string first, string second)
         {

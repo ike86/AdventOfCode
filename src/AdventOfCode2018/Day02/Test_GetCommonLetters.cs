@@ -42,13 +42,13 @@ namespace AoC18.Day02
             GetCommonLetters(first, second).Should().Be(commonLetters);
         }
 
-        ////[Theory]
-        ////[InlineData(
-        ////    "fgij",
-        ////    "abcde", "fghij", "klmno", "pqrst", "fguij", "axcye", "wvxyz")]
-        ////public void Returns_answer_for_example(string commonLetters, params string[] boxIds)
-        ////{
-        ////    GetCommonLetters(boxIds).Should().Be(commonLetters);
-        ////}
+        [Theory]
+        [InlineData(
+            "fgij",
+            "abcde", "fghij", "klmno", "pqrst", "fguij", "axcye", "wvxyz")]
+        public void Returns_answer_for_example(string commonLetters, params string[] boxIds)
+        {
+            GetCommonLetters(boxIds).Should().Be(commonLetters);
+        }
     }
 }
