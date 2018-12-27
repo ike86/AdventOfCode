@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
+using static System.Math;
 
 namespace AoC18.Day03
 {
@@ -59,17 +59,16 @@ namespace AoC18.Day03
             int x2, int y2,
             int x3, int y3)
         {
-            x1 = Math
-                .Min(
-                    Math.Max(x1, claims[0].XOffset),
+            x1 = Min(
+                    Max(x1, claims[0].XOffset),
                     claims[0].XOffset + claims[0].Width);
-            y1 = Math
-                .Min(
-                    Math.Max(y1, claims[0].YOffset),
+            y1 = Min(
+                    Max(y1, claims[0].YOffset),
                     claims[0].YOffset + claims[0].Height);
             var union = new UnionClaim(claims);
 
-            union[x1, y1].Should().Be(claims.Select(c => c[x1, y1]).Sum());
+            union[x1, y1].Should().Be(
+                claims.Select(c => c[x1, y1]).Sum());
         }
     }
 }
