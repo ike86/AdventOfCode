@@ -4,9 +4,6 @@ namespace AoC18.Day03
 {
     public class Claim
     {
-        private (int, int) a1;
-        private (int, int) a2;
-
         public Claim(int xOffset, int yOffset, int width, int height)
         {
             XOffset = xOffset;
@@ -15,12 +12,12 @@ namespace AoC18.Day03
             Height = height;
         }
 
-        public Claim((int, int) a1, (int, int) a2)
+        public Claim((int x, int y) topleft, (int x, int y) bottomRight)
         {
-            XOffset = a1.Item1;
-            YOffset = a1.Item2;
-            Width = a2.Item1 - a1.Item1;
-            Height = a2.Item2 - a1.Item2;
+            XOffset = topleft.x;
+            YOffset = topleft.y;
+            Width = bottomRight.x - topleft.x;
+            Height = bottomRight.y - topleft.y;
         }
 
         public int XOffset { get; }

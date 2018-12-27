@@ -70,10 +70,13 @@ namespace AoC18.Day03
         {
             var claim = new Claim(topLeft, bottomRight);
 
-            claim.XOffset.Should().Be(topLeft.x);
-            claim.YOffset.Should().Be(topLeft.y);
-            claim.Width.Should().Be(bottomRight.x - topLeft.x);
-            claim.Height.Should().Be(bottomRight.y - topLeft.y);
+            using (new AssertionScope())
+            {
+                claim.XOffset.Should().Be(topLeft.x);
+                claim.YOffset.Should().Be(topLeft.y);
+                claim.Width.Should().Be(bottomRight.x - topLeft.x);
+                claim.Height.Should().Be(bottomRight.y - topLeft.y);
+            }
         }
     }
 }
