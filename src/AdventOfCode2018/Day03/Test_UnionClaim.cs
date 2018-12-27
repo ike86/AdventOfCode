@@ -79,18 +79,19 @@ namespace AoC18.Day03
             }
         }
 
-        /*   0  1  2  3  4  5
-         *   C1 A1 B1 C2 A2 B2
-         *      A--------*     A1 0
-         *      |  B-----+--*  B1 1
-         *      |  |     |  |
-         *   C--+--+--*  |  |  C1 2
-         *   |  |  |X |  |  |
-         *   |  |  *--+--+--B  B2 3
-         *   |  |     |  |
-         *   |  |     |  |
-         *   *--+-----C  |     C2 4
-         *      *--------A     A2 5
+        /*     0  1    2    3  4  5
+         *     C1 A1   B1   C2 A2 B2
+         *        A------------*     A1 0
+         *        |    B-------+--*  B1 1
+         *        |    |       |  |
+         *  C1 C--+----+----*  |  |  C1 2
+         *  X  |  |    |  X |  |  |
+         *  B2 |  |    *----+--+--B  B2 3
+         *  Y  |  |  Y      |  |
+         *     |  |         |  |
+         *  C2 *--+---------C  |     C2 4
+         *        *------------A     A2 5
+         *        A1 Y B1 X C2
          */
         [Theory, AutoData]
         public void Is_the_sum_of_composed_claims(IFixture fixture)
@@ -108,6 +109,30 @@ namespace AoC18.Day03
             var c2 = (xs[3], ys[4]);
 
             var claimA = new Claim(a1, a2);
+            var claimB = new Claim(b1, b2);
+            var claimC = new Claim(c1, c2);
+
+            var union = new UnionClaim(claimA, claimB, claimC);
+
+            var X_x = fixture.Build<int>()
+                .FromFactory(new RandomNumericSequenceGenerator(b1.Item1, c2.Item1))
+                .Create();
+            var X_y = fixture.Build<int>()
+                .FromFactory(new RandomNumericSequenceGenerator(c1.Item2, b2.Item2))
+                .Create();
+
+            var Y_x = fixture.Build<int>()
+                .FromFactory(new RandomNumericSequenceGenerator(a1.Item1, b1.Item1))
+                .Create();
+            var Y_y = fixture.Build<int>()
+                .FromFactory(new RandomNumericSequenceGenerator(b2.Item2, c2.Item2))
+                .Create();
+
+            using (new AssertionScope())
+            {
+                union[X_x, X_y].Should().Be(3, "because it is where 3 claims overlap");
+                union[Y_x, Y_y].Should().Be(2, "because it is where 2 claims overlap");
+            }
         }
     }
 }
