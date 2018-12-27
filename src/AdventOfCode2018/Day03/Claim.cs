@@ -4,12 +4,20 @@ namespace AoC18.Day03
 {
     public class Claim
     {
+        private (int, int) a1;
+        private (int, int) a2;
+
         public Claim(int xOffset, int yOffset, int width, int height)
         {
             XOffset = xOffset;
             YOffset = yOffset;
             Width = width;
             Height = height;
+        }
+
+        public Claim((int, int) a1, (int, int) a2)
+        {
+            XOffset = a1.Item1;
         }
 
         public int XOffset { get; }

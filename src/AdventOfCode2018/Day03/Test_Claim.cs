@@ -62,5 +62,15 @@ namespace AoC18.Day03
                 claim[x2, y2].Should().Be(0);
             }
         }
+
+        [Theory, AutoData]
+        public void ctor_transforms_topleft_bottomright_to_offset_and_size(
+            (int x, int y) topLeft,
+            (int x, int y) bottomRight)
+        {
+            var claim = new Claim(topLeft, bottomRight);
+
+            claim.XOffset.Should().Be(topLeft.x);
+        }
     }
 }
