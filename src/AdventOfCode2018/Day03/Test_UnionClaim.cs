@@ -3,7 +3,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
-using static System.Math;
 
 namespace AoC18.Day03
 {
@@ -60,19 +59,11 @@ namespace AoC18.Day03
             int x2, int y2,
             int x3, int y3)
         {
-            x1 = Min(
-                    Max(x1, claims[0].XOffset),
-                    claims[0].XOffset + claims[0].Width);
-            y1 = Min(
-                    Max(y1, claims[0].YOffset),
-                    claims[0].YOffset + claims[0].Height);
+            x1 = x1.OrHorizontallyInboundOf(claims[0]);
+            y1 = y1.OrVerticallyInboundOf(claims[0]);
 
-            x2 = Min(
-                    Max(x2, claims[1].XOffset),
-                    claims[1].XOffset + claims[1].Width);
-            y2 = Min(
-                    Max(y2, claims[1].YOffset),
-                    claims[1].YOffset + claims[1].Height);
+            x2 = x1.OrHorizontallyInboundOf(claims[1]);
+            y2 = y1.OrVerticallyInboundOf(claims[1]);
 
             var union = new UnionClaim(claims);
 

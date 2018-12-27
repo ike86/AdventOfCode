@@ -83,6 +83,7 @@
     <Compile Include="Day02\Part2.cs" />
     <Compile Include="Day02\Test_GetCommonLetters.cs" />
     <Compile Include="Day03\Claim.cs" />
+    <Compile Include="Day03\ClaimExtensions.cs" />
     <Compile Include="Day03\Test_Claim.cs" />
     <Compile Include="Day03\Test_UnionClaim.cs" />
     <Compile Include="Day03\UnionClaim.cs" />
