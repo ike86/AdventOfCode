@@ -18,6 +18,7 @@ namespace AoC18.Day03
         public Claim((int, int) a1, (int, int) a2)
         {
             XOffset = a1.Item1;
+            YOffset = a1.Item2;
         }
 
         public int XOffset { get; }

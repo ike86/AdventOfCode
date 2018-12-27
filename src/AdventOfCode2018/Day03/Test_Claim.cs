@@ -71,6 +71,7 @@ namespace AoC18.Day03
             var claim = new Claim(topLeft, bottomRight);
 
             claim.XOffset.Should().Be(topLeft.x);
+            claim.YOffset.Should().Be(topLeft.y);
         }
     }
 }
