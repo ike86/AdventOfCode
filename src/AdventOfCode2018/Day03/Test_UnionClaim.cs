@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 using static System.Math;
 
@@ -65,10 +66,25 @@ namespace AoC18.Day03
             y1 = Min(
                     Max(y1, claims[0].YOffset),
                     claims[0].YOffset + claims[0].Height);
+
+            x2 = Min(
+                    Max(x2, claims[1].XOffset),
+                    claims[1].XOffset + claims[1].Width);
+            y2 = Min(
+                    Max(y2, claims[1].YOffset),
+                    claims[1].YOffset + claims[1].Height);
+
             var union = new UnionClaim(claims);
 
-            union[x1, y1].Should().Be(
-                claims.Select(c => c[x1, y1]).Sum());
+            using (new AssertionScope())
+            {
+                union[x1, y1].Should().Be(
+                    claims.Select(c => c[x1, y1]).Sum());
+                union[x2, y2].Should().Be(
+                    claims.Select(c => c[x2, y2]).Sum());
+                union[x3, y3].Should().Be(
+                    claims.Select(c => c[x3, y3]).Sum());
+            }
         }
     }
 }
