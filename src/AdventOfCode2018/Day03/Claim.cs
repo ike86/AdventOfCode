@@ -20,6 +20,7 @@ namespace AoC18.Day03
             XOffset = a1.Item1;
             YOffset = a1.Item2;
             Width = a2.Item1 - a1.Item1;
+            Height = a2.Item2 - a1.Item2;
         }
 
         public int XOffset { get; }
