@@ -45,6 +45,15 @@ namespace AoC18.Day03
         }
 
         [Theory, AutoData]
+        public void Width_is_the_difference_of_XOffset_and_BottomRightX(Claim[] claims)
+        {
+            var union = new UnionClaim(claims);
+
+            union.Width
+                .Should().Be(union.BottomRightX - union.XOffset);
+        }
+
+        [Theory, AutoData]
         public void Has_maximum_height(Claim[] claims)
         {
             new UnionClaim(claims)
