@@ -80,19 +80,19 @@ namespace AoC18.Day03
             }
         }
 
-        /*     0  1    2    3  4  5
-         *     C1 A1   B1   C2 A2 B2
-         *        A------------*     A1 0
-         *        |    B-------+--*  B1 1
-         *        |    |       |  |
-         *  C1 C--+----+----*  |  |  C1 2
-         *  X  |  |    |  X |  |  |
-         *  B2 |  |    *----+--+--B  B2 3
-         *  Y  |  |  Y      |  |
-         *     |  |         |  |
-         *  C2 *--+---------C  |     C2 4
-         *        *------------A     A2 5
-         *        A1 Y B1 X C2
+        /*     0    1    2    3  4  5
+         *     C1   A1   B1   C2 A2 B2
+         *          A------------*     A1 0
+         *  Z     Z |    B-------+--*  B1 1
+         *          |    |       |  |
+         *  C1 C----+----+----*  |  |  C1 2
+         *  X  |    |    |  X |  |  |
+         *  B2 |    |    *----+--+--B  B2 3
+         *  Y  |    |  Y      |  |
+         *     |    |         |  |
+         *  C2 *----+---------C  |     C2 4
+         *          *------------A     A2 5
+         *     C1 Z A1 Y B1 X C2
          */
 
         [Theory, LimitedRandomNumericData(0, 100)]
@@ -117,12 +117,17 @@ namespace AoC18.Day03
             var Y_x = fixture.CreateRandomBetween(a.topLeft.Item1, b.topLeft.Item1 - 1);
             var Y_y = fixture.CreateRandomBetween(b.bottomRight.Item2, c.bottomRight.Item2 - 1);
 
+            var Z_x = fixture.CreateRandomBetween(0, a.topLeft.Item1 - 1);
+            var Z_y = fixture.CreateRandomBetween(0, c.topLeft.Item2 - 1);
+
             using (new AssertionScope())
             {
                 union[X_x, X_y].Should().Be(3,
                     "because it is where 3 claims overlap" + FixtureToDebugString(X_x, X_y));
                 union[Y_x, Y_y].Should().Be(2,
                     "because it is where 2 claims overlap" + FixtureToDebugString(Y_x, Y_y));
+                union[Z_x, Z_y].Should().Be(0,
+                    "because it is where no claims overlap" + FixtureToDebugString(Z_x, Z_y));
             }
 
             string FixtureToDebugString(int x, int y)
