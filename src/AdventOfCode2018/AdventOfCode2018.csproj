@@ -86,6 +86,7 @@
     <Compile Include="Day03\ClaimExtensions.cs" />
     <Compile Include="Day03\FixtureExtensions.cs" />
     <Compile Include="Day03\LimitedRandomNumericDataAttribute.cs" />
+    <Compile Include="Day03\Solution.cs" />
     <Compile Include="Day03\Test_Claim.cs" />
     <Compile Include="Day03\Test_UnionClaim.cs" />
     <Compile Include="Day03\UnionClaim.cs" />
@@ -107,6 +108,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Day02\problem.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Day03\input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
