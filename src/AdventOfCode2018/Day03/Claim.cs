@@ -12,11 +12,12 @@ namespace AoC18.Day03
             BottomRightY = bottomRight.y;
         }
 
-        public Claim(int xOffset, int yOffset, int width, int height)
+        public Claim(int id, int xOffset, int yOffset, int width, int height)
             : this(
                  topleft: (x: xOffset, y: yOffset),
                  bottomRight: (x: xOffset + width, y: yOffset + height))
         {
+            Id = id;
         }
 
         public int XOffset { get; }
@@ -30,6 +31,7 @@ namespace AoC18.Day03
         public int BottomRightX { get; }
 
         public int BottomRightY { get; }
+        public int Id { get; }
 
         internal int this[int x, int y]
         {
@@ -42,10 +44,11 @@ namespace AoC18.Day03
         internal static Claim Parse(string claim)
         {
             var tokens = claim.Split(
-                new[] { "@", ",", ":", "x" },
+                new[] { "#", "@", ",", ":", "x" },
                 StringSplitOptions.RemoveEmptyEntries);
 
             return new Claim(
+                id: int.Parse(tokens[0]),
                 xOffset: int.Parse(tokens[1]),
                 yOffset: int.Parse(tokens[2]),
                 width: int.Parse(tokens[3]),

@@ -10,12 +10,13 @@ namespace AoC18.Day03
     {
         [Theory, AutoData]
         public void Parse_returns_claim_with_proper_attributes(
+            int id,
             int xOffset,
             int yOffset,
             int width,
             int height)
         {
-            var claim = Claim.Parse($"#1 @ {xOffset},{yOffset}: {width}x{height}");
+            var claim = Claim.Parse($"#{id} @ {xOffset},{yOffset}: {width}x{height}");
 
             using (new AssertionScope())
             {
@@ -25,13 +26,14 @@ namespace AoC18.Day03
                 claim.Height.Should().Be(height);
                 claim.BottomRightX.Should().Be(xOffset + width);
                 claim.BottomRightY.Should().Be(yOffset + height);
+                claim.Id.Should().Be(id);
             }
         }
 
         [Theory, AutoData]
-        public void Is_one_between_its_bounds(int xOffset, int yOffset, int width, int height)
+        public void Is_one_between_its_bounds(int id, int xOffset, int yOffset, int width, int height)
         {
-            var claim = new Claim(xOffset, yOffset, width, height);
+            var claim = new Claim(id, xOffset, yOffset, width, height);
 
             using (new AssertionScope())
             {
