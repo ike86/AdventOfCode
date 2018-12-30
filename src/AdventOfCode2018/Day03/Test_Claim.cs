@@ -23,6 +23,7 @@ namespace AoC18.Day03
                 claim.YOffset.Should().Be(yOffset);
                 claim.Width.Should().Be(width);
                 claim.Height.Should().Be(height);
+                claim.BottomRight_X.Should().Be(xOffset + width);
             }
         }
 

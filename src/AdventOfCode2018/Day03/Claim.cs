@@ -10,6 +10,7 @@ namespace AoC18.Day03
             YOffset = yOffset;
             Width = width;
             Height = height;
+            BottomRight_X = xOffset + width;
         }
 
         public Claim((int x, int y) topleft, (int x, int y) bottomRight)
@@ -27,6 +28,7 @@ namespace AoC18.Day03
         public int Width { get; }
 
         public int Height { get; }
+        public object BottomRight_X { get; }
 
         internal int this[int x, int y]
         {
