@@ -4,33 +4,28 @@ namespace AoC18.Day03
 {
     public class Claim
     {
-        public Claim(int xOffset, int yOffset, int width, int height)
-        {
-            XOffset = xOffset;
-            YOffset = yOffset;
-            Width = width;
-            Height = height;
-            BottomRightX = xOffset + width;
-            BottomRightY = yOffset + height;
-        }
-
         public Claim((int x, int y) topleft, (int x, int y) bottomRight)
         {
             XOffset = topleft.x;
             YOffset = topleft.y;
-            Width = bottomRight.x - topleft.x;
-            Height = bottomRight.y - topleft.y;
             BottomRightX = bottomRight.x;
             BottomRightY = bottomRight.y;
+        }
+
+        public Claim(int xOffset, int yOffset, int width, int height)
+            : this(
+                 topleft: (x: xOffset, y: yOffset),
+                 bottomRight: (x: xOffset + width, y: yOffset + height))
+        {
         }
 
         public int XOffset { get; }
 
         public int YOffset { get; }
 
-        public int Width { get; }
+        public int Width => BottomRightX - XOffset;
 
-        public int Height { get; }
+        public int Height => BottomRightY - YOffset;
 
         public int BottomRightX { get; }
 

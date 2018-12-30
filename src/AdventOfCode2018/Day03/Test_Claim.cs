@@ -66,7 +66,7 @@ namespace AoC18.Day03
         }
 
         [Theory, AutoData]
-        public void ctor_transforms_topleft_bottomright_to_offset_and_size(
+        public void ctor_sets_properties(
             (int x, int y) topLeft,
             (int x, int y) bottomRight)
         {
