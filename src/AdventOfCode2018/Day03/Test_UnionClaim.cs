@@ -14,7 +14,9 @@ namespace AoC18.Day03
         {
             var union = new UnionClaim(claim);
 
-            union.Should().BeEquivalentTo(claim);
+            union.Should().BeEquivalentTo(
+                claim,
+                o => o.Excluding(c => c.Id));
         }
 
         [Theory, AutoData]
