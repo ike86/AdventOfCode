@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -54,32 +53,6 @@ namespace AoC18.Day03
                     claims.Select(c => c.Height).Max());
         }
 
-        [Theory, AutoData]
-        public void Is_the_same_as_composed_claims(
-            Claim[] claims,
-            int x1, int y1,
-            int x2, int y2,
-            int x3, int y3)
-        {
-            x1 = x1.OrHorizontallyInboundOf(claims[0]);
-            y1 = y1.OrVerticallyInboundOf(claims[0]);
-
-            x2 = x1.OrHorizontallyInboundOf(claims[1]);
-            y2 = y1.OrVerticallyInboundOf(claims[1]);
-
-            var union = new UnionClaim(claims);
-
-            using (new AssertionScope())
-            {
-                union[x1, y1].Should().Be(
-                    claims.Select(c => c[x1, y1]).Sum());
-                union[x2, y2].Should().Be(
-                    claims.Select(c => c[x2, y2]).Sum());
-                union[x3, y3].Should().Be(
-                    claims.Select(c => c[x3, y3]).Sum());
-            }
-        }
-
         /*     0    1    2    3  4  5
          *     C1   A1   B1   C2 A2 B2
          *          A------------*     A1 0
@@ -101,9 +74,9 @@ namespace AoC18.Day03
             var xs = fixture.CreateMany<int>(6).OrderBy(i => i).ToArray();
             var ys = fixture.CreateMany<int>(6).OrderBy(i => i).ToArray();
 
-            var a = (topLeft: (xs[1], ys[0]), bottomRight: (xs[4], ys[5]));
-            var b = (topLeft: (xs[2], ys[1]), bottomRight: (xs[5], ys[3]));
-            var c = (topLeft: (xs[0], ys[2]), bottomRight: (xs[3], ys[4]));
+            var a = (topLeft: (x: xs[1], y: ys[0]), bottomRight: (x: xs[4], y: ys[5]));
+            var b = (topLeft: (x: xs[2], y: ys[1]), bottomRight: (x: xs[5], y: ys[3]));
+            var c = (topLeft: (x: xs[0], y: ys[2]), bottomRight: (x: xs[3], y: ys[4]));
 
             var claimA = new Claim(a.topLeft, a.bottomRight);
             var claimB = new Claim(b.topLeft, b.bottomRight);
@@ -111,23 +84,21 @@ namespace AoC18.Day03
 
             var union = new UnionClaim(claimA, claimB, claimC);
 
-            var X_x = fixture.CreateRandomBetween(b.topLeft.Item1, c.bottomRight.Item1 - 1);
-            var X_y = fixture.CreateRandomBetween(c.topLeft.Item2, b.bottomRight.Item2 - 1);
-
-            var Y_x = fixture.CreateRandomBetween(a.topLeft.Item1, b.topLeft.Item1 - 1);
-            var Y_y = fixture.CreateRandomBetween(b.bottomRight.Item2, c.bottomRight.Item2 - 1);
-
-            var Z_x = fixture.CreateRandomBetween(0, a.topLeft.Item1 - 1);
-            var Z_y = fixture.CreateRandomBetween(0, c.topLeft.Item2 - 1);
+            var X = (x: fixture.CreateRandomBetween(b.topLeft.x, c.bottomRight.x - 1),
+                     y: fixture.CreateRandomBetween(c.topLeft.y, b.bottomRight.y - 1));
+            var Y = (x: fixture.CreateRandomBetween(a.topLeft.x, b.topLeft.x - 1),
+                     y: fixture.CreateRandomBetween(b.bottomRight.y, c.bottomRight.y - 1));
+            var Z = (x: fixture.CreateRandomBetween(0, a.topLeft.x - 1),
+                     y: fixture.CreateRandomBetween(0, c.topLeft.y - 1));
 
             using (new AssertionScope())
             {
-                union[X_x, X_y].Should().Be(3,
-                    "because it is where 3 claims overlap" + FixtureToDebugString(X_x, X_y));
-                union[Y_x, Y_y].Should().Be(2,
-                    "because it is where 2 claims overlap" + FixtureToDebugString(Y_x, Y_y));
-                union[Z_x, Z_y].Should().Be(0,
-                    "because it is where no claims overlap" + FixtureToDebugString(Z_x, Z_y));
+                union[X.x, X.y].Should().Be(3,
+                    "because it is where 3 claims overlap" + FixtureToDebugString(X.x, X.y));
+                union[Y.x, Y.y].Should().Be(2,
+                    "because it is where 2 claims overlap" + FixtureToDebugString(Y.x, Y.y));
+                union[Z.x, Z.y].Should().Be(0,
+                    "because it is where no claims overlap" + FixtureToDebugString(Z.x, Z.y));
             }
 
             string FixtureToDebugString(int x, int y)
@@ -149,42 +120,6 @@ namespace AoC18.Day03
                 Is_the_sum_of_composed_claims(
                     LimitedRandomNumericDataAttribute.FixtureFactory(0, 100));
             }
-        }
-    }
-
-    internal sealed class LimitedRandomNumericDataAttribute : AutoDataAttribute
-    {
-        public LimitedRandomNumericDataAttribute(long from, long to)
-            : base(() => FixtureFactory(from, to))
-        {
-            From = from;
-            To = to;
-        }
-
-        public long From { get; }
-
-        public long To { get; }
-
-        public static Func<long, long, IFixture> FixtureFactory =
-            (long from, long to) =>
-                new Fixture()
-                    .Customize(
-                        new RandomNumericSequenceGenerator(from, to)
-                        .ToCustomization());
-    }
-
-    internal static class FixtureExtensions
-    {
-        public static int CreateRandomBetween(this IFixture fixture, int from, int to)
-        {
-            if (from == to)
-            {
-                return (int)from;
-            }
-
-            return fixture.Build<int>()
-                .FromFactory(new RandomNumericSequenceGenerator(from, to))
-                .Create();
         }
     }
 }
