@@ -20,6 +20,8 @@ namespace AoC18.Day03
             YOffset = topleft.y;
             Width = bottomRight.x - topleft.x;
             Height = bottomRight.y - topleft.y;
+            BottomRightX = bottomRight.x;
+            BottomRightY = bottomRight.y;
         }
 
         public int XOffset { get; }
