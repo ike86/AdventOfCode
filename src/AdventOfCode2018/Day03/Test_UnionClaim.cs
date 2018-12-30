@@ -63,6 +63,15 @@ namespace AoC18.Day03
         }
 
         [Theory, AutoData]
+        public void Height_is_the_difference_of_YOffset_and_BottomRightY(Claim[] claims)
+        {
+            var union = new UnionClaim(claims);
+
+            union.Height
+                .Should().Be(union.BottomRightY - union.YOffset);
+        }
+
+        [Theory, AutoData]
         public void Has_maximum_bottom_right_x(Claim[] claims)
         {
             new UnionClaim(claims)
