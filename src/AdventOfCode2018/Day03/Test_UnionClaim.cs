@@ -62,6 +62,15 @@ namespace AoC18.Day03
                     claims.Select(c => c.BottomRightX).Max());
         }
 
+        [Theory, AutoData]
+        public void Has_maximum_bottom_right_y(Claim[] claims)
+        {
+            new UnionClaim(claims)
+                .BottomRightY
+                .Should().Be(
+                    claims.Select(c => c.BottomRightY).Max());
+        }
+
         /*     0    1    2    3  4  5
          *     C1   A1   B1   C2 A2 B2
          *          A------------*     A1 0

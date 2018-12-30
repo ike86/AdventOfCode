@@ -19,9 +19,9 @@ namespace AoC18.Day03
 
         public int Height => claims.Max(c => c.Height);
 
-        public object BottomRightX => claims.First().BottomRightX;
+        public int BottomRightX => claims.Max(c => c.BottomRightX);
 
-        public object BottomRightY => claims.First().BottomRightY;
+        public int BottomRightY => claims.Max(c => c.BottomRightY);
 
         internal int this[int x, int y] => claims.Sum(c => c[x, y]);
     }
