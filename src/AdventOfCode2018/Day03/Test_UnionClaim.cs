@@ -111,29 +111,35 @@ namespace AoC18.Day03
 
             var union = new UnionClaim(claimA, claimB, claimC);
 
-            var X_x = fixture.CreateRandomBetween(b.topLeft.Item1, c.bottomRight.Item1 -1);
-            var X_y = fixture.CreateRandomBetween(c.topLeft.Item2, b.bottomRight.Item2 -1);
+            var X_x = fixture.CreateRandomBetween(b.topLeft.Item1, c.bottomRight.Item1 - 1);
+            var X_y = fixture.CreateRandomBetween(c.topLeft.Item2, b.bottomRight.Item2 - 1);
 
-            var Y_x = fixture.CreateRandomBetween(a.topLeft.Item1, b.topLeft.Item1 -1);
+            var Y_x = fixture.CreateRandomBetween(a.topLeft.Item1, b.topLeft.Item1 - 1);
             var Y_y = fixture.CreateRandomBetween(b.bottomRight.Item2, c.bottomRight.Item2 - 1);
 
             using (new AssertionScope())
             {
                 union[X_x, X_y].Should().Be(3,
-                    "because it is where 3 claims overlap" +
-                    $" ({nameof(X_x)}: {X_x}, {nameof(X_y)}: {X_y}," +
+                    "because it is where 3 claims overlap" + FixtureToDebugString(X_x, X_y));
+                union[Y_x, Y_y].Should().Be(2,
+                    "because it is where 2 claims overlap" + FixtureToDebugString(Y_x, Y_y));
+            }
+
+            string FixtureToDebugString(int x, int y)
+            {
+                return
+                    $" (x: {x}, y: {y}," +
                     $" A: {claimA.XOffset}, {claimA.YOffset}, {claimA.Width}, {claimA.Height}," +
                     $" B: {claimB.XOffset}, {claimB.YOffset}, {claimB.Width}, {claimB.Height}," +
                     $" C: {claimC.XOffset}, {claimC.YOffset}, {claimC.Width}, {claimC.Height})" +
-                    union.ToDebugString((X_x, X_y)));
-                union[Y_x, Y_y].Should().Be(2, "because it is where 2 claims overlap");
+                    union.ToDebugString((x, y));
             }
         }
 
         [Fact]
-        public void Is_the_sum_of_composed_claims_x10()
+        public void Is_the_sum_of_composed_claims___x20()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 Is_the_sum_of_composed_claims(
                     LimitedRandomNumericDataAttribute.FixtureFactory(0, 100));
