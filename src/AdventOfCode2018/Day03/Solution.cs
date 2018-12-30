@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -32,7 +28,7 @@ namespace AoC18.Day03
             return numberOfSquareInchesWithinTwoOrMoreClaims;
         }
 
-        [Fact]
+        [Fact(Skip = "long running")]
         public void _of_day_3_part_1()
         {
             var input = File.ReadAllLines("Day03/input.txt");
