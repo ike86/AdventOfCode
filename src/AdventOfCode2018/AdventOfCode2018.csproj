@@ -86,6 +86,7 @@
     <Compile Include="Day03\ClaimExtensions.cs" />
     <Compile Include="Day03\FixtureExtensions.cs" />
     <Compile Include="Day03\LimitedRandomNumericDataAttribute.cs" />
+    <Compile Include="Day03\Part2Solver.cs" />
     <Compile Include="Day03\Solution.cs" />
     <Compile Include="Day03\Test_Claim.cs" />
     <Compile Include="Day03\Test_UnionClaim.cs" />
