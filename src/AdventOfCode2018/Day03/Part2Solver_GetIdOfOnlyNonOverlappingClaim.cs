@@ -55,5 +55,9 @@ namespace AoC18.Day03
 
             id.Should().Be(claimD.Id);
         }
+
+        /*var claims = input
+            .Select(i => Claim.Parse(i))
+            .ToArray();*/
     }
 }

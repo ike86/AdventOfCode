@@ -4,20 +4,17 @@ namespace AoC18.Day03
 {
     internal class Part2Solver
     {
-        private Claim[] claims;
+        private readonly Claim[] claims;
+        private readonly UnionClaim union;
 
         public Part2Solver(params Claim[] claims)
         {
             this.claims = claims;
+            union = new UnionClaim(claims);
         }
 
         internal int GetIdOfOnlyNonOverlappingClaim()
         {
-            /*var claims = input
-                .Select(i => Claim.Parse(i))
-                .ToArray();*/
-            var union = new UnionClaim(claims);
-
             foreach (var claim in claims)
             {
                 var isMatching = true;
