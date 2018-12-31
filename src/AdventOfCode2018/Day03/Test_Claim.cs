@@ -69,10 +69,11 @@ namespace AoC18.Day03
 
         [Theory, AutoData]
         public void ctor_sets_properties(
+            int id,
             (int x, int y) topLeft,
             (int x, int y) bottomRight)
         {
-            var claim = new Claim(topLeft, bottomRight);
+            var claim = new Claim(id, topLeft, bottomRight);
 
             using (new AssertionScope())
             {

@@ -4,20 +4,18 @@ namespace AoC18.Day03
 {
     internal class Part2Solver
     {
-        private Claim claim;
+        private Claim[] claims;
 
-        public Part2Solver(Claim claim)
+        public Part2Solver(params Claim[] claims)
         {
-            this.claim = claim;
+            this.claims = claims;
         }
 
         internal int GetIdOfOnlyNonOverlappingClaim()
         {
-            return claim.Id;
-
             /*var claims = input
                 .Select(i => Claim.Parse(i))
-                .ToArray();
+                .ToArray();*/
             var union = new UnionClaim(claims);
 
             foreach (var claim in claims)
@@ -40,7 +38,7 @@ namespace AoC18.Day03
                 }
             }
 
-            throw new ArgumentException();*/
+            throw new ArgumentException();
         }
     }
 }

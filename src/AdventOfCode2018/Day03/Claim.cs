@@ -4,8 +4,9 @@ namespace AoC18.Day03
 {
     public class Claim
     {
-        public Claim((int x, int y) topleft, (int x, int y) bottomRight)
+        public Claim(int id, (int x, int y) topleft, (int x, int y) bottomRight)
         {
+            Id = id;
             XOffset = topleft.x;
             YOffset = topleft.y;
             BottomRightX = bottomRight.x;
@@ -14,10 +15,10 @@ namespace AoC18.Day03
 
         public Claim(int id, int xOffset, int yOffset, int width, int height)
             : this(
-                 topleft: (x: xOffset, y: yOffset),
-                 bottomRight: (x: xOffset + width, y: yOffset + height))
+                  id,
+                  topleft: (x: xOffset, y: yOffset),
+                  bottomRight: (x: xOffset + width, y: yOffset + height))
         {
-            Id = id;
         }
 
         public int XOffset { get; }

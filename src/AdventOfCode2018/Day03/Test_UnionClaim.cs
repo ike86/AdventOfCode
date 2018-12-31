@@ -98,9 +98,9 @@ namespace AoC18.Day03
             var b = (topLeft: (x: xs[2], y: ys[1]), bottomRight: (x: xs[5], y: ys[3]));
             var c = (topLeft: (x: xs[0], y: ys[2]), bottomRight: (x: xs[3], y: ys[4]));
 
-            var claimA = new Claim(a.topLeft, a.bottomRight);
-            var claimB = new Claim(b.topLeft, b.bottomRight);
-            var claimC = new Claim(c.topLeft, c.bottomRight);
+            var claimA = new Claim(fixture.Create<int>(), a.topLeft, a.bottomRight);
+            var claimB = new Claim(fixture.Create<int>(), b.topLeft, b.bottomRight);
+            var claimC = new Claim(fixture.Create<int>(), c.topLeft, c.bottomRight);
 
             var union = new UnionClaim(claimA, claimB, claimC);
 
