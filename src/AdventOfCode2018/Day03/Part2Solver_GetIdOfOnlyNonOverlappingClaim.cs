@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -56,8 +57,18 @@ namespace AoC18.Day03
             id.Should().Be(claimD.Id);
         }
 
-        /*var claims = input
-            .Select(i => Claim.Parse(i))
-            .ToArray();*/
+        [Fact]
+        public void Solves_day_3_part_2()
+        {
+            var input = File.ReadAllLines("Day03/input.txt");
+            var claims = input
+                .Select(i => Claim.Parse(i))
+                .ToArray();
+            var solver = new Part2Solver(claims);
+
+            var id = solver.GetIdOfOnlyNonOverlappingClaim();
+
+            id.Should().Be(164);
+        }
     }
 }
