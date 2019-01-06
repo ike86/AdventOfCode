@@ -92,6 +92,7 @@
     <Compile Include="Day03\Test_Claim.cs" />
     <Compile Include="Day03\Test_UnionClaim.cs" />
     <Compile Include="Day03\UnionClaim.cs" />
+    <Compile Include="Day04\Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +119,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
