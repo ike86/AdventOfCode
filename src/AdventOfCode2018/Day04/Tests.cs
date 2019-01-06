@@ -14,7 +14,7 @@ namespace AoC18.Day04
         {
             var records = ReposeRecord("[1518-11-01 00:00] Guard #10 begins shift");
 
-            var guardRecord = records.Of(11, 01);
+            var id = records.Of(11, 01).GuardId;
         }
 
         private GuardRecords ReposeRecord(string v)
@@ -24,9 +24,14 @@ namespace AoC18.Day04
 
         private class GuardRecords
         {
-            internal object Of(int v1, int v2)
+            internal GuardRecord Of(int v1, int v2)
             {
-                return null;
+                return new GuardRecord();
+            }
+
+            internal class GuardRecord
+            {
+                public int GuardId { get; internal set; }
             }
         }
     }
