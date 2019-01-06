@@ -13,11 +13,21 @@ namespace AoC18.Day04
         public void Test01()
         {
             var records = ReposeRecord("[1518-11-01 00:00] Guard #10 begins shift");
+
+            var guardRecord = records.Of(11, 01);
         }
 
-        private object ReposeRecord(string v)
+        private GuardRecords ReposeRecord(string v)
         {
-            return null;
+            return new GuardRecords();
+        }
+
+        private class GuardRecords
+        {
+            internal object Of(int v1, int v2)
+            {
+                return null;
+            }
         }
     }
 }
