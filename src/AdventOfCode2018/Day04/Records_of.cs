@@ -17,6 +17,16 @@ namespace AoC18.Day04
         }
 
         [Fact]
+        public void time_after_shift_beginning_has_guard_id_of_the_guard()
+        {
+            var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
+
+            var id = records.Of(00, 05 +1).GuardId;
+
+            id.Should().Be(10);
+        }
+
+        [Fact]
         public void time_before_shift_beginning_has_no_guard_id()
         {
             var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
