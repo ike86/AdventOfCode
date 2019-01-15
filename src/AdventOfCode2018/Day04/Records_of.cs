@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
 namespace AoC18.Day04
 {
-    public class Tests
+    public class Records_of
     {
         [Fact]
-        public void Test01()
+        public void _shift_beginning_has_guard_id_of_the_guard()
         {
             var records = ReposeRecord("[1518-11-01 00:00] Guard #10 begins shift");
 

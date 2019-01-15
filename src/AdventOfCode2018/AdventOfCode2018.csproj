@@ -92,7 +92,7 @@
     <Compile Include="Day03\Test_Claim.cs" />
     <Compile Include="Day03\Test_UnionClaim.cs" />
     <Compile Include="Day03\UnionClaim.cs" />
-    <Compile Include="Day04\Tests.cs" />
+    <Compile Include="Day04\Records_of.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
