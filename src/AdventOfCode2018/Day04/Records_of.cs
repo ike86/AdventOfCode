@@ -58,6 +58,19 @@ namespace AoC18.Day04
             id.Should().Be(guardId);
         }
 
+        [Theory, AutoData]
+        public void woke_up_has_guard_id_of_the_guard(
+            int year, int month, int day, int minute, int guardId, int delta)
+        {
+            var records = ReposeRecord(
+                $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift",
+                $"[{year}-{month}-{day} 00:{minute + delta}] wakes up");
+
+            var id = records.Of(minute + delta).GuardId;
+
+            id.Should().Be(guardId);
+        }
+
         private GuardRecords ReposeRecord(params string[] v)
         {
             return new GuardRecords(v);
@@ -88,6 +101,17 @@ namespace AoC18.Day04
                         }
 
                         if (s.Contains("falls asleep"))
+                        {
+                            return new GuardRecord
+                            {
+                                GuardId = guardId,
+                                From = int.Parse(
+                                    s.Split(new[] { ':', ']' }, StringSplitOptions.RemoveEmptyEntries)
+                                    [1])
+                            };
+                        }
+
+                        if (s.Contains("wakes up"))
                         {
                             return new GuardRecord
                             {
