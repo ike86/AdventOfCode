@@ -11,7 +11,7 @@ namespace AoC18.Day04
         {
             var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
 
-            var id = records.Of(00, 05).GuardId;
+            var id = records.Of(05).GuardId;
 
             id.Should().Be(10);
         }
@@ -21,7 +21,7 @@ namespace AoC18.Day04
         {
             var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
 
-            var id = records.Of(00, 05 +1).GuardId;
+            var id = records.Of(05 + 1).GuardId;
 
             id.Should().Be(10);
         }
@@ -31,10 +31,12 @@ namespace AoC18.Day04
         {
             var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
 
-            var id = records.Of(00, 05 - 1).GuardId;
+            var id = records.Of(05 - 1).GuardId;
 
             id.Should().BeNull();
         }
+
+        // TODO refactor
 
         private GuardRecords ReposeRecord(string v)
         {
@@ -59,9 +61,9 @@ namespace AoC18.Day04
                     };
             }
 
-            internal GuardRecord Of(int v1, int v2)
+            internal GuardRecord Of(int minute)
             {
-                if(this.guardRecord.From <= v2)
+                if (this.guardRecord.From <= minute)
                     return this.guardRecord;
 
                 return new GuardRecord { GuardId = null };
