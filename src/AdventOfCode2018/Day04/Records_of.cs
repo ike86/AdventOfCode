@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -6,37 +7,41 @@ namespace AoC18.Day04
 {
     public class Records_of
     {
-        [Fact]
-        public void _shift_beginning_has_guard_id_of_the_guard()
+        [Theory, AutoData]
+        public void _shift_beginning_has_guard_id_of_the_guard(
+            int year, int month, int day, int minute, int guardId)
         {
-            var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
+            var records = ReposeRecord(
+                $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift");
 
-            var id = records.Of(05).GuardId;
+            var id = records.Of(minute).GuardId;
 
-            id.Should().Be(10);
+            id.Should().Be(guardId);
         }
 
-        [Fact]
-        public void time_after_shift_beginning_has_guard_id_of_the_guard()
+        [Theory, AutoData]
+        public void time_after_shift_beginning_has_guard_id_of_the_guard(
+            int year, int month, int day, int minute, int guardId)
         {
-            var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
+            var records = ReposeRecord(
+                $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift");
 
-            var id = records.Of(05 + 1).GuardId;
+            var id = records.Of(minute + 1).GuardId;
 
-            id.Should().Be(10);
+            id.Should().Be(guardId);
         }
 
-        [Fact]
-        public void time_before_shift_beginning_has_no_guard_id()
+        [Theory, AutoData]
+        public void time_before_shift_beginning_has_no_guard_id(
+            int year, int month, int day, int minute, int guardId)
         {
-            var records = ReposeRecord("[1518-11-03 00:05] Guard #10 begins shift");
+            var records = ReposeRecord(
+                $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift");
 
-            var id = records.Of(05 - 1).GuardId;
+            var id = records.Of(minute - 1).GuardId;
 
             id.Should().BeNull();
         }
-
-        // TODO refactor
 
         private GuardRecords ReposeRecord(string v)
         {
