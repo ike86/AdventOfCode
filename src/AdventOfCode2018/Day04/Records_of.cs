@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -22,24 +23,24 @@ namespace AoC18.Day04
 
         [Theory, AutoData]
         public void time_after_shift_beginning_has_guard_id_of_the_guard(
-            int year, int month, int day, int minute, int guardId)
+            int year, int month, int day, int minute, int guardId, int delta)
         {
             var records = ReposeRecord(
                 $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift");
 
-            var id = records.Of(minute + 1).GuardId;
+            var id = records.Of(minute + delta).GuardId;
 
             id.Should().Be(guardId);
         }
 
         [Theory, AutoData]
         public void time_before_shift_beginning_has_no_guard_id(
-            int year, int month, int day, int minute, int guardId)
+            int year, int month, int day, int minute, int guardId, int delta)
         {
             var records = ReposeRecord(
                 $"[{year}-{month}-{day} 00:{minute}] Guard #{guardId} begins shift");
 
-            var id = records.Of(minute - 1).GuardId;
+            var id = records.Of(minute - delta).GuardId;
 
             id.Should().BeNull();
         }
@@ -64,26 +65,48 @@ namespace AoC18.Day04
 
         private class GuardRecords
         {
-            private GuardRecord guardRecord;
+            private IEnumerable<GuardRecord> guardRecords;
 
             public GuardRecords(params string[] v)
             {
-                this.guardRecord =
-                    new GuardRecord
+                int guardId = 0;
+                this.guardRecords =
+                    v.Select(s =>
                     {
-                        GuardId = int.Parse(
-                            v.Last().Split(new[] { ' ', '#' }, StringSplitOptions.RemoveEmptyEntries)
-                            [3]),
-                        From = int.Parse(
-                            v.Last().Split(new[] { ':', ']' }, StringSplitOptions.RemoveEmptyEntries)
-                            [1])
-                    };
+                        if (s.Contains("#"))
+                        {
+                            guardId = int.Parse(
+                                    s.Split(new[] { ' ', '#' }, StringSplitOptions.RemoveEmptyEntries)
+                                    [3]);
+                            return new GuardRecord
+                            {
+                                GuardId = guardId,
+                                From = int.Parse(
+                                    s.Split(new[] { ':', ']' }, StringSplitOptions.RemoveEmptyEntries)
+                                    [1])
+                            };
+                        }
+
+                        if (s.Contains("falls asleep"))
+                        {
+                            return new GuardRecord
+                            {
+                                GuardId = guardId,
+                                From = int.Parse(
+                                    s.Split(new[] { ':', ']' }, StringSplitOptions.RemoveEmptyEntries)
+                                    [1])
+                            };
+                        }
+
+                        throw new ArgumentException();
+                    })
+                    .ToArray();
             }
 
             internal GuardRecord Of(int minute)
             {
-                if (this.guardRecord.From <= minute)
-                    return this.guardRecord;
+                if (this.guardRecords.Last().From <= minute)
+                    return this.guardRecords.Last();
 
                 return new GuardRecord { GuardId = null };
             }
