@@ -46,10 +46,10 @@ namespace AdventOfCode2019
 
         private int FuelRequiredFor(int moduleMass)
         {
-            return (moduleMass / 3) -2;
+            return (moduleMass / 3) - 2;
         }
 
-        [Theory]
+        [Theory(Skip = "invalid in part 2")]
         [InlineData(MyInput)]
         public void Calculate_total_fuel_required(string massOfModules)
         {
@@ -58,12 +58,20 @@ namespace AdventOfCode2019
 
         private int FuelRequiredFor(string massOfModules)
         {
-            return
+            var fuelRequiredForModules =
                 massOfModules
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
                 .Select(s => int.Parse(s))
                 .Select(FuelRequiredFor)
                 .Sum();
+
+            var fuelRequiredForFuel =
+                FuelRequiredFor(fuelRequiredForModules);
+
+            return fuelRequiredForModules
+                + (fuelRequiredForFuel >= 0
+                ? fuelRequiredForFuel
+                : 0);
         }
 
         private const string MyInput =
@@ -188,6 +196,7 @@ namespace AdventOfCode2019
         A module of mass 14 requires 2 fuel. This fuel requires no further fuel
         (2 divided by 3 and rounded down is 0, which would call for a negative fuel),
         so the total fuel required is still just 2.
+
         At first, a module of mass 1969 requires 654 fuel.
         Then, this fuel requires 216 more fuel (654 / 3 - 2).
         216 then requires 70 more fuel, which requires 21 fuel,
@@ -202,6 +211,7 @@ namespace AdventOfCode2019
 
         [Theory]
         [InlineData("14", 2)]
+        [InlineData("1969", 654 + 216)]
         public void Calculate_total_fuel_required_including_fuel(string massOfModules, int fuelRequired)
         {
             FuelRequiredFor(massOfModules).Should().Be(fuelRequired);
