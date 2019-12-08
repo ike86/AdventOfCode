@@ -44,7 +44,11 @@ namespace AoC19
                 .Select(int.Parse)
                 .ToArray();
 
-            program[0] = program[1] + program[2];
+            var positionOfResult = program[3];
+            var leftOperand = program[1];
+            var rightOperand = program[2];
+
+            program[positionOfResult] = leftOperand + rightOperand;
 
             return program;
         }
