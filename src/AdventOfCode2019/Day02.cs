@@ -102,13 +102,15 @@ namespace AoC19
 
         private int[] Run(string programCode)
         {
-            var program =
+            var code =
                 programCode
                 .Split(',')
                 .Select(int.Parse)
                 .ToArray();
 
-            return new Program(program).Run();
+            var program = new Program(code);
+            program.Run();
+            return program.Code;
         }
 
         private static Func<int, int, int> Execute(int opCode)
@@ -131,7 +133,7 @@ namespace AoC19
 
             public int[] Code { get; }
 
-            public int[] Run()
+            public void Run()
             {
                 var line = 0;
 
@@ -155,8 +157,6 @@ namespace AoC19
 
                     line += 1;
                 }
-
-                return Code;
             }
         }
 
