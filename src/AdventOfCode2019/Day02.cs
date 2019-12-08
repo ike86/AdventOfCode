@@ -94,6 +94,12 @@ namespace AoC19
                 .Should().Be(3500);
         }
 
+        [Fact]
+        public void Run_can_halt()
+        {
+            Run("99,10,20,0")[0].Should().Be(99);
+        }
+
         private int[] Run(string programCode)
         {
             var program =
@@ -107,7 +113,11 @@ namespace AoC19
             var rightOperand = program[2];
             var opCode = program[0];
 
-            program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
+            try
+            {
+                program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
+            }
+            catch (ProgramHalted) { }
 
             return program;
         }
@@ -118,8 +128,12 @@ namespace AoC19
 
             else if (opCode == 2) return (x, y) => x * y;
 
+            else if (opCode == 99) throw new ProgramHalted();
+
             throw new InvalidOperationException(opCode.ToString());
         }
+
+        private class ProgramHalted : Exception { }
         
         /*
 
