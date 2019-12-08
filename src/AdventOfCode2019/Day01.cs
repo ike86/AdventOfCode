@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace AdventOfCode2019
+namespace AoC19
 {
     public class Day01
     {
