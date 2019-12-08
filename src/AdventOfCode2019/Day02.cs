@@ -36,6 +36,11 @@ namespace AoC19
             Run("1,10,20,0")[0].Should().Be(30);
         }
 
+        /*
+        Opcode 2 works exactly like opcode 1, except it multiplies the two inputs instead of adding them.
+        Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.
+        */
+
         [Fact]
         public void Run_can_multiply_and_save_result_to_the_same_line()
         {
@@ -53,19 +58,22 @@ namespace AoC19
             var positionOfResult = program[3];
             var leftOperand = program[1];
             var rightOperand = program[2];
-            Func<int, int, int> operate = null;
-            if (program[0] == 1) operate = (x, y) => x + y;
-            else if (program[0] == 2) operate = (x, y) => x * y;
+            var opCode = program[0];
 
-
-            program[positionOfResult] = operate(leftOperand, rightOperand);
+            program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
 
             return program;
         }
 
+        private static Func<int, int, int> Execute(int opCode)
+        {
+            if (opCode == 1) return (x, y) => x + y;
+
+            else if (opCode == 2) return (x, y) => x * y;
+
+            throw new InvalidOperationException(opCode.ToString());
+        }
         /*
-        Opcode 2 works exactly like opcode 1, except it multiplies the two inputs instead of adding them.
-        Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.
 
         Once you're done processing an opcode, move to the next one by stepping forward 4 positions.
 
