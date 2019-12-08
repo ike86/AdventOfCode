@@ -36,6 +36,12 @@ namespace AoC19
             Run("1,10,20,0")[0].Should().Be(30);
         }
 
+        [Fact]
+        public void Run_can_multiply_and_save_result_to_the_same_line()
+        {
+            Run("2,10,20,0")[0].Should().Be(200);
+        }
+
         private int[] Run(string programCode)
         {
             var program =
@@ -47,8 +53,12 @@ namespace AoC19
             var positionOfResult = program[3];
             var leftOperand = program[1];
             var rightOperand = program[2];
+            Func<int, int, int> operate = null;
+            if (program[0] == 1) operate = (x, y) => x + y;
+            else if (program[0] == 2) operate = (x, y) => x * y;
 
-            program[positionOfResult] = leftOperand + rightOperand;
+
+            program[positionOfResult] = operate(leftOperand, rightOperand);
 
             return program;
         }
