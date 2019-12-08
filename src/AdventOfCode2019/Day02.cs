@@ -107,30 +107,8 @@ namespace AoC19
                 .Split(',')
                 .Select(int.Parse)
                 .ToArray();
-            var line = 0;
 
-            while (true)
-            {
-                var positionOfResult = program[(line * 4) + 3];
-                var positionOfLeftOperand = program[(line * 4) + 1];
-                var positionOfRightOperand = program[(line * 4) + 2];
-                Func<int[],int> leftOperand = p => p[positionOfLeftOperand];
-                Func<int[], int> rightOperand = p => p[positionOfRightOperand];
-                var opCode = program[(line * 4) + 0];
-
-                try
-                {
-                    program[positionOfResult] = Execute(opCode)(leftOperand(program), rightOperand(program));
-                }
-                catch (ProgramHalted)
-                {
-                    break;
-                }
-
-                line += 1;
-            }
-
-            return program;
+            return new Program(program).Run();
         }
 
         private static Func<int, int, int> Execute(int opCode)
@@ -142,6 +120,44 @@ namespace AoC19
             else if (opCode == 99) throw new ProgramHalted();
 
             throw new InvalidOperationException(opCode.ToString());
+        }
+
+        private class Program
+        {
+            public Program(int[] code)
+            {
+                this.Code = code;
+            }
+
+            public int[] Code { get; }
+
+            public int[] Run()
+            {
+                var line = 0;
+
+                while (true)
+                {
+                    var positionOfResult = Code[(line * 4) + 3];
+                    var positionOfLeftOperand = Code[(line * 4) + 1];
+                    var positionOfRightOperand = Code[(line * 4) + 2];
+                    Func<int[], int> leftOperand = p => p[positionOfLeftOperand];
+                    Func<int[], int> rightOperand = p => p[positionOfRightOperand];
+                    var opCode = Code[(line * 4) + 0];
+
+                    try
+                    {
+                        Code[positionOfResult] = Execute(opCode)(leftOperand(Code), rightOperand(Code));
+                    }
+                    catch (ProgramHalted)
+                    {
+                        break;
+                    }
+
+                    line += 1;
+                }
+
+                return Code;
+            }
         }
 
         private class ProgramHalted : Exception { }
