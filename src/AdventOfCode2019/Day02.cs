@@ -107,17 +107,28 @@ namespace AoC19
                 .Split(',')
                 .Select(int.Parse)
                 .ToArray();
+            var line = 0;
 
-            var positionOfResult = program[3];
-            var leftOperand = program[1];
-            var rightOperand = program[2];
-            var opCode = program[0];
-
-            try
+            while (true)
             {
-                program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
+                var positionOfResult = program[(line * 4) + 3];
+                var positionOfLeftOperand = program[(line * 4) + 1];
+                var positionOfRightOperand = program[(line * 4) + 2];
+                Func<int[],int> leftOperand = p => p[positionOfLeftOperand];
+                Func<int[], int> rightOperand = p => p[positionOfRightOperand];
+                var opCode = program[(line * 4) + 0];
+
+                try
+                {
+                    program[positionOfResult] = Execute(opCode)(leftOperand(program), rightOperand(program));
+                }
+                catch (ProgramHalted)
+                {
+                    break;
+                }
+
+                line += 1;
             }
-            catch (ProgramHalted) { }
 
             return program;
         }
@@ -134,7 +145,7 @@ namespace AoC19
         }
 
         private class ProgramHalted : Exception { }
-        
+
         /*
 
         Here are the initial and final states of a few more small programs:
