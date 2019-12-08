@@ -49,29 +49,37 @@ namespace AdventOfCode2019
             return (moduleMass / 3) - 2;
         }
 
-        [Theory(Skip = "invalid in part 2")]
-        [InlineData(MyInput)]
+        ////[Theory(Skip = "invalid in part 2")]
+        ////[InlineData(MyInput)]
         public void Calculate_total_fuel_required(string massOfModules)
         {
             FuelRequiredFor(massOfModules).Should().Be(3390830);
         }
 
-        private int FuelRequiredFor(string massOfModules)
+        private int FuelRequiredFor(string input)
         {
-            var fuelRequiredForModules =
-                massOfModules
+            var massOfModules =
+                input
                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Select(s => int.Parse(s))
-                .Select(FuelRequiredFor)
+                .Select(s => int.Parse(s));
+
+            return
+                massOfModules
+                .SelectMany(FuelsRequiredForFuel)
                 .Sum();
+        }
 
-            var fuelRequiredForFuel =
-                FuelRequiredFor(fuelRequiredForModules);
+        private IEnumerable<int> FuelsRequiredForFuel(int seed)
+        {
+            var mass = seed;
+            var fuelRequired = FuelRequiredFor(mass);
+            while (fuelRequired >= 0)
+            {
+                yield return fuelRequired;
 
-            return fuelRequiredForModules
-                + (fuelRequiredForFuel >= 0
-                ? fuelRequiredForFuel
-                : 0);
+                mass = fuelRequired;
+                fuelRequired = FuelRequiredFor(mass);
+            }
         }
 
         private const string MyInput =
@@ -210,8 +218,19 @@ namespace AdventOfCode2019
         */
 
         [Theory]
+        [InlineData(14, new[] { 2 })]
+        [InlineData(1969, new[] { 654, 216, 70, 21, 5 })]
+        [InlineData(100756, new[] { 33583, 11192, 3728, 1240, 411, 135, 43, 12, 2 })]
+        public void Test(int mass, int[] fuelsRequired)
+        {
+            FuelsRequiredForFuel(mass).Should().BeEquivalentTo(fuelsRequired);
+        }
+
+        [Theory]
         [InlineData("14", 2)]
-        [InlineData("1969", 654 + 216)]
+        ////[InlineData("1969", 654 + 216)] invalid in part 2
+        [InlineData("100756", 50346)]
+        [InlineData(MySecondInput, 5083370)]
         public void Calculate_total_fuel_required_including_fuel(string massOfModules, int fuelRequired)
         {
             FuelRequiredFor(massOfModules).Should().Be(fuelRequired);
