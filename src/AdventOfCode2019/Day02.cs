@@ -33,7 +33,7 @@ namespace AoC19
         [Fact]
         public void Run_can_add_and_save_result_to_the_same_line()
         {
-            Run("1,10,20,0")[0].Should().Be(30);
+            Run("1,1,2,0,99,0,0,0")[0].Should().Be(3);
         }
 
         /*
@@ -44,7 +44,7 @@ namespace AoC19
         [Fact]
         public void Run_can_multiply_and_save_result_to_the_same_line()
         {
-            Run("2,10,20,0")[0].Should().Be(200);
+            Run("2,1,2,0,99,0,0,0")[0].Should().Be(2);
         }
         /*
 
