@@ -46,33 +46,6 @@ namespace AoC19
         {
             Run("2,10,20,0")[0].Should().Be(200);
         }
-
-        private int[] Run(string programCode)
-        {
-            var program =
-                programCode
-                .Split(',')
-                .Select(int.Parse)
-                .ToArray();
-
-            var positionOfResult = program[3];
-            var leftOperand = program[1];
-            var rightOperand = program[2];
-            var opCode = program[0];
-
-            program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
-
-            return program;
-        }
-
-        private static Func<int, int, int> Execute(int opCode)
-        {
-            if (opCode == 1) return (x, y) => x + y;
-
-            else if (opCode == 2) return (x, y) => x * y;
-
-            throw new InvalidOperationException(opCode.ToString());
-        }
         /*
 
         Once you're done processing an opcode, move to the next one by stepping forward 4 positions.
@@ -108,6 +81,47 @@ namespace AoC19
         99,
         30,40,50
         Stepping forward 4 more positions arrives at opcode 99, halting the program.
+        */
+
+        [Fact]
+        public void Run_executes_multiple_lines()
+        {
+            Run(
+                @"1,9,10,3,
+                2,3,11,0,
+                99,
+                30,40,50")[0]
+                .Should().Be(3500);
+        }
+
+        private int[] Run(string programCode)
+        {
+            var program =
+                programCode
+                .Split(',')
+                .Select(int.Parse)
+                .ToArray();
+
+            var positionOfResult = program[3];
+            var leftOperand = program[1];
+            var rightOperand = program[2];
+            var opCode = program[0];
+
+            program[positionOfResult] = Execute(opCode)(leftOperand, rightOperand);
+
+            return program;
+        }
+
+        private static Func<int, int, int> Execute(int opCode)
+        {
+            if (opCode == 1) return (x, y) => x + y;
+
+            else if (opCode == 2) return (x, y) => x * y;
+
+            throw new InvalidOperationException(opCode.ToString());
+        }
+        
+        /*
 
         Here are the initial and final states of a few more small programs:
 
