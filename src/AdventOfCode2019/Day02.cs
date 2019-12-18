@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -46,6 +45,7 @@ namespace AoC19
         {
             Run("2,1,2,0,99,0,0,0").Should().Be(2);
         }
+
         /*
 
         Once you're done processing an opcode, move to the next one by stepping forward 4 positions.
@@ -102,25 +102,25 @@ namespace AoC19
 
         private int Run(string programCode)
         {
-            return new Runner(programCode).Run();
+            return new Computer(programCode).Run();
         }
 
-        private class Runner
+        private class Computer
         {
-            public Runner(string programCode)
+            public Computer(string programCode)
             {
-                Code =
+                Memory =
                     programCode
                     .Split(',')
                     .Select(int.Parse)
                     .ToArray();
             }
 
-            public int[] Code { get; private set; }
+            public int[] Memory { get; private set; }
 
             public int Run()
             {
-                var program = new Program(Code);
+                var program = new Program(Memory);
                 program.Run();
                 return program.Code[0];
             }
@@ -145,7 +145,7 @@ namespace AoC19
 
                     try
                     {
-                        Code[command.PositionOfResult] = command.Execute();
+                        Code[command.AddressOfResult] = command.Execute();
                     }
                     catch (ProgramHalted)
                     {
@@ -169,15 +169,15 @@ namespace AoC19
                     execute = Execute(OpCode);
                 }
 
-                public int PositionOfResult => code[(line * 4) + 3];
+                public int AddressOfResult => code[(line * 4) + 3];
 
-                private int PositionOfLeftOperand => code[(line * 4) + 1];
+                private int AddressOfLeftOperand => code[(line * 4) + 1];
 
-                private int PositionOfRightOperand => code[(line * 4) + 2];
+                private int AddressOfRightOperand => code[(line * 4) + 2];
 
-                private Func<int> LeftOperand => () => code[PositionOfLeftOperand];
+                private Func<int> LeftOperand => () => code[AddressOfLeftOperand];
 
-                private Func<int> RightOperand => () => code[PositionOfRightOperand];
+                private Func<int> RightOperand => () => code[AddressOfRightOperand];
 
                 private int OpCode => code[(line * 4) + 0];
 
@@ -200,9 +200,7 @@ namespace AoC19
                 private static Func<Func<int>, Func<int>, int> Execute(int opCode)
                 {
                     if (opCode == 1) return (x, y) => x() + y();
-
                     else if (opCode == 2) return (x, y) => x() * y();
-
                     else if (opCode == 99) return (_, __) => throw new ProgramHalted();
 
                     throw new InvalidOperationException(opCode.ToString());
@@ -229,14 +227,14 @@ namespace AoC19
         [InlineData("1,1,1,4,99,5,6,0,99", 0, 30)]
         public void Run_works_on_a_few_more_small_programs(
             string programCode,
-            int indexOfExpected,
+            int addressOfExpected,
             int expected)
         {
-            var runner = new Runner(programCode);
+            var computer = new Computer(programCode);
 
-            _ = runner.Run();
+            _ = computer.Run();
 
-            runner.Code[indexOfExpected].Should().Be(expected);
+            computer.Memory[addressOfExpected].Should().Be(expected);
         }
 
         /*
@@ -252,22 +250,14 @@ namespace AoC19
         [Fact]
         public void Run_solves_day2_part1_puzzle()
         {
-            var runner = new Runner(MyPuzzleInput);
-            runner.Code[1] = 12;
-            runner.Code[2] = 2;
+            var computer = new Computer(MyPuzzleInput);
+            computer.Memory[1] = 12;
+            computer.Memory[2] = 2;
 
-            runner.Run().Should().Be(4714701);
+            computer.Run().Should().Be(4714701);
         }
 
         /*
-        "Good, the new computer seems to be working correctly!
-        Keep it nearby during this mission - you'll probably use it again.
-        Real Intcode computers support many more features than your new one,
-        but we'll let you know what they are as you need them."
-
-        "However, your current priority should be to complete your gravity assist around the Moon.
-        For this mission to succeed, we should settle on some terminology for the parts you've already built."
-
         Intcode programs are given as a list of integers;
         these values are used as the initial state for the computer's memory.
         When you run an Intcode program, make sure to start by initializing memory to the program's values.
@@ -300,6 +290,12 @@ namespace AoC19
         Find the input noun and verb that cause the program to produce the output 19690720.
         What is 100 * noun + verb? (For example, if noun=12 and verb=2, the answer would be 1202.)
          */
+
+        [Theory, AutoData]
+        public void Array_AsEnumerable_ToArray_not_returns_the_original_array_but_a_copy(int[] array)
+        {
+            array.AsEnumerable().ToArray().Should().NotBeSameAs(array);
+        }
 
         private const string MyPuzzleInput2 = "1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,13,1,19,1,5,19,23,2,10,23,27,1,27,5,31,2,9,31,35,1,35,5,39,2,6,39,43,1,43,5,47,2,47,10,51,2,51,6,55,1,5,55,59,2,10,59,63,1,63,6,67,2,67,6,71,1,71,5,75,1,13,75,79,1,6,79,83,2,83,13,87,1,87,6,91,1,10,91,95,1,95,9,99,2,99,13,103,1,103,6,107,2,107,6,111,1,111,2,115,1,115,13,0,99,2,0,14,0";
     }
