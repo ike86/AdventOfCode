@@ -151,7 +151,7 @@ namespace AoC19
 
                 public Command(IEnumerable<int> code, int line)
                 {
-                    this.code = code.ToArray();
+                    this.code = EnsureHasTrailingPositions(code);
                     this.line = line;
                     execute = Execute(OpCode);
                 }
@@ -171,6 +171,17 @@ namespace AoC19
                 public int Execute()
                 {
                     return execute(LeftOperand, RightOperand);
+                }
+
+                private int[] EnsureHasTrailingPositions(IEnumerable<int> code)
+                {
+                    var c = code.ToArray();
+                    if (c.Count() % 4 != 0)
+                    {
+                        return c.Concat(new[] { 0, 0, 0 }).ToArray();
+                    }
+
+                    return c;
                 }
 
                 private static Func<Func<int>, Func<int>, int> Execute(int opCode)
@@ -196,6 +207,18 @@ namespace AoC19
         2,3,0,3,99 becomes 2,3,0,6,99 (3 * 2 = 6).
         2,4,4,5,99,0 becomes 2,4,4,5,99,9801 (99 * 99 = 9801).
         1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
+        */
+
+        [Theory]
+        [InlineData("1,0,0,0,99", 2)]
+        [InlineData("2,3,0,3,99", 2)]
+        [InlineData("1,1,1,4,99,5,6,0,99", 30)]
+        public void Run_works_on_a_few_more_small_programs(string programCode, int expected)
+        {
+            Run(programCode).Should().Be(expected);
+        }
+
+        /*
         Once you have a working computer,
         the first step is to restore the gravity assist program (your puzzle input)
         to the "1202 program alarm" state it had just before the last computer caught fire.
