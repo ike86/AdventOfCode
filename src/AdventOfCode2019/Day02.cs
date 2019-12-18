@@ -113,17 +113,6 @@ namespace AoC19
             return program.Code;
         }
 
-        private static Func<int, int, int> Execute(int opCode)
-        {
-            if (opCode == 1) return (x, y) => x + y;
-
-            else if (opCode == 2) return (x, y) => x * y;
-
-            else if (opCode == 99) throw new ProgramHalted();
-
-            throw new InvalidOperationException(opCode.ToString());
-        }
-
         private class Program
         {
             public Program(int[] code)
@@ -139,16 +128,11 @@ namespace AoC19
 
                 while (true)
                 {
-                    var positionOfResult = Code[(line * 4) + 3];
-                    var positionOfLeftOperand = Code[(line * 4) + 1];
-                    var positionOfRightOperand = Code[(line * 4) + 2];
-                    Func<int[], int> leftOperand = p => p[positionOfLeftOperand];
-                    Func<int[], int> rightOperand = p => p[positionOfRightOperand];
-                    var opCode = Code[(line * 4) + 0];
+                    var command = new Command(Code, line);
 
                     try
                     {
-                        Code[positionOfResult] = Execute(opCode)(leftOperand(Code), rightOperand(Code));
+                        Code[command.PositionOfResult] = command.Execute();
                     }
                     catch (ProgramHalted)
                     {
@@ -158,9 +142,51 @@ namespace AoC19
                     line += 1;
                 }
             }
-        }
 
-        private class ProgramHalted : Exception { }
+            private class Command
+            {
+                private readonly int[] code;
+                private readonly int line;
+                private readonly Func<Func<int>, Func<int>, int> execute;
+
+                public Command(IEnumerable<int> code, int line)
+                {
+                    this.code = code.ToArray();
+                    this.line = line;
+                    execute = Execute(OpCode);
+                }
+
+                public int PositionOfResult => code[(line * 4) + 3];
+
+                private int PositionOfLeftOperand => code[(line * 4) + 1];
+
+                private int PositionOfRightOperand => code[(line * 4) + 2];
+
+                private Func<int> LeftOperand => () => code[PositionOfLeftOperand];
+
+                private Func<int> RightOperand => () => code[PositionOfRightOperand];
+
+                private int OpCode => code[(line * 4) + 0];
+
+                public int Execute()
+                {
+                    return execute(LeftOperand, RightOperand);
+                }
+
+                private static Func<Func<int>, Func<int>, int> Execute(int opCode)
+                {
+                    if (opCode == 1) return (x, y) => x() + y();
+
+                    else if (opCode == 2) return (x, y) => x() * y();
+
+                    else if (opCode == 99) return (_, __) => throw new ProgramHalted();
+
+                    throw new InvalidOperationException(opCode.ToString());
+                }
+            }
+
+            private class ProgramHalted : Exception { }
+        }
 
         /*
 
