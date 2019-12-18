@@ -137,49 +137,49 @@ namespace AoC19
 
             public void Run()
             {
-                var line = 0;
+                var instructionPointer = 0;
 
                 while (true)
                 {
-                    var command = new Command(Code, line);
+                    var intruction = new Instruction(Code, instructionPointer);
 
                     try
                     {
-                        Code[command.AddressOfResult] = command.Execute();
+                        Code[intruction.AddressOfResult] = intruction.Execute();
                     }
                     catch (ProgramHalted)
                     {
                         break;
                     }
 
-                    line += 1;
+                    instructionPointer += 1;
                 }
             }
 
-            private class Command
+            private class Instruction
             {
                 private readonly int[] code;
-                private readonly int line;
+                private readonly int instructionPointer;
                 private readonly Func<Func<int>, Func<int>, int> execute;
 
-                public Command(IEnumerable<int> code, int line)
+                public Instruction(IEnumerable<int> code, int instructionPointer)
                 {
                     this.code = EnsureHasTrailingPositions(code);
-                    this.line = line;
-                    execute = Execute(OpCode);
+                    this.instructionPointer = instructionPointer;
+                    execute = Create(OpCode).Execute;
                 }
 
-                public int AddressOfResult => code[(line * 4) + 3];
+                public int AddressOfResult => code[(instructionPointer * 4) + 3];
 
-                private int AddressOfLeftOperand => code[(line * 4) + 1];
+                private int AddressOfLeftOperand => code[(instructionPointer * 4) + 1];
 
-                private int AddressOfRightOperand => code[(line * 4) + 2];
+                private int AddressOfRightOperand => code[(instructionPointer * 4) + 2];
 
                 private Func<int> LeftOperand => () => code[AddressOfLeftOperand];
 
                 private Func<int> RightOperand => () => code[AddressOfRightOperand];
 
-                private int OpCode => code[(line * 4) + 0];
+                private int OpCode => code[(instructionPointer * 4) + 0];
 
                 public int Execute()
                 {
@@ -197,13 +197,33 @@ namespace AoC19
                     return c;
                 }
 
-                private static Func<Func<int>, Func<int>, int> Execute(int opCode)
+                private static IOperation Create(int opCode)
                 {
-                    if (opCode == 1) return (x, y) => x() + y();
-                    else if (opCode == 2) return (x, y) => x() * y();
-                    else if (opCode == 99) return (_, __) => throw new ProgramHalted();
+                    if (opCode == 1) return new Addition();
+                    else if (opCode == 2) return new Multiplication();
+                    else if (opCode == 99) return new Halting();
 
                     throw new InvalidOperationException(opCode.ToString());
+                }
+
+                private interface IOperation
+                {
+                    int Execute(Func<int> x, Func<int> y);
+                }
+
+                private class Addition : IOperation
+                {
+                    public int Execute(Func<int> x, Func<int> y) => x() + y();
+                }
+
+                private class Multiplication : IOperation
+                {
+                    public int Execute(Func<int> x, Func<int> y) => x() * y();
+                }
+
+                private class Halting : IOperation
+                {
+                    public int Execute(Func<int> x, Func<int> y) => throw new ProgramHalted();
                 }
             }
 
@@ -263,6 +283,7 @@ namespace AoC19
         When you run an Intcode program, make sure to start by initializing memory to the program's values.
         A position in memory is called an address (for example, the first value in memory is at "address 0").
 
+        // TODO uncovered terminology
         Opcodes (like 1, 2, or 99) mark the beginning of an instruction.
         The values used immediately after an opcode, if any, are called the instruction's parameters.
         For example, in the instruction 1,2,3,4, 1 is the opcode; 2, 3, and 4 are the parameters.
