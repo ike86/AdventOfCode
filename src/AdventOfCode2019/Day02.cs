@@ -235,6 +235,7 @@ namespace AoC19
             var runner = new Runner(programCode);
 
             _ = runner.Run();
+
             runner.Code[indexOfExpected].Should().Be(expected);
         }
 
@@ -251,6 +252,11 @@ namespace AoC19
         [Fact]
         public void Run_solves_day2_part1_puzzle()
         {
+            var runner = new Runner(MyPuzzleInput);
+            runner.Code[1] = 12;
+            runner.Code[2] = 2;
+
+            runner.Run().Should().Be(4714701);
         }
     }
 }
