@@ -104,7 +104,7 @@ namespace AoC19
         {
             return new Runner(programCode).Run();
         }
-        
+
         private class Runner
         {
             public Runner(string programCode)
@@ -223,12 +223,19 @@ namespace AoC19
         */
 
         [Theory]
-        [InlineData("1,0,0,0,99", 2)]
-        [InlineData("2,3,0,3,99", 2)]
-        [InlineData("1,1,1,4,99,5,6,0,99", 30)]
-        public void Run_works_on_a_few_more_small_programs(string programCode, int expected)
+        [InlineData("1,0,0,0,99", 0, 2)]
+        [InlineData("2,3,0,3,99", 3, 6)]
+        [InlineData("2,4,4,5,99,0", 5, 9801)]
+        [InlineData("1,1,1,4,99,5,6,0,99", 0, 30)]
+        public void Run_works_on_a_few_more_small_programs(
+            string programCode,
+            int indexOfExpected,
+            int expected)
         {
-            Run(programCode).Should().Be(expected);
+            var runner = new Runner(programCode);
+
+            _ = runner.Run();
+            runner.Code[indexOfExpected].Should().Be(expected);
         }
 
         /*
