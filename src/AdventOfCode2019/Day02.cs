@@ -33,7 +33,7 @@ namespace AoC19
         [Fact]
         public void Run_can_add_and_save_result_to_the_same_line()
         {
-            Run("1,1,2,0,99,0,0,0")[0].Should().Be(3);
+            Run("1,1,2,0,99,0,0,0").Should().Be(3);
         }
 
         /*
@@ -44,7 +44,7 @@ namespace AoC19
         [Fact]
         public void Run_can_multiply_and_save_result_to_the_same_line()
         {
-            Run("2,1,2,0,99,0,0,0")[0].Should().Be(2);
+            Run("2,1,2,0,99,0,0,0").Should().Be(2);
         }
         /*
 
@@ -90,17 +90,17 @@ namespace AoC19
                 @"1,9,10,3,
                 2,3,11,0,
                 99,
-                30,40,50")[0]
+                30,40,50")
                 .Should().Be(3500);
         }
 
         [Fact]
         public void Run_can_halt()
         {
-            Run("99,10,20,0")[0].Should().Be(99);
+            Run("99,10,20,0").Should().Be(99);
         }
 
-        private int[] Run(string programCode)
+        private int Run(string programCode)
         {
             var code =
                 programCode
@@ -110,7 +110,7 @@ namespace AoC19
 
             var program = new Program(code);
             program.Run();
-            return program.Code;
+            return program.Code[0];
         }
 
         private class Program
