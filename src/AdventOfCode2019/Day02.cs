@@ -324,8 +324,15 @@ namespace AoC19
         until you add more instructions to the computer,
         this is always 4 (1 opcode + 3 parameters) for the add and multiply instructions.
         (The halt instruction would increase the instruction pointer by 1, but it halts the program instead.)
+        */
 
-        "With terminology out of the way, we're ready to proceed.
+        [Theory, AutoData]
+        public void Array_AsEnumerable_ToArray_not_returns_the_original_array_but_a_copy(int[] array)
+        {
+            array.AsEnumerable().ToArray().Should().NotBeSameAs(array);
+        }
+
+        /*
         To complete the gravity assist, you need to determine what pair of inputs produces the output 19690720."
 
         The inputs should still be provided to the program by replacing the values at addresses 1 and 2,
@@ -340,12 +347,34 @@ namespace AoC19
 
         Find the input noun and verb that cause the program to produce the output 19690720.
         What is 100 * noun + verb? (For example, if noun=12 and verb=2, the answer would be 1202.)
-         */
+        */
 
-        [Theory, AutoData]
-        public void Array_AsEnumerable_ToArray_not_returns_the_original_array_but_a_copy(int[] array)
+        [Fact]
+        public void Pair_of_inputs_producing_19690720_should_be()
         {
-            array.AsEnumerable().ToArray().Should().NotBeSameAs(array);
+            var (noun, verb) = PairOfInputsProducing(19690720, MyPuzzleInput2);
+
+            (100 * noun + verb).Should().Be(5121);
+        }
+
+        private (int noun, int verb) PairOfInputsProducing(int expectedResult, string programCode)
+        {
+            for (int noun = 0; noun < 99; noun++)
+            {
+                for (int verb = 0; verb < 99; verb++)
+                {
+                    var computer = new Computer(programCode);
+                    computer.Memory[1] = noun;
+                    computer.Memory[2] = verb;
+                    var result = computer.Run();
+                    if (result == expectedResult)
+                    {
+                        return (noun, verb);
+                    }
+                }
+            }
+
+            throw new ArgumentException();
         }
 
         private const string MyPuzzleInput2 = "1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,13,1,19,1,5,19,23,2,10,23,27,1,27,5,31,2,9,31,35,1,35,5,39,2,6,39,43,1,43,5,47,2,47,10,51,2,51,6,55,1,5,55,59,2,10,59,63,1,63,6,67,2,67,6,71,1,71,5,75,1,13,75,79,1,6,79,83,2,83,13,87,1,87,6,91,1,10,91,95,1,95,9,99,2,99,13,103,1,103,6,107,2,107,6,111,1,111,2,115,1,115,13,0,99,2,0,14,0";
