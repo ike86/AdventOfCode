@@ -143,16 +143,19 @@ namespace AoC19
                 {
                     var intruction = new Instruction(Code, instructionPointer);
 
+                    int result;
+                    int instructionPointerOffset;
                     try
                     {
-                        Code[intruction.AddressOfResult] = intruction.Execute();
+                        (result, instructionPointerOffset) = intruction.Execute();
+                        Code[intruction.AddressOfResult] = result;
                     }
                     catch (ProgramHalted)
                     {
                         break;
                     }
 
-                    instructionPointer += 1;
+                    instructionPointer += instructionPointerOffset;
                 }
             }
 
@@ -169,21 +172,21 @@ namespace AoC19
                     execute = Create(OpCode).Execute;
                 }
 
-                public int AddressOfResult => code[(instructionPointer * 4) + 3];
+                public int AddressOfResult => code[instructionPointer + 3];
 
-                private int AddressOfLeftOperand => code[(instructionPointer * 4) + 1];
+                private int AddressOfLeftOperand => code[instructionPointer + 1];
 
-                private int AddressOfRightOperand => code[(instructionPointer * 4) + 2];
+                private int AddressOfRightOperand => code[instructionPointer + 2];
 
                 private Func<int> LeftOperand => () => code[AddressOfLeftOperand];
 
                 private Func<int> RightOperand => () => code[AddressOfRightOperand];
 
-                private int OpCode => code[(instructionPointer * 4) + 0];
+                private int OpCode => code[instructionPointer + 0];
 
-                public int Execute()
+                public (int result, int instructionPointerOffset) Execute()
                 {
-                    return execute(LeftOperand, RightOperand);
+                    return (execute(LeftOperand, RightOperand), 4);
                 }
 
                 private int[] EnsureHasTrailingPositions(IEnumerable<int> code)
