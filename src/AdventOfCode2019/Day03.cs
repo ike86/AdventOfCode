@@ -18,6 +18,49 @@ namespace AoC19
         Opening the front panel reveals a jumble of wires.
         Specifically, two wires are connected to a central port and extend outward on a grid.
         You trace the path each wire takes as it leaves the central port, one wire per line of text (your puzzle input).
+        */
+
+        [Fact]
+        void Interpret_empty_string_as_a_grid_with_one_wire_in_origo()
+        {
+            var interpreter = new WirePathInterpreter();
+
+            interpreter.Interpret("");
+
+            interpreter.Grid[0, 0].Should().Be(1);
+        }
+
+        class WirePathInterpreter
+        {
+            internal WirePathInterpreter()
+            {
+            }
+
+            public Grid Grid { get; internal set; } = new Grid();
+
+            internal void Interpret(string v)
+            {
+                
+            }
+        }
+
+        class Grid
+        {
+            private readonly Dictionary<(int, int), int> grid = new Dictionary<(int, int), int>();
+
+            public Grid()
+            {
+                grid.Add((0, 0), 1);
+            }
+
+            public int this[int x, int y]
+            {
+                get => grid[(x, y)];
+                set { /* set the specified index to value here */ }
+            }
+        }
+
+        /*
 
         The wires twist and turn, but the two wires occasionally cross paths.
         To fix the circuit, you need to find the intersection point closest to the central port.
