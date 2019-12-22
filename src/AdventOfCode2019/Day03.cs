@@ -30,9 +30,17 @@ namespace AoC19
             interpreter.Grid[0, 0].Should().Be(1);
         }
 
+        [Theory, AutoData]
+        void Interpret_a_path_segment_to_left(WirePathInterpreter i)
+        {
+            i.Interpret(Direction.Left, 1);
+
+            i.Grid[1, 0].Should().Be(1);
+        }
+
         class WirePathInterpreter
         {
-            internal WirePathInterpreter()
+            public WirePathInterpreter()
             {
             }
 
@@ -41,6 +49,12 @@ namespace AoC19
             internal void Interpret(string v)
             {
                 
+            }
+
+            internal void Interpret(Direction direction, int v)
+            {
+                if (direction == Direction.Left)
+                    Grid[0 + 1, 0] = 1;
             }
         }
 
@@ -56,8 +70,13 @@ namespace AoC19
             public int this[int x, int y]
             {
                 get => grid[(x, y)];
-                set { /* set the specified index to value here */ }
+                set { grid[(x, y)] = value; }
             }
+        }
+
+        private enum Direction
+        {
+            Left
         }
 
         /*
