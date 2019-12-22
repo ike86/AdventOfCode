@@ -20,14 +20,10 @@ namespace AoC19
         You trace the path each wire takes as it leaves the central port, one wire per line of text (your puzzle input).
         */
 
-        [Fact]
-        void Interpret_empty_string_as_a_grid_with_one_wire_in_origo()
+        [Theory, AutoData]
+        void Interpreter_has_a_grid_with_one_wire_in_origo_by_default(WirePathInterpreter i)
         {
-            var interpreter = new WirePathInterpreter();
-
-            interpreter.Interpret("");
-
-            interpreter.Grid[0, 0].Should().Be(1);
+            i.Grid[0, 0].Should().Be(1);
         }
 
         [Theory, AutoData]
