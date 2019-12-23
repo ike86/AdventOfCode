@@ -43,6 +43,14 @@ namespace AoC19
         }
 
         [Theory, AutoData]
+        void Interpret_a_path_segment_to_up(WirePathInterpreter i)
+        {
+            i.Interpret(Direction.Up, 1);
+
+            i.Grid[0, 1].Should().Be(1);
+        }
+
+        [Theory, AutoData]
         void Grid_returns_zero_where_no_cable_is(Grid grid, int x, int y)
         {
             grid[x, y].Should().Be(0);
@@ -63,10 +71,20 @@ namespace AoC19
 
             internal void Interpret(Direction direction, int v)
             {
-                if (direction == Direction.Left)
-                    Grid[0 - 1, 0] = 1;
-                if (direction == Direction.Right)
-                    Grid[0 + 1, 0] = 1;
+                switch (direction)
+                {
+                    case Direction.Left:
+                        Grid[0 - 1, 0] = 1;
+                        break;
+                    case Direction.Right:
+                        Grid[0 + 1, 0] = 1;
+                        break;
+                    case Direction.Up:
+                        Grid[0, 0 + 1] = 1;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -94,7 +112,8 @@ namespace AoC19
         private enum Direction
         {
             Left,
-            Right
+            Right,
+            Up
         }
 
         /*
