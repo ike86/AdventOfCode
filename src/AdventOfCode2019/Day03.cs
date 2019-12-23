@@ -31,7 +31,7 @@ namespace AoC19
         {
             i.Interpret(Direction.Left, length);
 
-            Enumerable.Range(1, length).Select(x=> i.Grid[-x, 0]).Should().AllBeEquivalentTo(1);
+            Range(length, x => i.Grid[-x, 0]).Should().AllBeEquivalentTo(1);
         }
 
         [Theory, AutoData]
@@ -39,23 +39,28 @@ namespace AoC19
         {
             i.Interpret(Direction.Right, length);
 
-            Enumerable.Range(1, length).Select(x => i.Grid[x, 0]).Should().AllBeEquivalentTo(1);
+            Range(length, x => i.Grid[x, 0]).Should().AllBeEquivalentTo(1);
         }
 
         [Theory, AutoData]
-        void Interpret_a_path_segment_to_up(WirePathInterpreter i)
+        void Interpret_a_path_segment_to_up(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Up, 1);
+            i.Interpret(Direction.Up, length);
 
-            i.Grid[0, 1].Should().Be(1);
+            Range(length, x => i.Grid[0, x]).Should().AllBeEquivalentTo(1);
         }
 
         [Theory, AutoData]
-        void Interpret_a_path_segment_to_down(WirePathInterpreter i)
+        void Interpret_a_path_segment_to_down(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Down, 1);
+            i.Interpret(Direction.Down, length);
 
-            i.Grid[0, -1].Should().Be(1);
+            Range(length, x => i.Grid[0, -x]).Should().AllBeEquivalentTo(1);
+        }
+
+        private static IEnumerable<int> Range(int length, Func<int, int> selector)
+        {
+            return Enumerable.Range(1, length).Select(selector);
         }
 
         [Theory, AutoData]
@@ -74,31 +79,28 @@ namespace AoC19
 
             internal void Interpret(string v)
             {
-                
+
             }
 
-            internal void Interpret(Direction direction, int v)
+            internal void Interpret(Direction direction, int length)
             {
-                switch (direction)
+                for (int i = 1; i <= length; i++)
                 {
-                    case Direction.Left:
-                        for (int i = 1; i <= v; i++)
-                        {
+                    switch (direction)
+                    {
+                        case Direction.Left:
                             Grid[0 - i, 0] = 1;
-                        }
-                        break;
-                    case Direction.Right:
-                        for (int i = 1; i <= v; i++)
-                        {
+                            break;
+                        case Direction.Right:
                             Grid[0 + i, 0] = 1;
-                        }
-                        break;
-                    case Direction.Up:
-                        Grid[0, 0 + 1] = 1;
-                        break;
-                    case Direction.Down:
-                        Grid[0, 0 - 1] = 1;
-                        break;
+                            break;
+                        case Direction.Up:
+                            Grid[0, 0 + i] = 1;
+                            break;
+                        case Direction.Down:
+                            Grid[0, 0 - i] = 1;
+                            break;
+                    }
                 }
             }
         }
