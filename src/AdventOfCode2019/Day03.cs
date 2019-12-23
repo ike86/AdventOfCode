@@ -65,6 +65,8 @@ namespace AoC19
             {
                 if (direction == Direction.Left)
                     Grid[0 - 1, 0] = 1;
+                if (direction == Direction.Right)
+                    Grid[0 + 1, 0] = 1;
             }
         }
 
