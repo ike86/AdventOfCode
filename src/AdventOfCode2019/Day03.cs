@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace AoC19
@@ -69,12 +70,49 @@ namespace AoC19
             grid[x, y].Should().Be(0);
         }
 
+
+
+        [Theory, AutoData]
+        void Interpret_two_path_segments(WirePathInterpreter i)
+        {
+            var lengthDown = 5;
+            var lengthRight = 3;
+            i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight));
+
+            using var a = new AssertionScope();
+            Range(lengthDown, x => i.Grid[0, -x]).Should().AllBeEquivalentTo(1);
+            Range(lengthRight, x => i.Grid[x, -lengthDown]).Should().AllBeEquivalentTo(1);
+            i.Grid.AsString().Should().Be(
+                "......" + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".wwww." + NL +
+                "......" + NL);
+        }
+
+        static readonly string NL = Environment.NewLine;
+
+        [Theory, AutoData]
+        void Grid_AsString_visualizes_grid(Grid g)
+        {
+            g[0, 1] = 1;
+            g[1, 0] = 1;
+            g[0, -1] = 1;
+            g[-1, 0] = 1;
+
+            g.AsString().Should().Be(
+                "....." + NL +
+                "..w.." + NL +
+                ".www." + NL +
+                "..w.." + NL +
+                "....." + NL);
+        }
+
         class WirePathInterpreter
         {
-            public WirePathInterpreter()
-            {
-            }
-
             public Grid Grid { get; internal set; } = new Grid();
 
             internal void Interpret(string v)
@@ -103,11 +141,63 @@ namespace AoC19
                     }
                 }
             }
+
+            internal void Interpret((Direction Down, int lengthDown) p1, (Direction Right, int lengthRight) p2)
+            {
+                var length = p1.lengthDown;
+                var direction = p1.Down;
+                var x = 0;
+                var y = 0;
+                for (int i = 1; i <= length; i++)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+                            Grid[0 - i, 0] = 1;
+                            x = -i;
+                            break;
+                        case Direction.Right:
+                            Grid[0 + i, 0] = 1;
+                            x = i;
+                            break;
+                        case Direction.Up:
+                            Grid[0, 0 + i] = 1;
+                            y = i;
+                            break;
+                        case Direction.Down:
+                            Grid[0, 0 - i] = 1;
+                            y = -i;
+                            break;
+                    }
+                }
+
+                length = p2.lengthRight;
+                direction = p2.Right;
+                for (int i = 1; i <= length; i++)
+                {
+                    switch (direction)
+                    {
+                        case Direction.Left:
+                            Grid[x - i, y] = 1;
+                            break;
+                        case Direction.Right:
+                            Grid[x + i, y] = 1;
+                            break;
+                        case Direction.Up:
+                            Grid[x, y + i] = 1;
+                            break;
+                        case Direction.Down:
+                            Grid[x, y - i] = 1;
+                            break;
+                    }
+                }
+            }
+
         }
 
         class Grid
         {
-            private readonly Dictionary<(int, int), int> grid = new Dictionary<(int, int), int>();
+            private readonly Dictionary<(int x, int y), int> grid = new Dictionary<(int x, int y), int>();
 
             public Grid()
             {
@@ -123,6 +213,24 @@ namespace AoC19
                 }
 
                 set { grid[(x, y)] = value; }
+            }
+
+            public string AsString()
+            {
+                int maxX = grid.Max(p => p.Key.x);
+                int minX = grid.Min(p => p.Key.x);
+                int maxY = grid.Max(p => p.Key.y);
+                int minY = grid.Min(p => p.Key.y);
+                var result = "";
+                for (int y = maxY + 1; y >= minY - 1; y--)
+                {
+                    for (int x = minX-1; x <= maxX+1; x++)
+                    {
+                        result += this[x, y] > 0 ? "w" : ".";
+                    }
+                    result += Environment.NewLine;
+                }
+                return result;
             }
         }
 
