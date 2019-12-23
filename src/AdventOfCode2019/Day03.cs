@@ -35,11 +35,11 @@ namespace AoC19
         }
 
         [Theory, AutoData]
-        void Interpret_a_path_segment_to_right(WirePathInterpreter i)
+        void Interpret_a_path_segment_to_right(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Right, 1);
+            i.Interpret(Direction.Right, length);
 
-            i.Grid[1, 0].Should().Be(1);
+            Enumerable.Range(1, length).Select(x => i.Grid[x, 0]).Should().AllBeEquivalentTo(1);
         }
 
         [Theory, AutoData]
@@ -88,7 +88,10 @@ namespace AoC19
                         }
                         break;
                     case Direction.Right:
-                        Grid[0 + 1, 0] = 1;
+                        for (int i = 1; i <= v; i++)
+                        {
+                            Grid[0 + i, 0] = 1;
+                        }
                         break;
                     case Direction.Up:
                         Grid[0, 0 + 1] = 1;
