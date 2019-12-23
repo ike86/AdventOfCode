@@ -51,6 +51,14 @@ namespace AoC19
         }
 
         [Theory, AutoData]
+        void Interpret_a_path_segment_to_down(WirePathInterpreter i)
+        {
+            i.Interpret(Direction.Down, 1);
+
+            i.Grid[0, -1].Should().Be(1);
+        }
+
+        [Theory, AutoData]
         void Grid_returns_zero_where_no_cable_is(Grid grid, int x, int y)
         {
             grid[x, y].Should().Be(0);
@@ -82,7 +90,8 @@ namespace AoC19
                     case Direction.Up:
                         Grid[0, 0 + 1] = 1;
                         break;
-                    default:
+                    case Direction.Down:
+                        Grid[0, 0 - 1] = 1;
                         break;
                 }
             }
@@ -113,7 +122,8 @@ namespace AoC19
         {
             Left,
             Right,
-            Up
+            Up,
+            Down
         }
 
         /*
