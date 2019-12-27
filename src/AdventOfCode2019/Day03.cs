@@ -285,15 +285,29 @@ namespace AoC19
         [Fact]
         void Parsing_empty_wire_path_yields_no_path_segments()
         {
-            IEnumerable<(Direction direction, int length)> pathSegments =
-                ParseWirePath("");
+            ParseWirePath("").Should().BeEmpty();
+        }
 
-            pathSegments.Should().BeEmpty();
+        [Fact]
+        void Parsing_wire_path_with_one_path_segment()
+        {
+            ParseWirePath("R8").Should().Contain((direction: Direction.Right, length: 8));
         }
 
         private IEnumerable<(Direction direction, int length)> ParseWirePath(string v)
         {
-            yield break;
+            if (v == string.Empty)
+            {
+                yield break;
+            }
+
+            var direction =
+                v[0] switch
+                {
+                    'R' => Direction.Right
+                };
+            var length = int.Parse(v[1].ToString());
+            yield return (direction, length);
         }
 
         /*
