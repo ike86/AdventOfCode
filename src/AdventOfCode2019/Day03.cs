@@ -222,16 +222,20 @@ namespace AoC19
                     switch (direction)
                     {
                         case Direction.Left:
-                            Grid[x - i, y] = 1;
+                            Grid[x - 1, y] = 1;
+                            x -= 1;
                             break;
                         case Direction.Right:
-                            Grid[x + i, y] = 1;
+                            Grid[x + 1, y] = 1;
+                            x += 1;
                             break;
                         case Direction.Up:
-                            Grid[x, y + i] = 1;
+                            Grid[x, 0 + i] = 1;
+                            y += 1;
                             break;
                         case Direction.Down:
-                            Grid[x, y - i] = 1;
+                            Grid[x, 0 - i] = 1;
+                            y -= 1;
                             break;
                     }
                 }
