@@ -70,14 +70,55 @@ namespace AoC19
             grid[x, y].Should().Be(0);
         }
 
-
-
         [Theory, AutoData]
-        void Interpret_two_path_segments(WirePathInterpreter i)
+        void Interpret_two_path_segments_in_L_shape(WirePathInterpreter i)
         {
             var lengthDown = 5;
             var lengthRight = 3;
             i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight));
+
+            using var a = new AssertionScope();
+            Range(lengthDown, x => i.Grid[0, -x]).Should().AllBeEquivalentTo(1);
+            Range(lengthRight, x => i.Grid[x, -lengthDown]).Should().AllBeEquivalentTo(1);
+            i.Grid.AsString().Should().Be(
+                "......" + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".w...." + NL +
+                ".wwww." + NL +
+                "......" + NL);
+        }
+
+        [Theory, AutoData]
+        void Interpret_two_path_segments_in_r_shape(WirePathInterpreter i)
+        {
+            var lengthDown = 5;
+            var lengthRight = 3;
+            i.Interpret((Direction.Right, lengthRight), (Direction.Down, lengthDown));
+
+            using var a = new AssertionScope();
+            Range(lengthRight, x => i.Grid[x, 0]).Should().AllBeEquivalentTo(1);
+            Range(lengthDown, y => i.Grid[lengthRight, -y]).Should().AllBeEquivalentTo(1);
+            i.Grid.AsString().Should().Be(
+                "......" + NL +
+                ".wwww." + NL +
+                "....w." + NL +
+                "....w." + NL +
+                "....w." + NL +
+                "....w." + NL +
+                "....w." + NL +
+                "......" + NL);
+        }
+
+        [Theory, AutoData]
+        void Interpret_three_path_segments(WirePathInterpreter i)
+        {
+            var lengthDown = 5;
+            var lengthRight = 3;
+            var lengthUp = 2;
+            i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight), (Direction.Up, lengthUp));
 
             using var a = new AssertionScope();
             Range(lengthDown, x => i.Grid[0, -x]).Should().AllBeEquivalentTo(1);
@@ -142,10 +183,13 @@ namespace AoC19
                 }
             }
 
-            internal void Interpret((Direction Down, int lengthDown) p1, (Direction Right, int lengthRight) p2)
+            internal void Interpret(params (Direction direction, int length)[] pathSegments)
             {
-                var length = p1.lengthDown;
-                var direction = p1.Down;
+                var p1 = pathSegments[0];
+                var p2 = pathSegments[1];
+
+                var length = p1.length;
+                var direction = p1.direction;
                 var x = 0;
                 var y = 0;
                 for (int i = 1; i <= length; i++)
@@ -153,26 +197,26 @@ namespace AoC19
                     switch (direction)
                     {
                         case Direction.Left:
-                            Grid[0 - i, 0] = 1;
-                            x = -i;
+                            Grid[x - 1, y] = 1;
+                            x -= 1;
                             break;
                         case Direction.Right:
-                            Grid[0 + i, 0] = 1;
-                            x = i;
+                            Grid[x + 1, y] = 1;
+                            x += 1;
                             break;
                         case Direction.Up:
-                            Grid[0, 0 + i] = 1;
-                            y = i;
+                            Grid[x, 0 + i] = 1;
+                            y += 1;
                             break;
                         case Direction.Down:
-                            Grid[0, 0 - i] = 1;
-                            y = -i;
+                            Grid[x, 0 - i] = 1;
+                            y -= 1;
                             break;
                     }
                 }
 
-                length = p2.lengthRight;
-                direction = p2.Right;
+                length = p2.length;
+                direction = p2.direction;
                 for (int i = 1; i <= length; i++)
                 {
                     switch (direction)
