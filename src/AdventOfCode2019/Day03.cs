@@ -337,13 +337,19 @@ namespace AoC19
         [Theory, AutoData]
         void Manhattan_distance_of_identical_points_is_zero(int x, int y)
         {
-            int distance = ManhattanDistanceOf((x, y), (x, y));
-            distance.Should().Be(0);
+            ManhattanDistanceOf((x, y), (x, y)).Should().Be(0);
+        }
+
+        [Theory, AutoData]
+        void Manhattan_distance_of_distinct_points(int x, int y, int dx, int dy)
+        {
+            int distance = ManhattanDistanceOf((x, y), (x + dx, y + dy));
+            distance.Should().Be(dx + dy);
         }
 
         private int ManhattanDistanceOf((int x, int y) p1, (int x, int y) p2)
         {
-            return default;
+            return (p2.x - p1.x) + (p2.y - p1.y);
         }
 
 
