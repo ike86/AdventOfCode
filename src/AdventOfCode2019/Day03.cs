@@ -82,12 +82,12 @@ namespace AoC19
             Range(lengthRight, x => i.Grid[x, -lengthDown]).Should().AllBeEquivalentTo(1);
             i.Grid.AsString().Should().Be(
                 "......" + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".wwww." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1111." + NL +
                 "......" + NL);
         }
 
@@ -103,12 +103,12 @@ namespace AoC19
             Range(lengthDown, y => i.Grid[lengthRight, -y]).Should().AllBeEquivalentTo(1);
             i.Grid.AsString().Should().Be(
                 "......" + NL +
-                ".wwww." + NL +
-                "....w." + NL +
-                "....w." + NL +
-                "....w." + NL +
-                "....w." + NL +
-                "....w." + NL +
+                ".1111." + NL +
+                "....1." + NL +
+                "....1." + NL +
+                "....1." + NL +
+                "....1." + NL +
+                "....1." + NL +
                 "......" + NL);
         }
 
@@ -125,12 +125,32 @@ namespace AoC19
             Range(lengthRight, x => i.Grid[x, -lengthDown]).Should().AllBeEquivalentTo(1);
             i.Grid.AsString().Should().Be(
                 "......" + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".w...." + NL +
-                ".w..w." + NL +
-                ".w..w." + NL +
-                ".wwww." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1...." + NL +
+                ".1..1." + NL +
+                ".1..1." + NL +
+                ".1111." + NL +
+                "......" + NL);
+        }
+
+        [Theory, AutoData]
+        void Interpret_two_wire_paths(WirePathInterpreter i)
+        {
+            var lengthDown = 5;
+            var lengthRight = 3;
+            i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight));
+            i.Interpret((Direction.Right, lengthRight-1), (Direction.Down, lengthDown));
+
+            using var a = new AssertionScope();
+            i.Grid.AsString().Should().Be(
+                "......" + NL +
+                ".111.." + NL +
+                ".1.1.." + NL +
+                ".1.1.." + NL +
+                ".1.1.." + NL +
+                ".1.1.." + NL +
+                ".1121." + NL +
                 "......" + NL);
         }
 
@@ -146,9 +166,9 @@ namespace AoC19
 
             g.AsString().Should().Be(
                 "....." + NL +
-                "..w.." + NL +
-                ".www." + NL +
-                "..w.." + NL +
+                "..1.." + NL +
+                ".111." + NL +
+                "..1.." + NL +
                 "....." + NL);
         }
 
@@ -194,19 +214,19 @@ namespace AoC19
                         switch (direction)
                         {
                             case Direction.Left:
-                                Grid[x - 1, y] = 1;
+                                Grid[x - 1, y] += 1;
                                 x -= 1;
                                 break;
                             case Direction.Right:
-                                Grid[x + 1, y] = 1;
+                                Grid[x + 1, y] += 1;
                                 x += 1;
                                 break;
                             case Direction.Up:
-                                Grid[x, y + 1] = 1;
+                                Grid[x, y + 1] += 1;
                                 y += 1;
                                 break;
                             case Direction.Down:
-                                Grid[x, y - 1] = 1;
+                                Grid[x, y - 1] += 1;
                                 y -= 1;
                                 break;
                         }
@@ -246,7 +266,7 @@ namespace AoC19
                 {
                     for (int x = minX - 1; x <= maxX + 1; x++)
                     {
-                        result += this[x, y] > 0 ? "w" : ".";
+                        result += this[x, y] > 0 ? this[x, y].ToString() : ".";
                     }
                     result += Environment.NewLine;
                 }
