@@ -340,16 +340,20 @@ namespace AoC19
             ManhattanDistanceOf((x, y), (x, y)).Should().Be(0);
         }
 
-        [Theory, AutoData]
-        void Manhattan_distance_of_distinct_points(int x, int y, int dx, int dy)
+        [Theory]
+        [InlineAutoData(1, 1)]
+        [InlineAutoData(-1, 1)]
+        [InlineAutoData(1, -1)]
+        [InlineAutoData(-1, -1)]
+        void Manhattan_distance_of_distinct_points(int sdx, int sdy, int x, int y, int dx, int dy)
         {
-            int distance = ManhattanDistanceOf((x, y), (x + dx, y + dy));
+            int distance = ManhattanDistanceOf((x, y), (x + (sdx * dx), y + (sdy * dy)));
             distance.Should().Be(dx + dy);
         }
 
         private int ManhattanDistanceOf((int x, int y) p1, (int x, int y) p2)
         {
-            return (p2.x - p1.x) + (p2.y - p1.y);
+            return Math.Abs(p2.x - p1.x) + Math.Abs(p2.y - p1.y);
         }
 
 
