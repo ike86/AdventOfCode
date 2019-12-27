@@ -299,11 +299,11 @@ namespace AoC19
         [Fact]
         void Parsing_wire_path_with_multiple_path_segments()
         {
-            ParseWirePath("R8,U5,L1,D3").Should().BeEquivalentTo(
+            ParseWirePath("R8,U5,L1,D33").Should().BeEquivalentTo(
                 (direction: Direction.Right, length: 8),
                 (direction: Direction.Up, length: 5),
                 (direction: Direction.Left, length: 1),
-                (direction: Direction.Down, length: 3));
+                (direction: Direction.Down, length: 33));
         }
 
         private IEnumerable<(Direction direction, int length)> ParseWirePath(string path)
@@ -320,7 +320,7 @@ namespace AoC19
                         'L' => Direction.Left,
                         'D' => Direction.Down,
                     };
-                var length = int.Parse(token[1].ToString());
+                var length = int.Parse(token.Substring(1));
                 yield return (direction, length);
             }
         }
