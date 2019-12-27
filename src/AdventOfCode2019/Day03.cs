@@ -128,8 +128,8 @@ namespace AoC19
                 ".w...." + NL +
                 ".w...." + NL +
                 ".w...." + NL +
-                ".w...." + NL +
-                ".w...." + NL +
+                ".w..w." + NL +
+                ".w..w." + NL +
                 ".wwww." + NL +
                 "......" + NL);
         }
@@ -185,62 +185,34 @@ namespace AoC19
 
             internal void Interpret(params (Direction direction, int length)[] pathSegments)
             {
-                var p1 = pathSegments[0];
-                var p2 = pathSegments[1];
-
-                var length = p1.length;
-                var direction = p1.direction;
                 var x = 0;
                 var y = 0;
-                for (int i = 1; i <= length; i++)
+                foreach (var (direction, length) in pathSegments)
                 {
-                    switch (direction)
+                    for (int i = 1; i <= length; i++)
                     {
-                        case Direction.Left:
-                            Grid[x - 1, y] = 1;
-                            x -= 1;
-                            break;
-                        case Direction.Right:
-                            Grid[x + 1, y] = 1;
-                            x += 1;
-                            break;
-                        case Direction.Up:
-                            Grid[x, 0 + i] = 1;
-                            y += 1;
-                            break;
-                        case Direction.Down:
-                            Grid[x, 0 - i] = 1;
-                            y -= 1;
-                            break;
-                    }
-                }
-
-                length = p2.length;
-                direction = p2.direction;
-                for (int i = 1; i <= length; i++)
-                {
-                    switch (direction)
-                    {
-                        case Direction.Left:
-                            Grid[x - 1, y] = 1;
-                            x -= 1;
-                            break;
-                        case Direction.Right:
-                            Grid[x + 1, y] = 1;
-                            x += 1;
-                            break;
-                        case Direction.Up:
-                            Grid[x, 0 + i] = 1;
-                            y += 1;
-                            break;
-                        case Direction.Down:
-                            Grid[x, 0 - i] = 1;
-                            y -= 1;
-                            break;
+                        switch (direction)
+                        {
+                            case Direction.Left:
+                                Grid[x - 1, y] = 1;
+                                x -= 1;
+                                break;
+                            case Direction.Right:
+                                Grid[x + 1, y] = 1;
+                                x += 1;
+                                break;
+                            case Direction.Up:
+                                Grid[x, y + 1] = 1;
+                                y += 1;
+                                break;
+                            case Direction.Down:
+                                Grid[x, y - 1] = 1;
+                                y -= 1;
+                                break;
+                        }
                     }
                 }
             }
-
         }
 
         class Grid
@@ -272,7 +244,7 @@ namespace AoC19
                 var result = "";
                 for (int y = maxY + 1; y >= minY - 1; y--)
                 {
-                    for (int x = minX-1; x <= maxX+1; x++)
+                    for (int x = minX - 1; x <= maxX + 1; x++)
                     {
                         result += this[x, y] > 0 ? "w" : ".";
                     }
