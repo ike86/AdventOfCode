@@ -282,6 +282,20 @@ namespace AoC19
             Down
         }
 
+        [Fact]
+        void Parsing_empty_wire_path_yields_no_path_segments()
+        {
+            IEnumerable<(Direction direction, int length)> pathSegments =
+                ParseWirePath("");
+
+            pathSegments.Should().BeEmpty();
+        }
+
+        private IEnumerable<(Direction direction, int length)> ParseWirePath(string v)
+        {
+            yield break;
+        }
+
         /*
 
         The wires twist and turn, but the two wires occasionally cross paths.
