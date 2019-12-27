@@ -332,7 +332,22 @@ namespace AoC19
         Because the wires are on a grid, use the Manhattan distance for this measurement.
         While the wires do technically cross right at the central port where they both start,
         this point does not count, nor does a wire count as crossing with itself.
+        */
 
+        [Theory, AutoData]
+        void Manhattan_distance_of_identical_points_is_zero(int x, int y)
+        {
+            int distance = ManhattanDistanceOf((x, y), (x, y));
+            distance.Should().Be(0);
+        }
+
+        private int ManhattanDistanceOf((int x, int y) p1, (int x, int y) p2)
+        {
+            return default;
+        }
+
+
+        /*
         For example, if the first wire's path is R8,U5,L5,D3,
         then starting from the central port (o), it goes right 8, up 5, left 5, and finally down 3:
 
