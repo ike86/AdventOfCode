@@ -140,7 +140,7 @@ namespace AoC19
             var lengthDown = 5;
             var lengthRight = 3;
             i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight));
-            i.Interpret((Direction.Right, lengthRight-1), (Direction.Down, lengthDown));
+            i.Interpret((Direction.Right, lengthRight - 1), (Direction.Down, lengthDown));
 
             using var a = new AssertionScope();
             i.Grid.AsString().Should().Be(
@@ -291,23 +291,38 @@ namespace AoC19
         [Fact]
         void Parsing_wire_path_with_one_path_segment()
         {
+            using var a = new AssertionScope();
             ParseWirePath("R8").Should().Contain((direction: Direction.Right, length: 8));
+            ParseWirePath("R8").Should().ContainSingle();
         }
 
-        private IEnumerable<(Direction direction, int length)> ParseWirePath(string v)
+        [Fact]
+        void Parsing_wire_path_with_multiple_path_segments()
         {
-            if (v == string.Empty)
-            {
-                yield break;
-            }
+            ParseWirePath("R8,U5,L1,D3").Should().BeEquivalentTo(
+                (direction: Direction.Right, length: 8),
+                (direction: Direction.Up, length: 5),
+                (direction: Direction.Left, length: 1),
+                (direction: Direction.Down, length: 3));
+        }
 
-            var direction =
-                v[0] switch
-                {
-                    'R' => Direction.Right
-                };
-            var length = int.Parse(v[1].ToString());
-            yield return (direction, length);
+        private IEnumerable<(Direction direction, int length)> ParseWirePath(string path)
+        {
+            var pathSegmentTokens =
+                path.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var token in pathSegmentTokens)
+            {
+                var direction =
+                    token[0] switch
+                    {
+                        'R' => Direction.Right,
+                        'U' => Direction.Up,
+                        'L' => Direction.Left,
+                        'D' => Direction.Down,
+                    };
+                var length = int.Parse(token[1].ToString());
+                yield return (direction, length);
+            }
         }
 
         /*
