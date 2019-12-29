@@ -30,7 +30,7 @@ namespace AoC19
         [Theory, AutoData]
         void Interpret_a_path_segment_to_left(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Left, length);
+            i.Interpret((Direction.Left, length));
 
             Range(length, x => i.Grid[-x, 0]).Should().AllBeEquivalentTo(1);
         }
@@ -38,7 +38,7 @@ namespace AoC19
         [Theory, AutoData]
         void Interpret_a_path_segment_to_right(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Right, length);
+            i.Interpret((Direction.Right, length));
 
             Range(length, x => i.Grid[x, 0]).Should().AllBeEquivalentTo(1);
         }
@@ -46,7 +46,7 @@ namespace AoC19
         [Theory, AutoData]
         void Interpret_a_path_segment_to_up(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Up, length);
+            i.Interpret((Direction.Up, length));
 
             Range(length, x => i.Grid[0, x]).Should().AllBeEquivalentTo(1);
         }
@@ -54,7 +54,7 @@ namespace AoC19
         [Theory, AutoData]
         void Interpret_a_path_segment_to_down(WirePathInterpreter i, int length)
         {
-            i.Interpret(Direction.Down, length);
+            i.Interpret((Direction.Down, length));
 
             Range(length, x => i.Grid[0, -x]).Should().AllBeEquivalentTo(1);
         }
@@ -175,33 +175,6 @@ namespace AoC19
         class WirePathInterpreter
         {
             public Grid Grid { get; internal set; } = new Grid();
-
-            internal void Interpret(string v)
-            {
-
-            }
-
-            internal void Interpret(Direction direction, int length)
-            {
-                for (int i = 1; i <= length; i++)
-                {
-                    switch (direction)
-                    {
-                        case Direction.Left:
-                            Grid[0 - i, 0] = 1;
-                            break;
-                        case Direction.Right:
-                            Grid[0 + i, 0] = 1;
-                            break;
-                        case Direction.Up:
-                            Grid[0, 0 + i] = 1;
-                            break;
-                        case Direction.Down:
-                            Grid[0, 0 - i] = 1;
-                            break;
-                    }
-                }
-            }
 
             internal void Interpret(params (Direction direction, int length)[] pathSegments)
             {
@@ -385,6 +358,29 @@ namespace AoC19
         ...........
         These wires cross at two locations (marked X),
         but the lower-left one is closer to the central port: its distance is 3 + 3 = 6.
+        */
+
+        ////[Theory]
+        ////[InlineData("R8,U5,L5,D3\r\nU7,R6,D4,L4", 6)]
+        ////void Closest_wire_intersection_to_the_center_is_as_expected(
+        ////    string paths,
+        ////    int expectedDistance)
+        ////{
+        ////    int distance = DistanceOfClosestIntersectionToCenter(paths);
+        ////}
+
+        ////private int DistanceOfClosestIntersectionToCenter(string paths)
+        ////{
+        ////    var rawPathSegments = paths.Split(new[] { NL }, StringSplitOptions.RemoveEmptyEntries);
+        ////    var i = new WirePathInterpreter();
+        ////    foreach (var rawPathSegment in rawPathSegments)
+        ////    {
+        ////        var wirePath = ParseWirePath(rawPathSegment);
+        ////        i.Interpret(wirePath);
+        ////    }
+        ////}
+
+        /*
 
         Here are a few more examples:
 
