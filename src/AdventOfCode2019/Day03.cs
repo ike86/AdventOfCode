@@ -228,6 +228,11 @@ namespace AoC19
                 set { grid[(x, y)] = value; }
             }
 
+            public IEnumerable<(int x, int y, int numberOfWires)> WirePositions =>
+                grid
+                .Where(kvp => kvp.Value > 0)
+                .Select(kvp => (kvp.Key.x, kvp.Key.y, kvp.Value));
+
             public string AsString()
             {
                 int maxX = grid.Max(p => p.Key.x);
@@ -360,25 +365,33 @@ namespace AoC19
         but the lower-left one is closer to the central port: its distance is 3 + 3 = 6.
         */
 
-        ////[Theory]
-        ////[InlineData("R8,U5,L5,D3\r\nU7,R6,D4,L4", 6)]
-        ////void Closest_wire_intersection_to_the_center_is_as_expected(
-        ////    string paths,
-        ////    int expectedDistance)
-        ////{
-        ////    int distance = DistanceOfClosestIntersectionToCenter(paths);
-        ////}
+        [Theory]
+        [InlineData("R8,U5,L5,D3\r\nU7,R6,D4,L4", 6)]
+        void Closest_wire_intersection_to_the_center_is_as_expected(
+            string paths,
+            int expectedDistance)
+        {
+            int distance = DistanceOfClosestIntersectionToCenter(paths);
 
-        ////private int DistanceOfClosestIntersectionToCenter(string paths)
-        ////{
-        ////    var rawPathSegments = paths.Split(new[] { NL }, StringSplitOptions.RemoveEmptyEntries);
-        ////    var i = new WirePathInterpreter();
-        ////    foreach (var rawPathSegment in rawPathSegments)
-        ////    {
-        ////        var wirePath = ParseWirePath(rawPathSegment);
-        ////        i.Interpret(wirePath);
-        ////    }
-        ////}
+            distance.Should().Be(expectedDistance);
+        }
+
+        private int DistanceOfClosestIntersectionToCenter(string paths)
+        {
+            var rawPathSegments = paths.Split(new[] { NL }, StringSplitOptions.RemoveEmptyEntries);
+            var i = new WirePathInterpreter();
+            foreach (var rawPathSegment in rawPathSegments)
+            {
+                var pathSegments = ParseWirePath(rawPathSegment).ToArray();
+                i.Interpret(pathSegments);
+            }
+
+            IEnumerable<(int x, int y, int numberOfWires)> x = i.Grid.WirePositions;
+
+            return x
+                .Where(t => t.numberOfWires == 2)
+                .Min(t => ManhattanDistanceOf((0, 0), (t.x, t.y)));
+        }
 
         /*
 
