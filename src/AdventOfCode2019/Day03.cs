@@ -135,12 +135,32 @@ namespace AoC19
         }
 
         [Theory, AutoData]
+        void Interpret_self_crossing_path_segments(WirePathInterpreter i)
+        {
+            i.Interpret(
+                (Direction.Down, 5),
+                (Direction.Right, 3),
+                (Direction.Up, 2),
+                (Direction.Left, 4));
+
+            i.Grid.AsString().Should().Be(
+                "......." + NL +
+                "..1...." + NL +
+                "..1...." + NL +
+                "..1...." + NL +
+                ".11111." + NL +
+                "..1..1." + NL +
+                "..1111." + NL +
+                "......." + NL);
+        }
+
+        [Theory, AutoData]
         void Interpret_two_wire_paths(WirePathInterpreter i)
         {
             var lengthDown = 5;
             var lengthRight = 3;
-            i.Interpret((Direction.Down, lengthDown), (Direction.Right, lengthRight));
-            i.Interpret((Direction.Right, lengthRight - 1), (Direction.Down, lengthDown));
+            i.Interpret(wireId: 1, (Direction.Down, lengthDown), (Direction.Right, lengthRight));
+            i.Interpret(wireId: 2, (Direction.Right, lengthRight - 1), (Direction.Down, lengthDown));
 
             using var a = new AssertionScope();
             i.Grid.AsString().Should().Be(
@@ -159,10 +179,10 @@ namespace AoC19
         [Theory, AutoData]
         void Grid_AsString_visualizes_grid(Grid g)
         {
-            g[0, 1] = 1;
-            g[1, 0] = 1;
-            g[0, -1] = 1;
-            g[-1, 0] = 1;
+            g.AddWire(0, 1, atLayer: 0);
+            g.AddWire(1, 0, atLayer: 0);
+            g.AddWire(0, -1, atLayer: 0);
+            g.AddWire(-1, 0, atLayer: 0);
 
             g.AsString().Should().Be(
                 "....." + NL +
@@ -176,7 +196,13 @@ namespace AoC19
         {
             public Grid Grid { get; internal set; } = new Grid();
 
-            internal void Interpret(params (Direction direction, int length)[] pathSegments)
+            /// <summary>
+            /// Only exposed to support unit tests.
+            /// </summary>
+            internal void Interpret(params (Direction direction, int length)[] pathSegments) =>
+                Interpret(wireId: 0, pathSegments);
+
+            internal void Interpret(int wireId, params (Direction direction, int length)[] pathSegments)
             {
                 var x = 0;
                 var y = 0;
@@ -187,22 +213,20 @@ namespace AoC19
                         switch (direction)
                         {
                             case Direction.Left:
-                                Grid[x - 1, y] += 1;
                                 x -= 1;
                                 break;
                             case Direction.Right:
-                                Grid[x + 1, y] += 1;
                                 x += 1;
                                 break;
                             case Direction.Up:
-                                Grid[x, y + 1] += 1;
                                 y += 1;
                                 break;
                             case Direction.Down:
-                                Grid[x, y - 1] += 1;
                                 y -= 1;
                                 break;
                         }
+
+                        Grid.AddWire(x, y, atLayer: wireId);
                     }
                 }
             }
@@ -210,35 +234,45 @@ namespace AoC19
 
         class Grid
         {
-            private readonly Dictionary<(int x, int y), int> grid = new Dictionary<(int x, int y), int>();
+            private readonly Dictionary<int, Dictionary<(int x, int y), int>> gridLayers =
+                new Dictionary<int, Dictionary<(int x, int y), int>>();
 
             public Grid()
             {
-                grid.Add((0, 0), 1);
+                var layer = new Dictionary<(int x, int y), int>();
+                layer.Add((0, 0), 1);
+                gridLayers.Add(0, layer);
             }
 
-            public int this[int x, int y]
-            {
-                get
-                {
-                    grid.TryGetValue((x, y), out var wireCount);
-                    return wireCount;
-                }
+            public int this[int x, int y] => GetWireCount((x, y));
 
-                set { grid[(x, y)] = value; }
+            private IEnumerable<(int x, int y)> Positions
+                => gridLayers.Values.SelectMany(x => x.Keys).Distinct();
+
+            private int GetWireCount((int x, int y) p)
+            {
+                return
+                    gridLayers
+                    .Select(kvp =>
+                    {
+                        kvp.Value.TryGetValue(p, out int c);
+                        return c;
+                    })
+                    .Sum();
             }
 
             public IEnumerable<(int x, int y, int numberOfWires)> WirePositions =>
-                grid
-                .Where(kvp => kvp.Value > 0)
-                .Select(kvp => (kvp.Key.x, kvp.Key.y, kvp.Value));
+                Positions
+                .Select(p => (position: p, wireCount: GetWireCount(p)))
+                .Where(t => t.wireCount > 0)
+                .Select(t => (t.position.x, t.position.y, t.wireCount));
 
             public string AsString()
             {
-                int maxX = grid.Max(p => p.Key.x);
-                int minX = grid.Min(p => p.Key.x);
-                int maxY = grid.Max(p => p.Key.y);
-                int minY = grid.Min(p => p.Key.y);
+                int maxX = Positions.Max(p => p.x);
+                int minX = Positions.Min(p => p.x);
+                int maxY = Positions.Max(p => p.y);
+                int minY = Positions.Min(p => p.y);
                 var result = "";
                 for (int y = maxY + 1; y >= minY - 1; y--)
                 {
@@ -249,6 +283,16 @@ namespace AoC19
                     result += Environment.NewLine;
                 }
                 return result;
+            }
+
+            internal void AddWire(int x, int y, int atLayer)
+            {
+                if (!gridLayers.ContainsKey(atLayer))
+                {
+                    gridLayers.Add(atLayer, new Dictionary<(int x, int y), int>());
+                }
+
+                gridLayers[atLayer][(x, y)] = 1;
             }
         }
 
@@ -367,6 +411,7 @@ namespace AoC19
 
         [Theory]
         [InlineData("R8,U5,L5,D3\r\nU7,R6,D4,L4", 6)]
+        [InlineData("R75,D30,R83,U83,L12,D49,R71,U7,L72\r\nU62,R66,U55,R34,D71,R55,D58,R83", 159)]
         void Closest_wire_intersection_to_the_center_is_as_expected(
             string paths,
             int expectedDistance)
@@ -379,9 +424,11 @@ namespace AoC19
         private int DistanceOfClosestIntersectionToCenter(string paths)
         {
             var i = new WirePathInterpreter();
+            var wireId = 1;
             foreach (var pathSegments in ParseWirePaths(paths))
             {
-                i.Interpret(pathSegments.ToArray());
+                i.Interpret(wireId, pathSegments.ToArray());
+                wireId += 1;
             }
 
             return
