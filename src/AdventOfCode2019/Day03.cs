@@ -378,20 +378,23 @@ namespace AoC19
 
         private int DistanceOfClosestIntersectionToCenter(string paths)
         {
-            var rawPathSegments = paths.Split(new[] { NL }, StringSplitOptions.RemoveEmptyEntries);
             var i = new WirePathInterpreter();
-            foreach (var rawPathSegment in rawPathSegments)
+            foreach (var pathSegments in ParseWirePaths(paths))
             {
-                var pathSegments = ParseWirePath(rawPathSegment).ToArray();
-                i.Interpret(pathSegments);
+                i.Interpret(pathSegments.ToArray());
             }
 
-            IEnumerable<(int x, int y, int numberOfWires)> x = i.Grid.WirePositions;
-
-            return x
+            return
+                i.Grid.WirePositions
                 .Where(t => t.numberOfWires == 2)
                 .Min(t => ManhattanDistanceOf((0, 0), (t.x, t.y)));
         }
+
+        private IEnumerable<IEnumerable<(Direction direction, int length)>> ParseWirePaths(
+            string paths)
+            => paths
+            .Split(new[] { NL }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(ParseWirePath);
 
         /*
 
