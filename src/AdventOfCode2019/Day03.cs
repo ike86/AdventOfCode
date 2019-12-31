@@ -241,13 +241,15 @@ namespace AoC19
 
         class Grid
         {
-            private readonly Dictionary<int, Dictionary<(int x, int y), Wire>> gridLayers =
-                new Dictionary<int, Dictionary<(int x, int y), Wire>>();
+            private class GridLayer : Dictionary<(int x, int y), WireSegment> { }
+
+            private readonly Dictionary<int, GridLayer> gridLayers =
+                new Dictionary<int, GridLayer>();
 
             public Grid()
             {
-                var layer = new Dictionary<(int x, int y), Wire>();
-                layer.Add((0, 0), new Wire(0));
+                var layer = new GridLayer();
+                layer.Add((0, 0), new WireSegment(0));
                 gridLayers.Add(0, layer);
             }
 
@@ -262,8 +264,8 @@ namespace AoC19
                     gridLayers
                     .Select(kvp =>
                     {
-                        kvp.Value.TryGetValue(p, out Wire wire);
-                        return wire is Wire ? 1 : 0;
+                        kvp.Value.TryGetValue(p, out WireSegment wire);
+                        return wire is WireSegment ? 1 : 0;
                     })
                     .Sum();
             }
@@ -284,17 +286,16 @@ namespace AoC19
             {
                 if (!gridLayers.ContainsKey(atLayer))
                 {
-                    gridLayers.Add(atLayer, new Dictionary<(int x, int y), Wire>());
+                    gridLayers.Add(atLayer, new GridLayer());
                 }
 
-                if (gridLayers[atLayer].TryGetValue((x, y), out var w) && w is Wire wire)
+                if (gridLayers[atLayer].TryGetValue((x, y), out var w) && w is WireSegment wire)
                 {
                     gridLayers[atLayer][(x, y)] =
-                        new Wire(
-                            Math.Min(wire.MinimumLengthFromOrigo, wireLengthFromOrigo));
+                        new WireSegment(wire.MinimumLengthFromOrigo);
                 }
 
-                gridLayers[atLayer][(x, y)] = new Wire(wireLengthFromOrigo);
+                gridLayers[atLayer][(x, y)] = new WireSegment(wireLengthFromOrigo);
             }
 
             internal string AsString()
@@ -343,9 +344,9 @@ namespace AoC19
             Down
         }
 
-        private class Wire
+        private class WireSegment
         {
-            public Wire(int minimumLengthFromOrigo)
+            public WireSegment(int minimumLengthFromOrigo)
             {
                 MinimumLengthFromOrigo = minimumLengthFromOrigo;
             }
