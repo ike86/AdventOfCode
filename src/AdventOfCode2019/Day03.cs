@@ -179,10 +179,10 @@ namespace AoC19
         [Theory, AutoData]
         void Grid_AsString_visualizes_grid(Grid g)
         {
-            g.AddWire(0, 1, atLayer: 0);
-            g.AddWire(1, 0, atLayer: 0);
-            g.AddWire(0, -1, atLayer: 0);
-            g.AddWire(-1, 0, atLayer: 0);
+            AddWire(0, 1);
+            AddWire(1, 0);
+            AddWire(0, -1);
+            AddWire(-1, 0);
 
             g.AsString().Should().Be(
                 "....." + NL +
@@ -190,6 +190,11 @@ namespace AoC19
                 ".111." + NL +
                 "..1.." + NL +
                 "....." + NL);
+
+            void AddWire(int x, int y)
+            {
+                g.AddWire(x, y, atLayer: 0, wireLengthFromOrigo: 0);
+            }
         }
 
         class WirePathInterpreter
@@ -206,6 +211,7 @@ namespace AoC19
             {
                 var x = 0;
                 var y = 0;
+                var wireLengthFromOrigo = 0;
                 foreach (var (direction, length) in pathSegments)
                 {
                     for (int i = 1; i <= length; i++)
@@ -226,7 +232,8 @@ namespace AoC19
                                 break;
                         }
 
-                        Grid.AddWire(x, y, atLayer: wireId);
+                        wireLengthFromOrigo += 1;
+                        Grid.AddWire(x, y, atLayer: wireId, wireLengthFromOrigo);
                     }
                 }
             }
@@ -234,13 +241,13 @@ namespace AoC19
 
         class Grid
         {
-            private readonly Dictionary<int, Dictionary<(int x, int y), int>> gridLayers =
-                new Dictionary<int, Dictionary<(int x, int y), int>>();
+            private readonly Dictionary<int, Dictionary<(int x, int y), Wire>> gridLayers =
+                new Dictionary<int, Dictionary<(int x, int y), Wire>>();
 
             public Grid()
             {
-                var layer = new Dictionary<(int x, int y), int>();
-                layer.Add((0, 0), 1);
+                var layer = new Dictionary<(int x, int y), Wire>();
+                layer.Add((0, 0), new Wire(0));
                 gridLayers.Add(0, layer);
             }
 
@@ -255,10 +262,16 @@ namespace AoC19
                     gridLayers
                     .Select(kvp =>
                     {
-                        kvp.Value.TryGetValue(p, out int c);
-                        return c;
+                        kvp.Value.TryGetValue(p, out Wire wire);
+                        return wire is Wire ? 1 : 0;
                     })
                     .Sum();
+            }
+
+            private int GetWireLengthFromOrigo((int x, int y) p, int atLayer)
+            {
+                gridLayers[atLayer].TryGetValue(p, out var wire);
+                return wire?.MinimumLengthFromOrigo ?? 0;
             }
 
             public IEnumerable<(int x, int y, int numberOfWires)> WirePositions =>
@@ -267,7 +280,24 @@ namespace AoC19
                 .Where(t => t.wireCount > 0)
                 .Select(t => (t.position.x, t.position.y, t.wireCount));
 
-            public string AsString()
+            internal void AddWire(int x, int y, int atLayer, int wireLengthFromOrigo)
+            {
+                if (!gridLayers.ContainsKey(atLayer))
+                {
+                    gridLayers.Add(atLayer, new Dictionary<(int x, int y), Wire>());
+                }
+
+                if (gridLayers[atLayer].TryGetValue((x, y), out var w) && w is Wire wire)
+                {
+                    gridLayers[atLayer][(x, y)] =
+                        new Wire(
+                            Math.Min(wire.MinimumLengthFromOrigo, wireLengthFromOrigo));
+                }
+
+                gridLayers[atLayer][(x, y)] = new Wire(wireLengthFromOrigo);
+            }
+
+            internal string AsString()
             {
                 int maxX = Positions.Max(p => p.x);
                 int minX = Positions.Min(p => p.x);
@@ -285,14 +315,23 @@ namespace AoC19
                 return result;
             }
 
-            internal void AddWire(int x, int y, int atLayer)
+            internal string AsStringWithWireLengths(int atLayer = 0)
             {
-                if (!gridLayers.ContainsKey(atLayer))
+                int maxX = Positions.Max(p => p.x);
+                int minX = Positions.Min(p => p.x);
+                int maxY = Positions.Max(p => p.y);
+                int minY = Positions.Min(p => p.y);
+                var result = "";
+                for (int y = maxY + 1; y >= minY - 1; y--)
                 {
-                    gridLayers.Add(atLayer, new Dictionary<(int x, int y), int>());
+                    for (int x = minX - 1; x <= maxX + 1; x++)
+                    {
+                        var wireLength = GetWireLengthFromOrigo((x, y), atLayer);
+                        result += wireLength > 0 ? wireLength.ToString() : ".";
+                    }
+                    result += Environment.NewLine;
                 }
-
-                gridLayers[atLayer][(x, y)] = 1;
+                return result;
             }
         }
 
@@ -302,6 +341,16 @@ namespace AoC19
             Right,
             Up,
             Down
+        }
+
+        private class Wire
+        {
+            public Wire(int minimumLengthFromOrigo)
+            {
+                MinimumLengthFromOrigo = minimumLengthFromOrigo;
+            }
+
+            public int MinimumLengthFromOrigo { get; }
         }
 
         [Fact]
@@ -377,7 +426,6 @@ namespace AoC19
         {
             return Math.Abs(p2.x - p1.x) + Math.Abs(p2.y - p1.y);
         }
-
 
         /*
         For example, if the first wire's path is R8,U5,L5,D3,
@@ -463,6 +511,26 @@ L993,D9,L41,D892,L493,D174,R20,D927,R263,D65,R476,D884,R60,D313,R175,U4,L957,U51
         you actually need to minimize the signal delay.
 
         To do this, calculate the number of steps each wire takes to reach each intersection;
+        */
+
+        [Theory, AutoData]
+        void Interpret_records_wire_length_from_origo(WirePathInterpreter i)
+        {
+            i.Interpret(
+                (Direction.Down, 3),
+                (Direction.Right, 3),
+                (Direction.Up, 2));
+
+            i.Grid.AsStringWithWireLengths().Should().Be(
+                "......" + NL +
+                "......" + NL +
+                ".1..8." + NL +
+                ".2..7." + NL +
+                ".3456." + NL +
+                "......" + NL);
+        }
+
+        /*
         choose the intersection where the sum of both wires' steps is lowest.
         If a wire visits a position on the grid multiple times,
         use the steps value from the first time it visits that position
