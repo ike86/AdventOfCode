@@ -289,13 +289,16 @@ namespace AoC19
                     gridLayers.Add(atLayer, new GridLayer());
                 }
 
-                if (gridLayers[atLayer].TryGetValue((x, y), out var w) && w is WireSegment wire)
+                if (gridLayers[atLayer].TryGetValue((x, y), out var w)
+                    && w is WireSegment wire)
                 {
                     gridLayers[atLayer][(x, y)] =
                         new WireSegment(wire.MinimumLengthFromOrigo);
                 }
-
-                gridLayers[atLayer][(x, y)] = new WireSegment(wireLengthFromOrigo);
+                else
+                {
+                    gridLayers[atLayer][(x, y)] = new WireSegment(wireLengthFromOrigo);
+                }
             }
 
             internal string AsString()
@@ -527,6 +530,24 @@ L993,D9,L41,D892,L493,D174,R20,D927,R263,D65,R476,D884,R60,D313,R175,U4,L957,U51
                 "......" + NL +
                 ".1..8." + NL +
                 ".2..7." + NL +
+                ".3456." + NL +
+                "......" + NL);
+        }
+
+        [Theory, AutoData]
+        void Interpret_records_minimum_wire_length_from_origo(WirePathInterpreter i)
+        {
+            i.Interpret(
+                (Direction.Down, 3),
+                (Direction.Right, 3),
+                (Direction.Up, 1),
+                (Direction.Left, 3));
+
+            i.Grid.AsStringWithWireLengths().Should().Be(
+                "......" + NL +
+                "......" + NL +
+                ".1...." + NL +
+                ".2987." + NL +
                 ".3456." + NL +
                 "......" + NL);
         }
