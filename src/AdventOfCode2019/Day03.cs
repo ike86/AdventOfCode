@@ -255,32 +255,27 @@ namespace AoC19
 
             public int this[int x, int y] => GetWireCount((x, y));
 
-            private IEnumerable<(int x, int y)> Positions
-                => gridLayers.Values.SelectMany(x => x.Keys).Distinct();
-
-            private int GetWireCount((int x, int y) p)
-            {
-                return
-                    gridLayers
-                    .Select(kvp =>
-                    {
-                        kvp.Value.TryGetValue(p, out WireSegment wire);
-                        return wire is WireSegment ? 1 : 0;
-                    })
-                    .Sum();
-            }
-
-            private int GetWireLengthFromOrigo((int x, int y) p, int atLayer)
-            {
-                gridLayers[atLayer].TryGetValue(p, out var wire);
-                return wire?.MinimumLengthFromOrigo ?? 0;
-            }
-
             public IEnumerable<(int x, int y, int numberOfWires)> WirePositions =>
                 Positions
                 .Select(p => (position: p, wireCount: GetWireCount(p)))
                 .Where(t => t.wireCount > 0)
                 .Select(t => (t.position.x, t.position.y, t.wireCount));
+
+            public IEnumerable<(int x, int y, int wireLengthFromOrigo)> CombinedWireLengths =>
+                Positions
+                .Select(p =>
+                    (position: p,
+                    wireLengthFromOrigo: gridLayers.Keys.Sum(i => GetWireLengthFromOrigo(p, i))))
+                .Where(t => t.wireLengthFromOrigo > 0)
+                .Select(t => (t.position.x, t.position.y, t.wireLengthFromOrigo));
+
+            public IEnumerable<(int x, int y)> Intersections =>
+                WirePositions
+                .Where(t => t.numberOfWires == 2)
+                .Select(t => (t.x, t.y));
+
+            private IEnumerable<(int x, int y)> Positions
+                => gridLayers.Values.SelectMany(x => x.Keys).Distinct();
 
             internal void AddWire(int x, int y, int atLayer, int wireLengthFromOrigo)
             {
@@ -336,6 +331,24 @@ namespace AoC19
                     result += Environment.NewLine;
                 }
                 return result;
+            }
+
+            private int GetWireCount((int x, int y) p)
+            {
+                return
+                    gridLayers
+                    .Select(kvp =>
+                    {
+                        kvp.Value.TryGetValue(p, out WireSegment wire);
+                        return wire is WireSegment ? 1 : 0;
+                    })
+                    .Sum();
+            }
+
+            private int GetWireLengthFromOrigo((int x, int y) p, int atLayer)
+            {
+                gridLayers[atLayer].TryGetValue(p, out var wire);
+                return wire?.MinimumLengthFromOrigo ?? 0;
             }
         }
 
@@ -589,5 +602,36 @@ L993,D9,L41,D892,L493,D174,R20,D927,R263,D65,R476,D884,R60,D313,R175,U4,L957,U51
         U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = 410 steps
         What is the fewest combined steps the wires must take to reach an intersection?
          */
+
+        [Theory]
+        [InlineData("R75,D30,R83,U83,L12,D49,R71,U7,L72\r\nU62,R66,U55,R34,D71,R55,D58,R83", 610)]
+        [InlineData("R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51\r\nU98,R91,D20,R16,D67,R40,U7,R15,U6,R7", 410)]
+        [InlineData(MyPuzzleInput, 21666)]
+        void Fewest_combined_steps_the_wires_must_take_to_reach_an_intersection(
+           string paths,
+           int expected)
+        {
+            int distance = FewestCombinedStepsWiresTakeToReachIntersections(paths);
+
+            distance.Should().Be(expected);
+        }
+
+        private int FewestCombinedStepsWiresTakeToReachIntersections(string paths)
+        {
+            var i = new WirePathInterpreter();
+            var wireId = 1;
+            foreach (var pathSegments in ParseWirePaths(paths))
+            {
+                i.Interpret(wireId, pathSegments.ToArray());
+                wireId += 1;
+            }
+
+            var intersections = i.Grid.Intersections.ToArray();
+
+            return
+                i.Grid.CombinedWireLengths
+                .Where(t => intersections.Contains((t.x,t.y)))
+                .Min(t => t.wireLengthFromOrigo);
+        }
     }
 }
