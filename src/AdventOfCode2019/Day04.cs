@@ -72,7 +72,14 @@ namespace AoC19
 
         private IEnumerable<int> PossiblePasswords()
         {
-            return Enumerable.Range(Start, End - Start + 1);
+            return Enumerable
+                .Range(Start, End - Start + 1)
+                .Where(p =>
+                    p.ToString()
+                    .Zip(
+                        p.ToString().Substring(1)+" ",
+                        (digit, nextDigit) => (digit, nextDigit))
+                    .Any(t => t.digit == t.nextDigit));
         }
     }
 }
