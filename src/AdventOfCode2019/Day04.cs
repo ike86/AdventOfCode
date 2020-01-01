@@ -122,5 +122,16 @@ namespace AoC19
          * An Elf just remembered one more important detail:
          * the two adjacent matching digits are not part of a larger group of matching digits.
          */
+
+        [Fact]
+        void The_two_adjacent_matching_digits_are_not_part_of_a_larger_group_of_matching_digits()
+        {
+            IEnumerable<int> passwords = PossiblePasswords().ToArray();
+
+            using var a = new AssertionScope();
+            passwords.Should().Contain(234566);
+            passwords.Should().NotContain(222666);
+            passwords.Should().NotContain(222266);
+        }
     }
 }
