@@ -11,10 +11,8 @@ namespace AoC19
 {
     public class Day04
     {
-        private const int Start = 100000;
-        private const int End = 999999;
-        private const int Start2 = 172930;
-        private const int End2 = 683082;
+        private const int Start = 172930;
+        private const int End = 683082;
 
         /*
          * --- Day 4: Secure Container ---
@@ -41,34 +39,30 @@ namespace AoC19
         {
             IEnumerable<int> passwords = PossiblePasswords();
 
-            using var a = new AssertionScope();
-            passwords.Should().NotContain(Start - 1);
-            passwords.Should().Contain(Start);
-            passwords.Should().Contain(End);
-            passwords.Should().NotContain(End + 1);
+            passwords.Should().OnlyContain(p => p.ToString().Length == 6);
         }
 
         [Theory, AutoData]
         void Is_within_range(
-            [Range(Start2, End2)]int expected,
+            [Range(Start, End)]int expected,
             int deltaBelowRange,
             int deltaAboveRange)
         {
             IEnumerable<int> passwords = PossiblePasswords().ToArray();
 
             using var a = new AssertionScope();
-            passwords.Should().NotContain(Start2 - deltaBelowRange);
-            passwords.Should().NotContain(Start2 - 1);
-            passwords.Should().Contain(Start2);
+            passwords.Should().NotContain(Start - deltaBelowRange);
+            passwords.Should().NotContain(Start - 1);
+            passwords.Should().Contain(Start);
             passwords.Should().Contain(expected);
-            passwords.Should().Contain(End2);
-            passwords.Should().NotContain(End2 + 1);
-            passwords.Should().NotContain(End2 + deltaAboveRange);
+            passwords.Should().Contain(End);
+            passwords.Should().NotContain(End + 1);
+            passwords.Should().NotContain(End + deltaAboveRange);
         }
 
         private IEnumerable<int> PossiblePasswords()
         {
-            return Enumerable.Range(Start2, End2 - Start2 + 1);
+            return Enumerable.Range(Start, End - Start + 1);
         }
     }
 }
