@@ -72,6 +72,17 @@ namespace AoC19
             passwords.Should().NotContain(172934);
         }
 
+        [Fact]
+        void Digits_only_ever_increase_or_stay_the_same()
+        {
+            IEnumerable<int> passwords = PossiblePasswords().ToArray();
+
+            using var a = new AssertionScope();
+            passwords.Should().Contain(222222);
+            passwords.Should().Contain(222345);
+            passwords.Should().NotContain(222221);
+        }
+
         private IEnumerable<int> PossiblePasswords()
         {
             return Enumerable
