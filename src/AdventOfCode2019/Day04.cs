@@ -110,5 +110,11 @@ namespace AoC19
                         nextDigit: int.Parse(nextDigit.ToString())))
                 .All(t => t.digit <= t.nextDigit);
         }
+
+        [Fact]
+        void How_many_different_passwords()
+        {
+            PossiblePasswords().Should().HaveCount(1675);
+        }
     }
 }
