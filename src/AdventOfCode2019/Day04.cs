@@ -60,6 +60,16 @@ namespace AoC19
             passwords.Should().NotContain(End + deltaAboveRange);
         }
 
+        [Fact]
+        void Two_adjacent_digits_are_the_same()
+        {
+            IEnumerable<int> passwords = PossiblePasswords().ToArray();
+
+            using var a = new AssertionScope();
+            passwords.Should().Contain(172933);
+            passwords.Should().NotContain(172934);
+        }
+
         private IEnumerable<int> PossiblePasswords()
         {
             return Enumerable.Range(Start, End - Start + 1);
