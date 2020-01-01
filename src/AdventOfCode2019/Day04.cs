@@ -35,12 +35,14 @@ namespace AoC19
         {
             IEnumerable<int> passwords = PossiblePasswords();
 
+            using var a = new AssertionScope();
             passwords.Should().Contain(100000);
+            passwords.Should().Contain(999999);
         }
 
         private IEnumerable<int> PossiblePasswords()
         {
-            yield return 100000;
+            return Enumerable.Range(100000, 999999 - 100000 +1);
         }
     }
 }
