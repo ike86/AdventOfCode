@@ -36,8 +36,10 @@ namespace AoC19
             IEnumerable<int> passwords = PossiblePasswords();
 
             using var a = new AssertionScope();
+            passwords.Should().NotContain(99999);
             passwords.Should().Contain(100000);
             passwords.Should().Contain(999999);
+            passwords.Should().NotContain(1000000);
         }
 
         private IEnumerable<int> PossiblePasswords()
