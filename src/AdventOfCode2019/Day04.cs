@@ -13,6 +13,8 @@ namespace AoC19
     {
         private const int Start = 100000;
         private const int End = 999999;
+        private const int Start2 = 172930;
+        private const int End2 = 683082;
 
         /*
          * --- Day 4: Secure Container ---
@@ -48,25 +50,25 @@ namespace AoC19
 
         [Theory, AutoData]
         void Is_within_range(
-            [Range(172930, 683082)]int expected,
+            [Range(Start2, End2)]int expected,
             int deltaBelowRange,
             int deltaAboveRange)
         {
-            IEnumerable<int> passwords = PossiblePasswords();
+            IEnumerable<int> passwords = PossiblePasswords().ToArray();
 
             using var a = new AssertionScope();
-            passwords.Should().NotContain(172930 - deltaBelowRange);
-            passwords.Should().NotContain(172930 - 1);
-            passwords.Should().Contain(172930);
+            passwords.Should().NotContain(Start2 - deltaBelowRange);
+            passwords.Should().NotContain(Start2 - 1);
+            passwords.Should().Contain(Start2);
             passwords.Should().Contain(expected);
-            passwords.Should().Contain(683082);
-            passwords.Should().NotContain(683082 +1);
-            passwords.Should().NotContain(683082 + deltaAboveRange);
+            passwords.Should().Contain(End2);
+            passwords.Should().NotContain(End2 + 1);
+            passwords.Should().NotContain(End2 + deltaAboveRange);
         }
 
         private IEnumerable<int> PossiblePasswords()
         {
-            return Enumerable.Range(Start, End - Start + 1);
+            return Enumerable.Range(Start2, End2 - Start2 + 1);
         }
     }
 }
