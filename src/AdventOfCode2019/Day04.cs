@@ -68,7 +68,7 @@ namespace AoC19
             IEnumerable<int> passwords = PossiblePasswords().ToArray();
 
             using var a = new AssertionScope();
-            passwords.Should().Contain(172933);
+            passwords.Should().Contain(234566);
             passwords.Should().NotContain(172934);
         }
 
