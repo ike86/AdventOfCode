@@ -87,12 +87,28 @@ namespace AoC19
         {
             return Enumerable
                 .Range(Start, End - Start + 1)
-                .Where(p =>
-                    p.ToString()
-                    .Zip(
-                        p.ToString().Substring(1)+" ",
-                        (digit, nextDigit) => (digit, nextDigit))
-                    .Any(t => t.digit == t.nextDigit));
+                .Where(TwoAdjacentDigitsAreTheSame)
+                .Where(DigitsOnlyEverIncreaseOrStayTheSame);
+        }
+
+        private static bool TwoAdjacentDigitsAreTheSame(int p)
+        {
+            return p.ToString()
+                .Zip(
+                    p.ToString().Substring(1) + " ",
+                    (digit, nextDigit) => (digit, nextDigit))
+                .Any(t => t.digit == t.nextDigit);
+        }
+
+        private static bool DigitsOnlyEverIncreaseOrStayTheSame(int p)
+        {
+            return p.ToString()
+                .Zip(
+                    p.ToString().Substring(1) + "9",
+                    (digit, nextDigit) =>
+                        (digit: int.Parse(digit.ToString()),
+                        nextDigit: int.Parse(nextDigit.ToString())))
+                .All(t => t.digit <= t.nextDigit);
         }
     }
 }
