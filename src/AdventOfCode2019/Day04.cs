@@ -78,8 +78,8 @@ namespace AoC19
             IEnumerable<int> passwords = PossiblePasswords().ToArray();
 
             using var a = new AssertionScope();
-            passwords.Should().Contain(222222);
-            passwords.Should().Contain(222345);
+            ////passwords.Should().Contain(222222);
+            passwords.Should().Contain(223456);
             passwords.Should().NotContain(222221);
         }
 
@@ -93,11 +93,14 @@ namespace AoC19
 
         private static bool TwoAdjacentDigitsAreTheSame(int p)
         {
+            var i = 0;
             return p.ToString()
                 .Zip(
                     p.ToString().Substring(1) + " ",
-                    (digit, nextDigit) => (digit, nextDigit))
-                .Any(t => t.digit == t.nextDigit);
+                    (d1, d2) => (digit: d1, nextDigit: d2))
+                .Select(t => (groupId: t.digit == t.nextDigit ? i : i++, t.digit))
+                .GroupBy(t => t.groupId)
+                .Any(group => group.Count() == 2);
         }
 
         private static bool DigitsOnlyEverIncreaseOrStayTheSame(int p)
@@ -114,7 +117,7 @@ namespace AoC19
         [Fact]
         void How_many_different_passwords()
         {
-            PossiblePasswords().Should().HaveCount(1675);
+            PossiblePasswords().Should().HaveCount(1142);
         }
 
         /*
@@ -131,7 +134,7 @@ namespace AoC19
             using var a = new AssertionScope();
             passwords.Should().Contain(234566);
             passwords.Should().NotContain(222666);
-            passwords.Should().NotContain(222266);
+            passwords.Should().Contain(222266);
         }
     }
 }
