@@ -6,9 +6,12 @@ namespace AoC19
 {
     class Program
     {
-        public Program(int[] code)
+        private readonly Func<int> readInput;
+
+        public Program(int[] code, Func<int> readInput)
         {
             this.Code = code;
+            this.readInput = readInput;
         }
 
         public int[] Code { get; }
@@ -19,7 +22,7 @@ namespace AoC19
 
             while (true)
             {
-                var intruction = new Instruction(Code, instructionPointer);
+                var intruction = new Instruction(Code, instructionPointer, readInput);
 
                 ExecutionResult result;
                 try
@@ -42,11 +45,11 @@ namespace AoC19
             private readonly int instructionPointer;
             private readonly IOperation operation;
 
-            public Instruction(IEnumerable<int> code, int instructionPointer)
+            public Instruction(IEnumerable<int> code, int instructionPointer, Func<int> readInput)
             {
                 this.code = EnsureHasTrailingPositions(code);
                 this.instructionPointer = instructionPointer;
-                operation = Create(OpCode);
+                operation = Create(OpCode, readInput);
             }
 
             public int AddressOfResult => code[instructionPointer + 3];
@@ -80,10 +83,11 @@ namespace AoC19
                 return c;
             }
 
-            private static IOperation Create(int opCode)
+            private static IOperation Create(int opCode, Func<int> readInput)
             {
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
+                else if (opCode == 3) return new Input(readInput);
                 else if (opCode == 99) return new Halting();
 
                 throw new InvalidOperationException(opCode.ToString());
@@ -117,6 +121,20 @@ namespace AoC19
                 public int InstructionPointerOffset => 0;
 
                 public int Execute(Func<int> x, Func<int> y) => throw new ProgramHalted();
+            }
+
+            private class Input : IOperation
+            {
+                private readonly Func<int> readInput;
+
+                public Input(Func<int> readInput)
+                {
+                    this.readInput = readInput;
+                }
+
+                public int InstructionPointerOffset => 2;
+
+                public int Execute(Func<int> x, Func<int> y) => readInput();
             }
         }
 

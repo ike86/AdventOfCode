@@ -6,6 +6,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
+using static AoC19.Day02;
 
 namespace AoC19
 {
@@ -24,6 +25,15 @@ namespace AoC19
         Opcode 3 takes a single integer as input
         and saves it to the position given by its only parameter.
         For example, the instruction 3,50 would take an input value and store it at address 50.
+        */
+
+        [Theory, AutoData]
+        void Opcode_3_reads_an_int_as_input(int input)
+        {
+            Run("3,0,99", readInput: () => input).Should().Be(input);
+        }
+
+        /*
 
         Opcode 4 outputs the value of its only parameter.
         For example, the instruction 4,50 would output the value at address 50.
