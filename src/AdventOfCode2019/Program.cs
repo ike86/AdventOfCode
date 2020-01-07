@@ -52,7 +52,7 @@ namespace AoC19
                 operation = Create(OpCode, readInput);
             }
 
-            public int AddressOfResult => code[instructionPointer + 3];
+            public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
 
             private int OpCode => code[instructionPointer + 0];
 
@@ -67,10 +67,10 @@ namespace AoC19
             private int[] EnsureHasTrailingPositions(IEnumerable<int> code)
             {
                 var c = code.ToArray();
-                if (c.Count() % 4 != 0)
-                {
-                    return c.Concat(new[] { 0, 0, 0 }).ToArray();
-                }
+                ////if (c.Count() % 4 != 0)
+                ////{
+                ////    return c.Concat(new[] { 0, 0, 0 }).ToArray();
+                ////}
 
                 return c;
             }
