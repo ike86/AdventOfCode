@@ -54,21 +54,13 @@ namespace AoC19
 
             public int AddressOfResult => code[instructionPointer + 3];
 
-            private int AddressOfLeftOperand => code[instructionPointer + 1];
-
-            private int AddressOfRightOperand => code[instructionPointer + 2];
-
-            private Func<int> LeftOperand => () => code[AddressOfLeftOperand];
-
-            private Func<int> RightOperand => () => code[AddressOfRightOperand];
-
             private int OpCode => code[instructionPointer + 0];
 
             public ExecutionResult Execute()
             {
                 return
                     new ExecutionResult(
-                        operation.Execute(LeftOperand, RightOperand),
+                        operation.Execute(GetArguments()),
                         operation.InstructionPointerOffset);
             }
 
@@ -93,34 +85,64 @@ namespace AoC19
                 throw new InvalidOperationException(opCode.ToString());
             }
 
+            private IEnumerable<Func<int>> GetArguments()
+            {
+                if (operation.NumberOfParameters == 0)
+                    return Enumerable.Empty<Func<int>>();
+
+                return Enumerable
+                    .Range(1, operation.NumberOfParameters)
+                    .Select(i => NthOperand(i));
+            }
+
+            private Func<int> NthOperand(int n) => () => code[AddressOfNthOperand(n)];
+
+            private int AddressOfNthOperand(int n) => code[instructionPointer + n];
+
             private interface IOperation
             {
+                int NumberOfParameters { get; }
+
                 int InstructionPointerOffset { get; }
 
-                int Execute(Func<int> x, Func<int> y);
+                int Execute(IEnumerable<Func<int>> arguments);
             }
 
             private class Addition : IOperation
             {
                 public int InstructionPointerOffset => 4;
 
+                public int NumberOfParameters => 2;
+
                 // the number of operation arguments is still hard-coded,
                 // which forces us to use lazy argument resolution in order to not fail on Halt
-                public int Execute(Func<int> x, Func<int> y) => x() + y();
+                public int Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    return args[0]() + args[1]();
+                }
             }
 
             private class Multiplication : IOperation
             {
                 public int InstructionPointerOffset => 4;
 
-                public int Execute(Func<int> x, Func<int> y) => x() * y();
+                public int NumberOfParameters => 2;
+
+                public int Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    return args[0]() * args[1]();
+                }
             }
 
             private class Halting : IOperation
             {
                 public int InstructionPointerOffset => 0;
 
-                public int Execute(Func<int> x, Func<int> y) => throw new ProgramHalted();
+                public int NumberOfParameters => 0;
+
+                public int Execute(IEnumerable<Func<int>> arguments) => throw new ProgramHalted();
             }
 
             private class Input : IOperation
@@ -134,7 +156,9 @@ namespace AoC19
 
                 public int InstructionPointerOffset => 2;
 
-                public int Execute(Func<int> x, Func<int> y) => readInput();
+                public int NumberOfParameters => 0;
+
+                public int Execute(IEnumerable<Func<int>> arguments) => readInput();
             }
         }
 
