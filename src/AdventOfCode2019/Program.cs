@@ -47,7 +47,7 @@ namespace AoC19
 
             public Instruction(IEnumerable<int> code, int instructionPointer, Func<int> readInput)
             {
-                this.code = EnsureHasTrailingPositions(code);
+                this.code = code.ToArray();
                 this.instructionPointer = instructionPointer;
                 operation = Create(OpCode, readInput);
             }
@@ -62,17 +62,6 @@ namespace AoC19
                     new ExecutionResult(
                         operation.Execute(GetArguments()),
                         operation.InstructionPointerOffset);
-            }
-
-            private int[] EnsureHasTrailingPositions(IEnumerable<int> code)
-            {
-                var c = code.ToArray();
-                ////if (c.Count() % 4 != 0)
-                ////{
-                ////    return c.Concat(new[] { 0, 0, 0 }).ToArray();
-                ////}
-
-                return c;
             }
 
             private static IOperation Create(int opCode, Func<int> readInput)
