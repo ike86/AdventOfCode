@@ -36,8 +36,15 @@ namespace AoC19
         /*
 
         Opcode 4 outputs the value of its only parameter.
-        For example, the instruction 4,50 would output the value at address 50.
+        For example, the instruction 4,50 would output the value at address 50.*/
 
+        [Theory, AutoData]
+        void Opcode_4_writes_to_output(int output)
+        {
+            Run($"4,2,{output},99").Should().Be(output);
+        }
+
+        /*
         Programs that use these instructions will come with documentation
         that explains what should be connected to the input and output.
         The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
