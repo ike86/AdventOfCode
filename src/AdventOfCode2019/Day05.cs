@@ -39,9 +39,13 @@ namespace AoC19
         For example, the instruction 4,50 would output the value at address 50.*/
 
         [Theory, AutoData]
-        void Opcode_4_writes_to_output(int output)
+        void Opcode_4_writes_to_output(int expected)
         {
-            Run($"4,2,{output},99").Should().Be(output);
+            int output = 0;
+
+            Run($"4,3,99,{expected}", writeOutput: x => output = x);
+
+            output.Should().Be(expected);
         }
 
         /*

@@ -99,7 +99,10 @@ namespace AoC19
             Run("99,10,20,0").Should().Be(99);
         }
 
-        public static int Run(string programCode, Func<int> readInput = null)
+        public static int Run(
+            string programCode,
+            Func<int> readInput = null,
+            Action<int> writeOutput = null)
         {
             return new Computer(programCode, readInput ?? NullReadInput).Run();
         }

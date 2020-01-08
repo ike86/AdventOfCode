@@ -28,7 +28,13 @@ namespace AoC19
                 try
                 {
                     result = intruction.Execute();
-                    Code[intruction.AddressOfResult] = result.Value;
+                    if (result is ActionExecutionResult)
+                    {
+                    }
+                    else
+                    {
+                        Code[intruction.AddressOfResult] = result.Value;
+                    }
                 }
                 catch (ProgramHalted)
                 {
@@ -58,6 +64,12 @@ namespace AoC19
 
             public ExecutionResult Execute()
             {
+                if (operation is Output)
+                {
+                    return
+                        new ActionExecutionResult(operation.InstructionPointerOffset);
+                }
+
                 return
                     new ExecutionResult(
                         operation.Execute(GetArguments()),
@@ -69,6 +81,7 @@ namespace AoC19
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
                 else if (opCode == 3) return new Input(readInput);
+                else if (opCode == 4) return new Output();
                 else if (opCode == 99) return new Halting();
 
                 throw new InvalidOperationException(opCode.ToString());
@@ -149,6 +162,19 @@ namespace AoC19
 
                 public int Execute(IEnumerable<Func<int>> arguments) => readInput();
             }
+
+            private class Output : IOperation
+            {
+                public Output()
+                {
+                }
+
+                public int InstructionPointerOffset => 2;
+
+                public int NumberOfParameters => 0;
+
+                public int Execute(IEnumerable<Func<int>> arguments) => -1;
+            }
         }
 
         private class ExecutionResult
@@ -164,6 +190,15 @@ namespace AoC19
             public int Value { get; }
 
             public int InstructionPointerOffset { get; }
+        }
+
+        private class ActionExecutionResult : ExecutionResult
+        {
+            public ActionExecutionResult(int instructionPointerOffset)
+                : base(default, instructionPointerOffset)
+            {
+
+            }
         }
 
         private class ProgramHalted : Exception { }
