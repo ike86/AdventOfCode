@@ -65,7 +65,6 @@ namespace AoC19
         }
 
         /*
-
         Second, you'll need to add support for parameter modes:
 
         Each parameter of an instruction is handled based on its parameter mode.
@@ -87,8 +86,17 @@ namespace AoC19
         the first parameter's mode is in the hundreds digit,
         the second parameter's mode is in the thousands digit,
         the third parameter's mode is in the ten-thousands digit, and so on.
-        Any missing modes are 0.
+        Any missing modes are 0.*/
 
+        [Fact]
+        void Opcodes_have_two_digits()
+        {
+            using var a = new AssertionScope();
+            Run("01,1,2,0,99").Should().Be(3);
+            Run("02,1,2,0,99").Should().Be(2);
+        }
+
+        /*
         For example, consider the program 1002,4,3,4,33.
 
         The first instruction, 1002,4,3,4, is a multiply instruction
