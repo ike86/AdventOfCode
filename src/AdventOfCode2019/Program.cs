@@ -7,11 +7,13 @@ namespace AoC19
     class Program
     {
         private readonly Func<int> readInput;
+        private readonly Action<int> writeOutput;
 
-        public Program(int[] code, Func<int> readInput)
+        public Program(int[] code, Func<int> readInput, Action<int> writeOutput)
         {
             this.Code = code;
             this.readInput = readInput;
+            this.writeOutput = writeOutput;
         }
 
         public int[] Code { get; }
@@ -22,7 +24,8 @@ namespace AoC19
 
             while (true)
             {
-                var intruction = new Instruction(Code, instructionPointer, readInput);
+                var intruction =
+                    new Instruction(Code, instructionPointer, readInput, writeOutput);
 
                 ExecutionResult result;
                 try
@@ -51,11 +54,15 @@ namespace AoC19
             private readonly int instructionPointer;
             private readonly IOperation operation;
 
-            public Instruction(IEnumerable<int> code, int instructionPointer, Func<int> readInput)
+            public Instruction(
+                IEnumerable<int> code,
+                int instructionPointer,
+                Func<int> readInput,
+                Action<int> writeOutput)
             {
                 this.code = code.ToArray();
                 this.instructionPointer = instructionPointer;
-                operation = Create(OpCode, readInput);
+                operation = Create(OpCode, readInput, writeOutput);
             }
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
@@ -66,6 +73,7 @@ namespace AoC19
             {
                 if (operation is Output)
                 {
+                    _ = operation.Execute(GetArguments());
                     return
                         new ActionExecutionResult(operation.InstructionPointerOffset);
                 }
@@ -76,12 +84,15 @@ namespace AoC19
                         operation.InstructionPointerOffset);
             }
 
-            private static IOperation Create(int opCode, Func<int> readInput)
+            private static IOperation Create(
+                int opCode,
+                Func<int> readInput,
+                Action<int> writeOutput)
             {
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
                 else if (opCode == 3) return new Input(readInput);
-                else if (opCode == 4) return new Output();
+                else if (opCode == 4) return new Output(writeOutput);
                 else if (opCode == 99) return new Halting();
 
                 throw new InvalidOperationException(opCode.ToString());
@@ -165,15 +176,24 @@ namespace AoC19
 
             private class Output : IOperation
             {
-                public Output()
+                private readonly Action<int> writeOutput;
+
+                public Output(Action<int> writeOutput)
                 {
+                    this.writeOutput = writeOutput;
                 }
 
                 public int InstructionPointerOffset => 2;
 
-                public int NumberOfParameters => 0;
+                public int NumberOfParameters => 1;
 
-                public int Execute(IEnumerable<Func<int>> arguments) => -1;
+                public int Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    writeOutput(args[0]());
+
+                    return -1;
+                }
             }
         }
 
