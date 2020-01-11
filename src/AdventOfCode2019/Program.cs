@@ -62,12 +62,10 @@ namespace AoC19
                 this.instructionPointer = instructionPointer;
                 opCode = new OperationCode(this.code[instructionPointer + 0]);
 
-                operation = Create(OpCode, readInput, writeOutput);
+                operation = Create(opCode, readInput, writeOutput);
             }
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
-
-            private int OpCode => opCode.Value;
 
             private class OperationCode
             {
@@ -95,15 +93,15 @@ namespace AoC19
                             operation.InstructionPointerOffset);
                 }
 
-                throw new InvalidOperationException($"{OpCode} is not supported.");
+                throw new InvalidOperationException($"{opCode.Value} is not supported.");
             }
 
             private static IOperation Create(
-                int opCode,
+                OperationCode opCode1,
                 Func<int> readInput,
                 Action<int> writeOutput)
             {
-                opCode = opCode % 100;
+                var opCode = opCode1.Value % 100;
 
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
@@ -120,7 +118,7 @@ namespace AoC19
                     return Enumerable.Empty<Func<int>>();
 
                 var parameterModes =
-                    ((OpCode - (OpCode % 100)) / 100).ToString()
+                    ((opCode.Value - (opCode.Value % 100)) / 100).ToString()
                     .Reverse()
                     .ToArray();
                 parameterModes =
