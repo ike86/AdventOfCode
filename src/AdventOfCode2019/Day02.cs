@@ -28,10 +28,10 @@ namespace AoC19
         and then overwrite the value at position 30 with their sum.
         */
 
-        [Fact]
-        public void Run_can_add_and_save_result_to_the_same_line()
+        [Theory, AutoData]
+        public void Run_can_add_and_save_result_to_the_same_line(int x, int y)
         {
-            Run("1,1,2,0,99,0,0,0").Should().Be(3);
+            Run($"1,5,6,0,99,{x},{y},0").Should().Be(x + y);
         }
 
         /*
@@ -39,10 +39,10 @@ namespace AoC19
         Again, the three integers after the opcode indicate where the inputs and outputs are, not their values.
         */
 
-        [Fact]
-        public void Run_can_multiply_and_save_result_to_the_same_line()
+        [Theory, AutoData]
+        public void Run_can_multiply_and_save_result_to_the_same_line(int x, int y)
         {
-            Run("2,1,2,0,99,0,0,0").Should().Be(2);
+            Run($"2,5,6,0,99,{x},{y},0").Should().Be(x * y);
         }
 
         /*
