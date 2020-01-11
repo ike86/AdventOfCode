@@ -90,6 +90,8 @@ namespace AoC19
                 Func<int> readInput,
                 Action<int> writeOutput)
             {
+                opCode = opCode % 100;
+
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
                 else if (opCode == 3) return new Input(readInput);
@@ -109,7 +111,11 @@ namespace AoC19
                     .Select(i => NthOperand(i));
             }
 
-            private Func<int> NthOperand(int n) => () => code[AddressOfNthOperand(n)];
+            private Func<int> NthOperand(int n)
+            {
+                return () => code[instructionPointer + n];
+                return () => code[AddressOfNthOperand(n)];
+            }
 
             private int AddressOfNthOperand(int n) => code[instructionPointer + n];
         }
