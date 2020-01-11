@@ -67,35 +67,6 @@ namespace AoC19
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
 
-            private class OperationCode
-            {
-                private readonly int opCode;
-
-                public OperationCode(int opCode)
-                {
-                    this.opCode = opCode;
-                }
-
-                public int Value => opCode % 100;
-
-                public IEnumerable<ParameterMode> ParameterModes =>
-                    ((opCode - Value) / 100).ToString()
-                    .Reverse()
-                    .Select(ToParameterMode)
-                    .ToArray();
-
-                private ParameterMode ToParameterMode(char ch)
-                {
-                    return (ParameterMode)int.Parse(ch.ToString());
-                }
-            }
-
-            private enum ParameterMode
-            {
-                Position = 0,
-                Immediate = 1,
-            }
-
             public IExecutionResult Execute()
             {
                 if (operation is IAction action)
@@ -166,6 +137,13 @@ namespace AoC19
             }
 
             private int AddressOfNthOperand(int n) => code[instructionPointer + n];
+
+
+            private enum ParameterMode
+            {
+                Position = 0,
+                Immediate = 1,
+            }
         }
 
         private class ProgramHalted : Exception { }

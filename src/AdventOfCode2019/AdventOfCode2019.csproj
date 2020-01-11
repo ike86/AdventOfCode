@@ -81,6 +81,7 @@
     <Compile Include="Day05.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Program.ExecutionResult.cs" />
+    <Compile Include="Program.Instruction.OperationCode.cs" />
     <Compile Include="Program.Instruction.Operations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
