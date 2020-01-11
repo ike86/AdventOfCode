@@ -88,12 +88,12 @@ namespace AoC19
         the third parameter's mode is in the ten-thousands digit, and so on.
         Any missing modes are 0.*/
 
-        [Fact]
-        void Opcodes_have_two_digits()
+        [Theory, AutoData]
+        void Opcodes_have_two_digits(int x, int y)
         {
             using var a = new AssertionScope();
-            Run("01,1,2,0,99").Should().Be(3);
-            Run("02,1,2,0,99").Should().Be(2);
+            Run($"1,5,6,0,99,{x},{y},0").Should().Be(x + y);
+            Run($"2,5,6,0,99,{x},{y},0").Should().Be(x * y);
         }
 
         [Theory, AutoData]
