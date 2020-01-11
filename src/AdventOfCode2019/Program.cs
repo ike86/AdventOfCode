@@ -49,6 +49,7 @@ namespace AoC19
         {
             private readonly int[] code;
             private readonly int instructionPointer;
+            private readonly OperationCode opCode;
             private readonly IOperation operation;
 
             public Instruction(
@@ -59,12 +60,24 @@ namespace AoC19
             {
                 this.code = code.ToArray();
                 this.instructionPointer = instructionPointer;
+                opCode = new OperationCode(this.code[instructionPointer + 0]);
+
                 operation = Create(OpCode, readInput, writeOutput);
             }
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
 
-            private int OpCode => code[instructionPointer + 0];
+            private int OpCode => opCode.Value;
+
+            private class OperationCode
+            {
+                public OperationCode(int opCode)
+                {
+                    Value = opCode;
+                }
+
+                public int Value { get; set; }
+            }
 
             public IExecutionResult Execute()
             {
