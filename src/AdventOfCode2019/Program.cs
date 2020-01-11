@@ -31,7 +31,7 @@ namespace AoC19
                 try
                 {
                     result = intruction.Execute();
-                    if(result is FunctionExecutionResult er)
+                    if (result is FunctionExecutionResult er)
                     {
                         Code[intruction.AddressOfResult] = er.Value;
                     }
@@ -106,15 +106,32 @@ namespace AoC19
                 if (operation.NumberOfParameters == 0)
                     return Enumerable.Empty<Func<int>>();
 
+                var parameterModes =
+                    ((OpCode - (OpCode % 100)) / 100).ToString()
+                    .Reverse()
+                    .ToArray();
+                parameterModes =
+                    parameterModes
+                    .Concat(
+                        Enumerable.Range(0, operation.NumberOfParameters - parameterModes.Count())
+                        .Select(_ => '0'))
+                    .ToArray();
+
                 return Enumerable
                     .Range(1, operation.NumberOfParameters)
-                    .Select(i => NthOperand(i));
+                    .Zip(parameterModes, (i, m) => (i, parameterMode: m))
+                    .Select(t => NthOperand(t.i, t.parameterMode));
             }
 
-            private Func<int> NthOperand(int n)
+            private Func<int> NthOperand(int n, char parameterMode)
             {
-                return () => code[instructionPointer + n];
-                return () => code[AddressOfNthOperand(n)];
+                if(parameterMode == '1')
+                    return () => code[instructionPointer + n];
+                else if (parameterMode == '0')
+                    return () => code[AddressOfNthOperand(n)];
+
+                throw new InvalidOperationException(
+                    $"Parameter mode {parameterMode} is not supported.");
             }
 
             private int AddressOfNthOperand(int n) => code[instructionPointer + n];
