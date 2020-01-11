@@ -69,12 +69,19 @@ namespace AoC19
 
             private class OperationCode
             {
+                private readonly int opCode;
+
                 public OperationCode(int opCode)
                 {
-                    Value = opCode;
+                    this.opCode = opCode;
                 }
 
-                public int Value { get; set; }
+                public int Value => opCode % 100;
+
+                public IEnumerable<char> ParameterModes =>
+                    ((opCode - Value) / 100).ToString()
+                    .Reverse()
+                    .ToArray();
             }
 
             public IExecutionResult Execute()
@@ -101,7 +108,7 @@ namespace AoC19
                 Func<int> readInput,
                 Action<int> writeOutput)
             {
-                var opCode = opCode1.Value % 100;
+                var opCode = opCode1.Value;
 
                 if (opCode == 1) return new Addition();
                 else if (opCode == 2) return new Multiplication();
@@ -117,21 +124,23 @@ namespace AoC19
                 if (operation.NumberOfParameters == 0)
                     return Enumerable.Empty<Func<int>>();
 
-                var parameterModes =
-                    ((opCode.Value - (opCode.Value % 100)) / 100).ToString()
-                    .Reverse()
-                    .ToArray();
-                parameterModes =
-                    parameterModes
-                    .Concat(
-                        Enumerable.Range(0, operation.NumberOfParameters - parameterModes.Count())
-                        .Select(_ => '0'))
-                    .ToArray();
 
                 return Enumerable
                     .Range(1, operation.NumberOfParameters)
-                    .Zip(parameterModes, (i, m) => (i, parameterMode: m))
+                    .Zip(GetParameterModesOrDefault(), (i, m) => (i, parameterMode: m))
                     .Select(t => NthOperand(t.i, t.parameterMode));
+            }
+
+            private char[] GetParameterModesOrDefault()
+            {
+                return
+                    opCode.ParameterModes
+                    .Concat(
+                        Enumerable.Range(
+                            0,
+                            operation.NumberOfParameters - opCode.ParameterModes.Count())
+                        .Select(_ => '0'))
+                    .ToArray();
             }
 
             private Func<int> NthOperand(int n, char parameterMode)
