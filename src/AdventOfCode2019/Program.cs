@@ -71,17 +71,21 @@ namespace AoC19
 
             public ExecutionResult Execute()
             {
-                if (operation is Output)
+                if (operation is IAction action)
                 {
-                    _ = operation.Execute(GetArguments());
+                    action.Execute(GetArguments());
                     return
                         new ActionExecutionResult(operation.InstructionPointerOffset);
                 }
+                else if (operation is IFunction function)
+                {
+                    return
+                        new ExecutionResult(
+                            function.Execute(GetArguments()),
+                            operation.InstructionPointerOffset);
+                }
 
-                return
-                    new ExecutionResult(
-                        operation.Execute(GetArguments()),
-                        operation.InstructionPointerOffset);
+                throw new InvalidOperationException($"{OpCode} is not supported.");
             }
 
             private static IOperation Create(
@@ -117,11 +121,19 @@ namespace AoC19
                 int NumberOfParameters { get; }
 
                 int InstructionPointerOffset { get; }
+            }
 
+            private interface IFunction : IOperation
+            {
                 int Execute(IEnumerable<Func<int>> arguments);
             }
 
-            private class Addition : IOperation
+            private interface IAction : IOperation
+            {
+                void Execute(IEnumerable<Func<int>> arguments);
+            }
+
+            private class Addition : IFunction
             {
                 public int InstructionPointerOffset => 4;
 
@@ -136,7 +148,7 @@ namespace AoC19
                 }
             }
 
-            private class Multiplication : IOperation
+            private class Multiplication : IFunction
             {
                 public int InstructionPointerOffset => 4;
 
@@ -149,16 +161,16 @@ namespace AoC19
                 }
             }
 
-            private class Halting : IOperation
+            private class Halting : IAction
             {
                 public int InstructionPointerOffset => 0;
 
                 public int NumberOfParameters => 0;
 
-                public int Execute(IEnumerable<Func<int>> arguments) => throw new ProgramHalted();
+                public void Execute(IEnumerable<Func<int>> arguments) => throw new ProgramHalted();
             }
 
-            private class Input : IOperation
+            private class Input : IFunction
             {
                 private readonly Func<int> readInput;
 
@@ -174,7 +186,7 @@ namespace AoC19
                 public int Execute(IEnumerable<Func<int>> arguments) => readInput();
             }
 
-            private class Output : IOperation
+            private class Output : IAction
             {
                 private readonly Action<int> writeOutput;
 
@@ -187,12 +199,10 @@ namespace AoC19
 
                 public int NumberOfParameters => 1;
 
-                public int Execute(IEnumerable<Func<int>> arguments)
+                public void Execute(IEnumerable<Func<int>> arguments)
                 {
                     var args = arguments.ToArray();
                     writeOutput(args[0]());
-
-                    return -1;
                 }
             }
         }
