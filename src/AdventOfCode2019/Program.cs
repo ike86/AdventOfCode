@@ -78,10 +78,22 @@ namespace AoC19
 
                 public int Value => opCode % 100;
 
-                public IEnumerable<char> ParameterModes =>
+                public IEnumerable<ParameterMode> ParameterModes =>
                     ((opCode - Value) / 100).ToString()
                     .Reverse()
+                    .Select(ToParameterMode)
                     .ToArray();
+
+                private ParameterMode ToParameterMode(char ch)
+                {
+                    return (ParameterMode)int.Parse(ch.ToString());
+                }
+            }
+
+            private enum ParameterMode
+            {
+                Position = 0,
+                Immediate = 1,
             }
 
             public IExecutionResult Execute()
@@ -104,19 +116,18 @@ namespace AoC19
             }
 
             private static IOperation Create(
-                OperationCode opCode1,
+                OperationCode opCode,
                 Func<int> readInput,
                 Action<int> writeOutput)
             {
-                var opCode = opCode1.Value;
 
-                if (opCode == 1) return new Addition();
-                else if (opCode == 2) return new Multiplication();
-                else if (opCode == 3) return new Input(readInput);
-                else if (opCode == 4) return new Output(writeOutput);
-                else if (opCode == 99) return new Halting();
+                if (opCode.Value == 1) return new Addition();
+                else if (opCode.Value == 2) return new Multiplication();
+                else if (opCode.Value == 3) return new Input(readInput);
+                else if (opCode.Value == 4) return new Output(writeOutput);
+                else if (opCode.Value == 99) return new Halting();
 
-                throw new InvalidOperationException($"Opcode {opCode} is not supported");
+                throw new InvalidOperationException($"Opcode {opCode.Value} is not supported");
             }
 
             private IEnumerable<Func<int>> GetArguments()
@@ -131,7 +142,7 @@ namespace AoC19
                     .Select(t => NthOperand(t.i, t.parameterMode));
             }
 
-            private char[] GetParameterModesOrDefault()
+            private ParameterMode[] GetParameterModesOrDefault()
             {
                 return
                     opCode.ParameterModes
@@ -139,15 +150,15 @@ namespace AoC19
                         Enumerable.Range(
                             0,
                             operation.NumberOfParameters - opCode.ParameterModes.Count())
-                        .Select(_ => '0'))
+                        .Select(_ => default(ParameterMode)))
                     .ToArray();
             }
 
-            private Func<int> NthOperand(int n, char parameterMode)
+            private Func<int> NthOperand(int n, ParameterMode parameterMode)
             {
-                if(parameterMode == '1')
+                if(parameterMode == ParameterMode.Immediate)
                     return () => code[instructionPointer + n];
-                else if (parameterMode == '0')
+                else if (parameterMode == ParameterMode.Position)
                     return () => code[AddressOfNthOperand(n)];
 
                 throw new InvalidOperationException(
