@@ -96,7 +96,7 @@ namespace AoC19
                 else if (opCode == 4) return new Output(writeOutput);
                 else if (opCode == 99) return new Halting();
 
-                throw new InvalidOperationException(opCode.ToString());
+                throw new InvalidOperationException($"Opcode {opCode} is not supported");
             }
 
             private IEnumerable<Func<int>> GetArguments()

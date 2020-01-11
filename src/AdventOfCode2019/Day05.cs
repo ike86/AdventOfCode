@@ -96,6 +96,14 @@ namespace AoC19
             Run("02,1,2,0,99").Should().Be(2);
         }
 
+        [Theory, AutoData]
+        void Opcodes_support_immediate_mode(int x, int y)
+        {
+            using var a = new AssertionScope();
+            Run($"1101,{x},{y},0,99").Should().Be(x + y);
+            Run($"1102,{x},{y},0,99").Should().Be(x * y);
+        }
+
         /*
         For example, consider the program 1002,4,3,4,33.
 
