@@ -27,16 +27,13 @@ namespace AoC19
                 var intruction =
                     new Instruction(Code, instructionPointer, readInput, writeOutput);
 
-                ExecutionResult result;
+                IExecutionResult result;
                 try
                 {
                     result = intruction.Execute();
-                    if (result is ActionExecutionResult)
+                    if(result is FunctionExecutionResult er)
                     {
-                    }
-                    else
-                    {
-                        Code[intruction.AddressOfResult] = result.Value;
+                        Code[intruction.AddressOfResult] = er.Value;
                     }
                 }
                 catch (ProgramHalted)
@@ -69,7 +66,7 @@ namespace AoC19
 
             private int OpCode => code[instructionPointer + 0];
 
-            public ExecutionResult Execute()
+            public IExecutionResult Execute()
             {
                 if (operation is IAction action)
                 {
@@ -80,7 +77,7 @@ namespace AoC19
                 else if (operation is IFunction function)
                 {
                     return
-                        new ExecutionResult(
+                        new FunctionExecutionResult(
                             function.Execute(GetArguments()),
                             operation.InstructionPointerOffset);
                 }
@@ -117,9 +114,14 @@ namespace AoC19
             private int AddressOfNthOperand(int n) => code[instructionPointer + n];
         }
 
-        private class ExecutionResult
+        private interface IExecutionResult
         {
-            public ExecutionResult(
+            int InstructionPointerOffset { get; }
+        }
+
+        private class FunctionExecutionResult : IExecutionResult
+        {
+            public FunctionExecutionResult(
                 int value,
                 int instructionPointerOffset)
             {
@@ -132,13 +134,14 @@ namespace AoC19
             public int InstructionPointerOffset { get; }
         }
 
-        private class ActionExecutionResult : ExecutionResult
+        private class ActionExecutionResult : IExecutionResult
         {
             public ActionExecutionResult(int instructionPointerOffset)
-                : base(default, instructionPointerOffset)
             {
-
+                InstructionPointerOffset = instructionPointerOffset;
             }
+
+            public int InstructionPointerOffset { get; }
         }
 
         private class ProgramHalted : Exception { }
