@@ -52,6 +52,19 @@ namespace AoC19
         Programs that use these instructions will come with documentation
         that explains what should be connected to the input and output.
         The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
+        */
+
+        [Theory, AutoData]
+        void Opcode_3_and_4_integrates_as_expected(int input)
+        {
+            int output = 0;
+
+            Run("3,0,4,0,99", readInput: () => input, writeOutput: x => output = x);
+
+            output.Should().Be(input);
+        }
+
+        /*
 
         Second, you'll need to add support for parameter modes:
 
