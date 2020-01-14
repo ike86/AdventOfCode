@@ -97,6 +97,26 @@ namespace AoC19
                     writeOutput(args[0]());
                 }
             }
+
+            private class JumpIfTrue : IAction
+            {
+                private readonly int instructionPointer;
+
+                public JumpIfTrue(int instructionPointer)
+                {
+                    this.instructionPointer = instructionPointer;
+                }
+
+                public int NumberOfParameters => 2;
+
+                public int InstructionPointerOffset { get; private set; }
+
+                public void Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    InstructionPointerOffset = args[1]() - instructionPointer;
+                }
+            }
         }
     }
 }

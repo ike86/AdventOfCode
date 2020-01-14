@@ -62,7 +62,7 @@ namespace AoC19
                 this.instructionPointer = instructionPointer;
                 opCode = new OperationCode(this.code[instructionPointer + 0]);
 
-                operation = Create(opCode, readInput, writeOutput);
+                operation = Create(instructionPointer, opCode, readInput, writeOutput);
             }
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
@@ -87,18 +87,22 @@ namespace AoC19
             }
 
             private static IOperation Create(
+                int instructionPointer,
                 OperationCode opCode,
                 Func<int> readInput,
                 Action<int> writeOutput)
             {
-
-                if (opCode.Value == 1) return new Addition();
-                else if (opCode.Value == 2) return new Multiplication();
-                else if (opCode.Value == 3) return new Input(readInput);
-                else if (opCode.Value == 4) return new Output(writeOutput);
-                else if (opCode.Value == 99) return new Halting();
-
-                throw new InvalidOperationException($"Opcode {opCode.Value} is not supported");
+                return opCode.Value switch
+                {
+                    1 => new Addition(),
+                    2 => new Multiplication(),
+                    3 => new Input(readInput),
+                    4 => new Output(writeOutput),
+                    5 => new JumpIfTrue(instructionPointer),
+                    99 => new Halting(),
+                    _ => throw new InvalidOperationException(
+                        $"Opcode {opCode.Value} is not supported"),
+                };
             }
 
             private IEnumerable<Func<int>> GetArguments()

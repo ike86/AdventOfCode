@@ -198,9 +198,19 @@ namespace AoC19
         Opcode 5 is jump-if-true:
         if the first parameter is non-zero,
         it sets the instruction pointer to the value from the second parameter.
-        Otherwise, it does nothing.
+        Otherwise, it does nothing.*/
 
-        Opcode 6 is jump-if-false:
+        [Theory, AutoData]
+        void OpCode_5_jumps_if_ture(int nonZero, int expected)
+        {
+            int output = 0;
+
+            Run($"5,{nonZero},4,99,4,7,99,{expected}", writeOutput: x => output = x);
+
+            output.Should().Be(expected);
+        }
+
+        /*Opcode 6 is jump-if-false:
         if the first parameter is zero,
         it sets the instruction pointer to the value from the second parameter.
         Otherwise, it does nothing.
