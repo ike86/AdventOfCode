@@ -109,12 +109,15 @@ namespace AoC19
 
                 public int NumberOfParameters => 2;
 
-                public int InstructionPointerOffset { get; private set; }
+                public int InstructionPointerOffset { get; private set; } = 3;
 
                 public void Execute(IEnumerable<Func<int>> arguments)
                 {
                     var args = arguments.ToArray();
-                    InstructionPointerOffset = args[1]() - instructionPointer;
+                    if (args[0]() != 0)
+                    {
+                        InstructionPointerOffset = args[1]() - instructionPointer;
+                    }
                 }
             }
         }

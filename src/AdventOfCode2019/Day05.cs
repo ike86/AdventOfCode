@@ -201,13 +201,23 @@ namespace AoC19
         Otherwise, it does nothing.*/
 
         [Theory, AutoData]
-        void OpCode_5_jumps_if_ture(int nonZero, int expected)
+        void OpCode_5_jumps_if_true(int nonZero, int expected)
         {
             int output = 0;
 
-            Run($"5,{nonZero},4,99,4,7,99,{expected}", writeOutput: x => output = x);
+            Run($"1105,{nonZero},4,99,4,7,99,{expected}", writeOutput: x => output = x);
 
             output.Should().Be(expected);
+        }
+
+        [Theory, AutoData]
+        void OpCode_5_does_nothing_if_false(int notExpected)
+        {
+            int output = 0;
+
+            Run($"1105,0,4,99,4,7,99,{notExpected}", writeOutput: x => output = x);
+
+            output.Should().Be(default);
         }
 
         /*Opcode 6 is jump-if-false:
