@@ -137,10 +137,10 @@ namespace AoC19
                 public void Execute(IEnumerable<Func<int>> arguments)
                 {
                     var args = arguments.ToArray();
-                    ////if (args[0]() != 0)
-                    ////{
+                    if (args[0]() == 0)
+                    {
                         InstructionPointerOffset = args[1]() - instructionPointer;
-                    ////}
+                    }
                 }
             }
         }

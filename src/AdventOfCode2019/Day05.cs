@@ -236,6 +236,16 @@ namespace AoC19
             output.Should().Be(expected);
         }
 
+        [Theory, AutoData]
+        void OpCode_6_does_nothing_if_true(int nonZero, int notExpected)
+        {
+            int output = 0;
+
+            Run($"1106,{nonZero},4,99,4,7,99,{notExpected}", writeOutput: x => output = x);
+
+            output.Should().Be(default);
+        }
+
         /*Opcode 7 is less than:
         if the first parameter is less than the second parameter,
         it stores 1 in the position given by the third parameter.
