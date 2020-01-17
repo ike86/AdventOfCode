@@ -99,6 +99,7 @@ namespace AoC19
                     3 => new Input(readInput),
                     4 => new Output(writeOutput),
                     5 => new JumpIfTrue(instructionPointer),
+                    6 => new JumpIfFalse(instructionPointer),
                     99 => new Halting(),
                     _ => throw new InvalidOperationException(
                         $"Opcode {opCode.Value} is not supported"),

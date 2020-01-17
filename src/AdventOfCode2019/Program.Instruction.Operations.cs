@@ -120,6 +120,29 @@ namespace AoC19
                     }
                 }
             }
+
+            private class JumpIfFalse : IAction
+            {
+                private readonly int instructionPointer;
+
+                public JumpIfFalse(int instructionPointer)
+                {
+                    this.instructionPointer = instructionPointer;
+                }
+
+                public int NumberOfParameters => 2;
+
+                public int InstructionPointerOffset { get; private set; } = 3;
+
+                public void Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    ////if (args[0]() != 0)
+                    ////{
+                        InstructionPointerOffset = args[1]() - instructionPointer;
+                    ////}
+                }
+            }
         }
     }
 }

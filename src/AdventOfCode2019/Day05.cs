@@ -223,9 +223,20 @@ namespace AoC19
         /*Opcode 6 is jump-if-false:
         if the first parameter is zero,
         it sets the instruction pointer to the value from the second parameter.
-        Otherwise, it does nothing.
+        Otherwise, it does nothing. */
 
-        Opcode 7 is less than:
+
+        [Theory, AutoData]
+        void OpCode_6_jumps_if_false(int expected)
+        {
+            int output = 0;
+
+            Run($"1106,0,4,99,4,7,99,{expected}", writeOutput: x => output = x);
+
+            output.Should().Be(expected);
+        }
+
+        /*Opcode 7 is less than:
         if the first parameter is less than the second parameter,
         it stores 1 in the position given by the third parameter.
         Otherwise, it stores 0.
