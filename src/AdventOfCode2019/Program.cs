@@ -33,8 +33,14 @@ namespace AoC19
                     result = intruction.Execute();
                     if (result is FunctionExecutionResult er)
                     {
-                        Code[intruction.AddressOfResult] = er.Value;
+                        Code[er.Address] = er.Value;
                     }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    throw new ProgramException(
+                        $"Program running failed while executing {intruction.OperationName}.",
+                        ex);
                 }
                 catch (ProgramHalted)
                 {
@@ -67,6 +73,8 @@ namespace AoC19
 
             public int AddressOfResult => code[instructionPointer + operation.NumberOfParameters + 1];
 
+            public string OperationName => operation.GetType().Name;
+
             public IExecutionResult Execute()
             {
                 if (operation is IAction action)
@@ -79,8 +87,19 @@ namespace AoC19
                 {
                     return
                         new FunctionExecutionResult(
-                            function.Execute(GetArguments()),
+                            value: function.Execute(GetArguments()),
+                            address: AddressOfResult,
                             operation.InstructionPointerOffset);
+                }
+                else if (operation is IActionWithSideEffect actionWithSideEffect)
+                {
+                    var result = actionWithSideEffect.Execute(GetArguments());
+
+                    return
+                        new FunctionExecutionResult(
+                            value: result.Value,
+                            address: result.Address,
+                            actionWithSideEffect.InstructionPointerOffset);
                 }
 
                 throw new InvalidOperationException($"{opCode.Value} is not supported.");
@@ -100,6 +119,7 @@ namespace AoC19
                     4 => new Output(writeOutput),
                     5 => new JumpIfTrue(instructionPointer),
                     6 => new JumpIfFalse(instructionPointer),
+                    7 => new LessThan(),
                     99 => new Halting(),
                     _ => throw new InvalidOperationException(
                         $"Opcode {opCode.Value} is not supported"),
@@ -152,5 +172,13 @@ namespace AoC19
         }
 
         private class ProgramHalted : Exception { }
+    }
+
+    public class ProgramException : Exception
+    {
+        public ProgramException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
     }
 }

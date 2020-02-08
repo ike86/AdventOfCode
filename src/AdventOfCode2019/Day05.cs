@@ -249,9 +249,20 @@ namespace AoC19
         /*Opcode 7 is less than:
         if the first parameter is less than the second parameter,
         it stores 1 in the position given by the third parameter.
-        Otherwise, it stores 0.
+        Otherwise, it stores 0.*/
 
-        Opcode 8 is equals:
+        [Theory, AutoData]
+        void OpCode_7_stores_one_if_the_first_is_less_than_second(int x, int y)
+        {
+            var first = Math.Min(x, y);
+            var second = Math.Max(x, y);
+
+            var result = Run($"11107,{first},{second},0,99");
+
+            result.Should().Be(1);
+        }
+
+        /*Opcode 8 is equals:
         if the first parameter is equal to the second parameter,
         it stores 1 in the position given by the third parameter.
         Otherwise, it stores 0.

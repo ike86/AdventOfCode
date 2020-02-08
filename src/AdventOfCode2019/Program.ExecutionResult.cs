@@ -11,14 +11,16 @@
         {
             public FunctionExecutionResult(
                 int value,
+                int address,
                 int instructionPointerOffset)
             {
                 Value = value;
+                Address = address;
                 InstructionPointerOffset = instructionPointerOffset;
             }
 
             public int Value { get; }
-
+            public int Address { get; }
             public int InstructionPointerOffset { get; }
         }
 

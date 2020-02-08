@@ -25,6 +25,17 @@ namespace AoC19
                 void Execute(IEnumerable<Func<int>> arguments);
             }
 
+            private interface IActionWithSideEffect : IOperation
+            {
+                Assignment Execute(IEnumerable<Func<int>> arguments);
+            }
+
+            private class Assignment
+            {
+                public int Value { get; internal set; }
+                public int Address { get; internal set; }
+            }
+
             private class Addition : IFunction
             {
                 public int InstructionPointerOffset => 4;
@@ -141,6 +152,29 @@ namespace AoC19
                     {
                         InstructionPointerOffset = args[1]() - instructionPointer;
                     }
+                }
+            }
+
+            private class LessThan : IActionWithSideEffect
+            {
+                public int InstructionPointerOffset => 4;
+
+                public int NumberOfParameters => 3;
+
+                public Assignment Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    if (args[0]() < args[1]())
+                    {
+                        return
+                            new Assignment
+                            {
+                                Value = 1,
+                                Address = args[2](),
+                            };
+                    }
+                    ////return args[0]() < args[1]() ? 1 :
+                    throw new Exception();
                 }
             }
         }
