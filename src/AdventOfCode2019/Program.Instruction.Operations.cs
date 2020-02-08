@@ -182,6 +182,29 @@ namespace AoC19
                         };
                 }
             }
+
+            private class Equals : IActionWithSideEffect
+            {
+                public int NumberOfParameters => 3;
+
+                public int InstructionPointerOffset => 4;
+
+                public Assignment Execute(IEnumerable<Func<int>> arguments)
+                {
+                    var args = arguments.ToArray();
+                    if (args[0]() == args[1]())
+                    {
+                        return
+                            new Assignment
+                            {
+                                Value = 1,
+                                Address = args[2](),
+                            };
+                    }
+
+                    return null;
+                }
+            }
         }
     }
 }

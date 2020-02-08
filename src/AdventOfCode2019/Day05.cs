@@ -287,9 +287,20 @@ namespace AoC19
         /*Opcode 8 is equals:
         if the first parameter is equal to the second parameter,
         it stores 1 in the position given by the third parameter.
-        Otherwise, it stores 0.
+        Otherwise, it stores 0.*/
 
-        Like all instructions, these instructions need to support parameter modes as described above.
+        [Theory, AutoData]
+        void OpCode_8_stores_one_if_the_first_equals_second(int x)
+        {
+            var first = x;
+            var second = x;
+
+            var result = Run($"11108,{first},{second},0,99");
+
+            result.Should().Be(1);
+        }
+
+        /*Like all instructions, these instructions need to support parameter modes as described above.
 
         Normally, after an instruction is finished,
         the instruction pointer increases by the number of values in that instruction.

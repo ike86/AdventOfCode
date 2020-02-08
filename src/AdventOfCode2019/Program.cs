@@ -120,6 +120,7 @@ namespace AoC19
                     5 => new JumpIfTrue(instructionPointer),
                     6 => new JumpIfFalse(instructionPointer),
                     7 => new LessThan(),
+                    8 => new Equals(),
                     99 => new Halting(),
                     _ => throw new InvalidOperationException(
                         $"Opcode {opCode.Value} is not supported"),
