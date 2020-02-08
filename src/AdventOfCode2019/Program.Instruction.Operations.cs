@@ -164,17 +164,22 @@ namespace AoC19
                 public Assignment Execute(IEnumerable<Func<int>> arguments)
                 {
                     var args = arguments.ToArray();
+                    var result = -1;
                     if (args[0]() < args[1]())
                     {
-                        return
-                            new Assignment
-                            {
-                                Value = 1,
-                                Address = args[2](),
-                            };
+                        result = 1;
                     }
-                    ////return args[0]() < args[1]() ? 1 :
-                    throw new Exception();
+                    else if (args[0]() > args[1]())
+                    {
+                        result = 0;
+                    }
+
+                    return
+                        new Assignment
+                        {
+                            Value = result,
+                            Address = args[2](),
+                        };
                 }
             }
         }
