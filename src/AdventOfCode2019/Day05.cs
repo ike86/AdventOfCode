@@ -273,6 +273,17 @@ namespace AoC19
             result.Should().Be(0);
         }
 
+        [Theory, AutoData]
+        void OpCode_7_stores_zero_if_the_first_equals_second(int x)
+        {
+            var first = x;
+            var second = x;
+
+            var result = Run($"11107,{first},{second},0,99");
+
+            result.Should().Be(0);
+        }
+
         /*Opcode 8 is equals:
         if the first parameter is equal to the second parameter,
         it stores 1 in the position given by the third parameter.
