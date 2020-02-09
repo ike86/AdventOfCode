@@ -201,8 +201,15 @@ namespace AoC19
                                 Address = args[2](),
                             };
                     }
-
-                    return null;
+                    else
+                    {
+                        return
+                            new Assignment
+                            {
+                                Value = 0,
+                                Address = args[2](),
+                            };
+                    }
                 }
             }
         }

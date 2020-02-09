@@ -300,6 +300,14 @@ namespace AoC19
             result.Should().Be(1);
         }
 
+        [Theory, AutoData]
+        void OpCode_8_stores_zero_if_the_first_equals_second(int first, int second)
+        {
+            var result = Run($"11108,{first},{second},0,99");
+
+            result.Should().Be(0);
+        }
+
         /*Like all instructions, these instructions need to support parameter modes as described above.
 
         Normally, after an instruction is finished,
