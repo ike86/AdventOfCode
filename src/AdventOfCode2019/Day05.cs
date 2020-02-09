@@ -321,8 +321,32 @@ namespace AoC19
         and then produce one output:
 
         3,9,8,9,10,9,4,9,99,-1,8
-        - Using position mode, consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not).
-        3,9,7,9,10,9,4,9,99,-1,8
+        - Using position mode, consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not).*/
+
+        [Theory, AutoData]
+        void Example_returns_zero_if_input_is_not_eight(int input)
+        {
+            input = input == 8 ? input + 1 : input;
+            int? output = null;
+
+            Run("3,9,8,9,10,9,4,9,99,-1,8", readInput: () => input, writeOutput: x => output = x);
+
+            output.Should().HaveValue();
+            output.Should().Be(0);
+        }
+
+        [Fact]
+        void Example_returns_one_if_input_is_eight()
+        {
+            int? output = null;
+
+            Run("3,9,8,9,10,9,4,9,99,-1,8", readInput: () => 8, writeOutput: x => output = x);
+
+            output.Should().HaveValue();
+            output.Should().Be(1);
+        }
+
+        /*3,9,7,9,10,9,4,9,99,-1,8
         - Using position mode, consider whether the input is less than 8; output 1 (if it is) or 0 (if it is not).
         3,3,1108,-1,8,3,4,3,99
         - Using immediate mode, consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not).
@@ -354,5 +378,16 @@ namespace AoC19
 
         What is the diagnostic code for system ID 5?
         */
+
+        [Fact]
+        void Solves_puzzle_2()
+        {
+            int? output = null;
+
+            Run(MyPuzzleInput, readInput: () => 5, writeOutput: x => output = x);
+
+            output.Should().HaveValue();
+            output.Should().Be(-1);
+        }
     }
 }
