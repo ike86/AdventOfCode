@@ -3,17 +3,23 @@
 open System.Collections.Generic
 
 // An Intcode program is a list of integers separated by commas
-// (like 1,0,0,3,99). To run one, start by looking at the first integer (called position 0).
+// (like 1,0,0,3,99).
+// To run one, start by looking at the first integer (called position 0).
 // Here, you will find an opcode - either 1, 2, or 99.
 // The opcode indicates what to do; for example,
 // 99 means that the program is finished and should immediately halt.
 // Encountering an unknown opcode means something went wrong.
 
 module Intcode =
-    let Program = List[int]
+    type Program = int list
 
-    let parse (s: string) =
+    exception ProgramHaltedException
+
+    let parse (s: string): Program =
         s.Split ','|> Array.map System.Int32.Parse |> Seq.toList
+
+    let run (program: Program) =
+        if program.[0] = 99 then raise ProgramHaltedException
 
 // Opcode 1 adds together numbers read from two positions
 // and stores the result in a third position.
