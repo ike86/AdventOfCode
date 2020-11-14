@@ -6,12 +6,13 @@
 
     <ItemGroup>
         <Compile Include="Library.fs" />
-        <Content Include=".editorconfig" />
         <Compile Include="Tests.fs" />
+        <Content Include=".editorconfig" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="FsUnit.xUnit" Version="4.0.2" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
     </ItemGroup>
 
 </Project>

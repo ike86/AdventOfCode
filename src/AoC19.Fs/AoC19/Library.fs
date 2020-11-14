@@ -1,12 +1,20 @@
 ﻿namespace AoC19
 
+open System.Collections.Generic
+
 // An Intcode program is a list of integers separated by commas
 // (like 1,0,0,3,99). To run one, start by looking at the first integer (called position 0).
 // Here, you will find an opcode - either 1, 2, or 99.
 // The opcode indicates what to do; for example,
 // 99 means that the program is finished and should immediately halt.
 // Encountering an unknown opcode means something went wrong.
-//
+
+module Intcode =
+    let Program = List[int]
+
+    let parse (s: string) =
+        s.Split ','|> Array.map System.Int32.Parse |> Seq.toList
+
 // Opcode 1 adds together numbers read from two positions
 // and stores the result in a third position.
 // The three integers immediately after the opcode tell you these three positions
