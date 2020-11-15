@@ -1,5 +1,6 @@
 ﻿namespace AoC19
 
+open System
 open System.Collections.Generic
 
 // An Intcode program is a list of integers separated by commas
@@ -11,15 +12,24 @@ open System.Collections.Generic
 // Encountering an unknown opcode means something went wrong.
 
 module Intcode =
-    type Program = int list
+    type Program = int []
 
     exception ProgramHaltedException
 
     let parse (s: string): Program =
-        s.Split ','|> Array.map System.Int32.Parse |> Seq.toList
+        s.Split ','|> Array.map System.Int32.Parse |> Seq.toArray
 
     let run (program: Program) =
         if program.[0] = 99 then raise ProgramHaltedException
+        else if program.[0] = 1 then
+            let leftIndex = program.[1]
+            let rightIndex = program.[2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[3]
+            let output = left + right
+            Array.set program outputIndex output
+        program
 
 // Opcode 1 adds together numbers read from two positions
 // and stores the result in a third position.
