@@ -55,13 +55,17 @@ module Intcode =
             Array.set program outputIndex output
             program
 
-//        while true
-//        do
-        match program.[0] with
-        | 99 -> raise ProgramHaltedException
-        | 1 -> add program 0
-        | 2 -> multiply program 0
-        | _ -> failwith "unexpected opcode"
+        let mutable p = program
+        let mutable i = 0
+        while true do
+            p <-
+                match program.[i] with
+                | 99 -> raise ProgramHaltedException
+                | 1 -> add program i
+                | 2 -> multiply program i
+                | _ -> failwith "unexpected opcode"
+            i <- i + 4
+        p
 
 // Once you're done processing an opcode,
 // move to the next one by stepping forward 4 positions.
