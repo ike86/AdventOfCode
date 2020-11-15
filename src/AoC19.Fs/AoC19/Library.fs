@@ -1,7 +1,6 @@
 ﻿namespace AoC19
 
 open System
-open System.Collections.Generic
 
 // An Intcode program is a list of integers separated by commas
 // (like 1,0,0,3,99).
@@ -17,7 +16,7 @@ module Intcode =
     exception ProgramHaltedException
 
     let parse (s: string): Program =
-        s.Split ','|> Array.map System.Int32.Parse |> Seq.toArray
+        s.Split ','|> Array.map Int32.Parse |> Seq.toArray
 
     let run (program: Program) =
         if program.[0] = 99 then raise ProgramHaltedException
