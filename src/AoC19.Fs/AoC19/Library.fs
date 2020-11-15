@@ -28,6 +28,14 @@ module Intcode =
             let outputIndex = program.[3]
             let output = left + right
             Array.set program outputIndex output
+        else if program.[0] = 2 then
+            let leftIndex = program.[1]
+            let rightIndex = program.[2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[3]
+            let output = left * right
+            Array.set program outputIndex output
         program
 
 // Opcode 1 adds together numbers read from two positions

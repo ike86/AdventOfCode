@@ -22,3 +22,8 @@ module ``Intcode tests`` =
     let ``Opcode 1 adds together numbers`` () =
         let output: Program = run (parse "1,5,6,7,99,4,5,0")
         Array.last output |> should equal (4 + 5)
+
+    [<Fact>]
+    let ``Opcode 2 multiplies two numbers`` () =
+        let output: Program = run (parse "2,5,6,7,99,4,5,0")
+        Array.last output |> should equal (4 * 5)
