@@ -24,49 +24,6 @@ open System
 // Again, the three integers after the opcode indicate
 // where the inputs and outputs are, not their values.
 //
-
-module Intcode =
-    type Program = int []
-
-    exception ProgramHaltedException
-
-    let parse (s: string): Program =
-        s.Split ','|> Array.map Int32.Parse |> Seq.toArray
-
-    let run (program: Program) =
-
-        let add (program: Program) i =
-            let leftIndex = program.[i + 1]
-            let rightIndex = program.[i + 2]
-            let left = program.[leftIndex]
-            let right = program.[rightIndex]
-            let outputIndex = program.[i + 3]
-            let output = left + right
-            Array.set program outputIndex output
-            program
-
-        let multiply (program: Program) i =
-            let leftIndex = program.[i + 1]
-            let rightIndex = program.[i + 2]
-            let left = program.[leftIndex]
-            let right = program.[rightIndex]
-            let outputIndex = program.[i + 3]
-            let output = left * right
-            Array.set program outputIndex output
-            program
-
-        let mutable p = program
-        let mutable i = 0
-        while true do
-            p <-
-                match program.[i] with
-                | 99 -> raise ProgramHaltedException
-                | 1 -> add program i
-                | 2 -> multiply program i
-                | _ -> failwith "unexpected opcode"
-            i <- i + 4
-        p
-
 // Once you're done processing an opcode,
 // move to the next one by stepping forward 4 positions.
 //
@@ -117,6 +74,52 @@ module Intcode =
 //     2,4,4,5,99,0 becomes 2,4,4,5,99,9801 (99 * 99 = 9801).
 //     1,1,1,4,99,5,6,0,99 becomes 30,1,1,4,2,5,6,0,99.
 //
+
+module Intcode =
+    type Program = int []
+
+    exception ProgramHaltedException
+
+    let parse (s: string): Program =
+        s.Split ','|> Array.map Int32.Parse |> Seq.toArray
+
+    let run (program: Program) =
+
+        let add (program: Program) i =
+            let leftIndex = program.[i + 1]
+            let rightIndex = program.[i + 2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[i + 3]
+            let output = left + right
+            Array.set program outputIndex output
+            program
+
+        let multiply (program: Program) i =
+            let leftIndex = program.[i + 1]
+            let rightIndex = program.[i + 2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[i + 3]
+            let output = left * right
+            Array.set program outputIndex output
+            program
+
+        let mutable p = program
+        try
+            let mutable i = 0
+            while true do
+                p <-
+                    match program.[i] with
+                    | 99 -> raise ProgramHaltedException
+                    | 1 -> add program i
+                    | 2 -> multiply program i
+                    | _ -> failwith "unexpected opcode"
+                i <- i + 4
+            p
+        with
+        | ProgramHaltedException -> p
+
 // Once you have a working computer,
 // the first step is to restore the gravity assist program (your puzzle input)
 // to the "1202 program alarm" state it had just before the last computer caught fire.

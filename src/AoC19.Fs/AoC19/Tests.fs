@@ -14,11 +14,6 @@ module ``Given an Intcode program code`` =
 module ``Intcode tests`` =
 
     [<Fact>]
-    let ``run halts on 99`` () =
-        (fun () -> (run (parse "99")) |> ignore)
-        |> should throw typeof<ProgramHaltedException>
-
-    [<Fact>]
     let ``Opcode 1 adds together numbers`` () =
         let output: Program = run (parse "1,5,6,7,99,4,5,0")
         Array.last output |> should equal (4 + 5)
@@ -30,6 +25,5 @@ module ``Intcode tests`` =
 
     [<Fact>]
     let ``run iterates over all instructions, until hits halt`` () =
-        let program = parse "1,9,10,3,2,3,11,0,99,30,40,50"
-        (fun () -> (run program) |> ignore)
-        |> should throw typeof<ProgramHaltedException>
+        let output: Program = run (parse "1,9,10,3,2,3,11,0,99,30,40,50")
+        output |> should equal (parse "3500,9,10,70,2,3,11,0,99,30,40,50")
