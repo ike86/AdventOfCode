@@ -9,35 +9,6 @@ open System
 // The opcode indicates what to do; for example,
 // 99 means that the program is finished and should immediately halt.
 // Encountering an unknown opcode means something went wrong.
-
-module Intcode =
-    type Program = int []
-
-    exception ProgramHaltedException
-
-    let parse (s: string): Program =
-        s.Split ','|> Array.map Int32.Parse |> Seq.toArray
-
-    let run (program: Program) =
-        if program.[0] = 99 then raise ProgramHaltedException
-        else if program.[0] = 1 then
-            let leftIndex = program.[1]
-            let rightIndex = program.[2]
-            let left = program.[leftIndex]
-            let right = program.[rightIndex]
-            let outputIndex = program.[3]
-            let output = left + right
-            Array.set program outputIndex output
-        else if program.[0] = 2 then
-            let leftIndex = program.[1]
-            let rightIndex = program.[2]
-            let left = program.[leftIndex]
-            let right = program.[rightIndex]
-            let outputIndex = program.[3]
-            let output = left * right
-            Array.set program outputIndex output
-        program
-
 // Opcode 1 adds together numbers read from two positions
 // and stores the result in a third position.
 // The three integers immediately after the opcode tell you these three positions
@@ -53,6 +24,45 @@ module Intcode =
 // Again, the three integers after the opcode indicate
 // where the inputs and outputs are, not their values.
 //
+
+module Intcode =
+    type Program = int []
+
+    exception ProgramHaltedException
+
+    let parse (s: string): Program =
+        s.Split ','|> Array.map Int32.Parse |> Seq.toArray
+
+    let run (program: Program) =
+
+        let add (program: Program) i =
+            let leftIndex = program.[i + 1]
+            let rightIndex = program.[i + 2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[i + 3]
+            let output = left + right
+            Array.set program outputIndex output
+            program
+
+        let multiply (program: Program) i =
+            let leftIndex = program.[i + 1]
+            let rightIndex = program.[i + 2]
+            let left = program.[leftIndex]
+            let right = program.[rightIndex]
+            let outputIndex = program.[i + 3]
+            let output = left * right
+            Array.set program outputIndex output
+            program
+
+//        while true
+//        do
+        match program.[0] with
+        | 99 -> raise ProgramHaltedException
+        | 1 -> add program 0
+        | 2 -> multiply program 0
+        | _ -> failwith "unexpected opcode"
+
 // Once you're done processing an opcode,
 // move to the next one by stepping forward 4 positions.
 //
