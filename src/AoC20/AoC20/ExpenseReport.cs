@@ -6,19 +6,19 @@ using Xunit;
 
 namespace AoC20
 {
-    public class Class1
+    public class Day01
     {
-        [Fact]
-        public void Test()
-        {
-            var expenseReport =
-                ExpenseReport.Parse(
-@"1721
+        private const string Example = @"1721
 979
 366
 299
 675
-1456");
+1456";
+
+        [Fact]
+        public void Part_1_example()
+        {
+            var expenseReport = ExpenseReport.Parse(Example);
 
             var fix = expenseReport.GetFix();
 
@@ -34,6 +34,16 @@ namespace AoC20
             var fix = expenseReport.GetFix();
 
             fix.Should().Be(786811);
+        }
+        
+        [Fact]
+        public void Part_2_example()
+        {
+            var expenseReport = ExpenseReport.Parse(Example);
+
+            var fix = expenseReport.GetFix3();
+
+            fix.Should().Be(979 * 366 * 675);
         }
     }
 
@@ -62,5 +72,26 @@ namespace AoC20
                 .First(tuple => tuple.left + tuple.right == 2020);
             return t.left * t.right;
         }
+
+        public int GetFix3()
+        {
+            foreach (var e1 in _expenses)
+            {
+                foreach (var e2 in _expenses)
+                {
+                    foreach (var e3 in _expenses)
+                    {
+                        if (e1 + e2 + e3 == 2020)
+                            return e1 * e2 * e3;
+                    }
+                }
+            }
+
+            throw new FixNotFoundException();
+        }
+    }
+
+    public class FixNotFoundException : Exception
+    {
     }
 }
