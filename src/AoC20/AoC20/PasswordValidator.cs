@@ -31,9 +31,27 @@ namespace AoC20
                     new Policy(2, 9, 'c'),
                     "ccccccccc"));
         }
+        
+        [Fact]
+        public void Valid_record_IsValid()
+        {
+            new DatabaseRecord(
+                    new Policy(1, 3, 'a'),
+                    "abcde")
+                .IsValid().Should().BeTrue();
+        }
+        
+        [Fact]
+        public void Valid_record_not_IsValid()
+        {
+            new DatabaseRecord(
+                    new Policy(1, 3, 'b'),
+                    "cdefg")
+                .IsValid().Should().BeFalse();
+        }
 
         [Fact]
-        public void Test()
+        public void Test_example()
         {
             var records = Parse(Example);
 
@@ -74,7 +92,7 @@ namespace AoC20
 
             public bool IsValid()
             {
-                return false;
+                return Policy.IsCompliant(Password);
             }
         }
 
@@ -92,6 +110,18 @@ namespace AoC20
             public int Max { get; }
 
             public char Letter { get; }
+
+            public bool IsCompliant(string password)
+            {
+                var occurrences = password.Count(ch => ch == Letter);
+                if (Min <= occurrences
+                    && occurrences <= Max)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 }
