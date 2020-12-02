@@ -65,24 +65,50 @@ namespace AoC20
 
             records.Count(r => r.IsValid()).Should().Be(582);
         }
-
-        private IEnumerable<DatabaseRecord> ParseForShedRentalPlace(string raw)
+        
+        [Fact]
+        public void Test_part_2_example()
         {
-            return raw.Split(Environment.NewLine)
-                .Select(line => ParseLine(line, (min, max, letter) => new ShedRentalPolicy(min, max, letter)));
+            var records = ParseForTobogganRental(Example);
+
+            records.Count(r => r.IsValid()).Should().Be(1);
         }
 
-        private DatabaseRecord ParseLine(string line, Func<int, int,char, IPolicy> createPolicy)
+        private static IEnumerable<DatabaseRecord> ParseForShedRentalPlace(string raw)
+        {
+            return
+                raw.Split(Environment.NewLine)
+                .Select(ParseShedRentalLine);
+
+            static DatabaseRecord ParseShedRentalLine(string line) =>
+                ParseLine(
+                    line,
+                    (min, max, letter) => new ShedRentalPolicy(min, max, letter));
+        }
+        
+        private IEnumerable<DatabaseRecord> ParseForTobogganRental(string raw)
+        {
+            return
+                raw.Split(Environment.NewLine)
+                .Select(ParseTobogganLine);
+
+            static DatabaseRecord ParseTobogganLine(string line) =>
+                ParseLine(
+                    line,
+                    (i1, i2, letter) => new TobogganRentalPolicy(i1, i2, letter));
+        }
+
+        private static DatabaseRecord ParseLine(string line, Func<int, int,char, IPolicy> createPolicy)
         {
             var tokens = line.Split(new[] {'-', ' ', ':'}, StringSplitOptions.RemoveEmptyEntries);
-            var min = int.Parse(tokens[0]);
-            var max = int.Parse(tokens[1]);
+            var i1 = int.Parse(tokens[0]);
+            var i2 = int.Parse(tokens[1]);
             var letter = tokens[2].Single();
             var password = tokens[3];
 
             return
                 new DatabaseRecord(
-                    createPolicy(min, max, letter),
+                    createPolicy(i1, i2, letter),
                     password);
         }
 
@@ -129,6 +155,35 @@ namespace AoC20
                 var occurrences = password.Count(ch => ch == Letter);
                 if (Min <= occurrences
                     && occurrences <= Max)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+        
+        public class TobogganRentalPolicy : IPolicy
+        {
+            public TobogganRentalPolicy(int position1, int position2, char letter)
+            {
+                Position1 = position1;
+                Position2 = position2;
+                Letter = letter;
+            }
+
+            public int Position1 { get; }
+
+            public int Position2 { get; }
+
+            public char Letter { get; }
+
+            public bool IsCompliant(string password)
+            {
+                if (password[Position1 - 1] == Letter
+                    && password[Position2 - 1] != Letter
+                    || password[Position1 - 1] != Letter
+                    && password[Position2 - 1] == Letter)
                 {
                     return true;
                 }
