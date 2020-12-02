@@ -13,20 +13,6 @@ namespace AoC20
 2-9 c: ccccccccc";
 
         [Fact]
-        public void Test_parse()
-        {
-            var records =
-                Parse("1-3 a: abcde")
-                    .ToArray();
-
-            records.Should().HaveCount(1);
-            records.Single().Should().BeEquivalentTo(
-                new DatabaseRecord(
-                    new Policy(1, 3, 'a'),
-                    "abcde"));
-        }
-        
-        [Fact]
         public void Test_parse_many()
         {
             var records =
