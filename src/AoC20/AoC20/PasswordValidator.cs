@@ -16,19 +16,19 @@ namespace AoC20
         public void Test_parse_many()
         {
             var records =
-                Parse(Example)
+                ParseForShedRentalPlace(Example)
                     .ToArray();
 
             records.Should().HaveCount(3);
             records.Should().BeEquivalentTo(
                 new DatabaseRecord(
-                    new Policy(1, 3, 'a'),
+                    new ShedRentalPolicy(1, 3, 'a'),
                     "abcde"),
                 new DatabaseRecord(
-                    new Policy(1, 3, 'b'),
+                    new ShedRentalPolicy(1, 3, 'b'),
                     "cdefg"),
                 new DatabaseRecord(
-                    new Policy(2, 9, 'c'),
+                    new ShedRentalPolicy(2, 9, 'c'),
                     "ccccccccc"));
         }
         
@@ -36,7 +36,7 @@ namespace AoC20
         public void Valid_record_IsValid()
         {
             new DatabaseRecord(
-                    new Policy(1, 3, 'a'),
+                    new ShedRentalPolicy(1, 3, 'a'),
                     "abcde")
                 .IsValid().Should().BeTrue();
         }
@@ -45,7 +45,7 @@ namespace AoC20
         public void Valid_record_not_IsValid()
         {
             new DatabaseRecord(
-                    new Policy(1, 3, 'b'),
+                    new ShedRentalPolicy(1, 3, 'b'),
                     "cdefg")
                 .IsValid().Should().BeFalse();
         }
@@ -53,7 +53,7 @@ namespace AoC20
         [Fact]
         public void Test_example()
         {
-            var records = Parse(Example);
+            var records = ParseForShedRentalPlace(Example);
 
             records.Count(r => r.IsValid()).Should().Be(2);
         }
@@ -61,18 +61,18 @@ namespace AoC20
         [Fact]
         public void Solve_puzzle()
         {
-            var records = Parse(PuzzleInput.ForDay02);
+            var records = ParseForShedRentalPlace(PuzzleInput.ForDay02);
 
             records.Count(r => r.IsValid()).Should().Be(582);
         }
 
-        private IEnumerable<DatabaseRecord> Parse(string raw)
+        private IEnumerable<DatabaseRecord> ParseForShedRentalPlace(string raw)
         {
             return raw.Split(Environment.NewLine)
-                .Select(line => ParseLine(line));
+                .Select(line => ParseLine(line, (min, max, letter) => new ShedRentalPolicy(min, max, letter)));
         }
 
-        private DatabaseRecord ParseLine(string line)
+        private DatabaseRecord ParseLine(string line, Func<int, int,char, IPolicy> createPolicy)
         {
             var tokens = line.Split(new[] {'-', ' ', ':'}, StringSplitOptions.RemoveEmptyEntries);
             var min = int.Parse(tokens[0]);
@@ -82,19 +82,19 @@ namespace AoC20
 
             return
                 new DatabaseRecord(
-                    new Policy(min, max, letter),
+                    createPolicy(min, max, letter),
                     password);
         }
 
         public class DatabaseRecord
         {
-            public DatabaseRecord(Policy policy, string password)
+            public DatabaseRecord(IPolicy policy, string password)
             {
                 Policy = policy;
                 Password = password;
             }
 
-            public Policy Policy { get; }
+            public IPolicy Policy { get; }
 
             public string Password { get; }
 
@@ -104,9 +104,14 @@ namespace AoC20
             }
         }
 
-        public class Policy
+        public interface IPolicy
         {
-            public Policy(int min, int max, char letter)
+            bool IsCompliant(string password);
+        }
+
+        public class ShedRentalPolicy : IPolicy
+        {
+            public ShedRentalPolicy(int min, int max, char letter)
             {
                 Min = min;
                 Max = max;
