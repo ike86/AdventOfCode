@@ -73,6 +73,14 @@ namespace AoC20
 
             records.Count(r => r.IsValid()).Should().Be(1);
         }
+        
+        [Fact]
+        public void Solve_part_2_puzzle()
+        {
+            var records = ParseForTobogganRental(PuzzleInput.ForDay02);
+
+            records.Count(r => r.IsValid()).Should().Be(729);
+        }
 
         private static IEnumerable<DatabaseRecord> ParseForShedRentalPlace(string raw)
         {
