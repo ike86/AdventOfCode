@@ -6,7 +6,7 @@ using Xunit;
 
 namespace AoC20
 {
-    public class PasswordValidator
+    public class Day02
     {
         private const string Example = @"1-3 a: abcde
 1-3 b: cdefg
@@ -56,6 +56,14 @@ namespace AoC20
             var records = Parse(Example);
 
             records.Count(r => r.IsValid()).Should().Be(2);
+        }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            var records = Parse(PuzzleInput.ForDay02);
+
+            records.Count(r => r.IsValid()).Should().Be(582);
         }
 
         private IEnumerable<DatabaseRecord> Parse(string raw)
