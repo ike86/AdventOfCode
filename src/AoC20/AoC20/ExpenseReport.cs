@@ -45,6 +45,17 @@ namespace AoC20
 
             fix.Should().Be(979 * 366 * 675);
         }
+        
+        [Fact]
+        public void Test_part_2_puzzle_input()
+        {
+            var expenseReport =
+                ExpenseReport.Parse(PuzzleInput.ForDay01);
+
+            var fix = expenseReport.GetFix3();
+
+            fix.Should().Be(199068980);
+        }
     }
 
     public class ExpenseReport
