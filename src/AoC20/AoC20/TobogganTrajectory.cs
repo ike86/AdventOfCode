@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
@@ -65,6 +66,25 @@ namespace AoC20
 
             map.CountTreesOnSlope(right: 3, down: 1)
                 .Should().Be(225);
+        }
+        
+        [Fact]
+        public void Solve_puzzle_part_2()
+        {
+            var map = new Map(PuzzleInput.ForDay03);
+
+            var trees =
+                new[]
+                {
+                    map.CountTreesOnSlope(right: 1, down: 1),
+                    map.CountTreesOnSlope(right: 3, down: 1),
+                    map.CountTreesOnSlope(right: 5, down: 1),
+                    map.CountTreesOnSlope(right: 7, down: 1),
+                    map.CountTreesOnSlope(right: 1, down: 2),
+                };
+
+            trees.Aggregate(seed: 1, (a, b) => a * b)
+                .Should().Be(1115775000);
         }
     }
 
