@@ -50,6 +50,14 @@ iyr:2011 ecl:brn hgt:59in";
 
             passports.Count(p => p.IsValid()).Should().Be(2);
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            IEnumerable<Passport> passports = Parse(PuzzleInput.ForDay04).ToArray();
+
+            passports.Count(p => p.IsValid()).Should().Be(222);
+        }
 
         private IEnumerable<Passport> Parse(string batch)
         {
