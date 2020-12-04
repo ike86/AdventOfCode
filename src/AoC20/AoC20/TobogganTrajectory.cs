@@ -56,38 +56,41 @@ namespace AoC20
         public static Square Tree = new Tree();
         
         private readonly string[] _lines;
+        private readonly int _width;
 
         public Map(string raw)
         {
             _lines = raw.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+            _width = _lines[0].Length;
         }
 
         public int CountTreesOnSlope(int right, int down, int momentum = int.MaxValue)
         {
             var count = 0;
-            var width = _lines[0].Length;
-            for (
-                int i = 0, j = 0;
-                i < _lines.Length && momentum > 0;
+            for (int i = 0, j = 0;
+                NotGonePastTheBottom(i) && momentum > 0;
                 i += down, j += right, momentum -= 1)
             {
-                if (_lines[i][j % width] == '#')
+                if (this[i, j] is Tree)
                 {
                     count += 1;
                 }
             }
+
             return count;
+
+            bool NotGonePastTheBottom(int i) => i < _lines.Length;
         }
 
         public Square this[int i, int j]
         {
             get
             {
-                if (_lines[i][j] == '.')
+                if (_lines[i][j % _width] == '.')
                 {
                     return new Open();
                 }
-                else if (_lines[i][j] == '#')
+                else if (_lines[i][j % _width] == '#')
                 {
                     return new Tree();
                 }
