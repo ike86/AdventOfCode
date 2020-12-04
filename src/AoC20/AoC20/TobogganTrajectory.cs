@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -6,6 +7,7 @@ namespace AoC20
 {
     public class Day03
     {
+        private const int WithOfExample = 11;
         private const string Example =
 @"..##.......
 #...#...#..
@@ -37,6 +39,15 @@ namespace AoC20
             map[0, 2].Should().Be(Map.Tree);
             map[2, 0].Should().Be(Map.Open);
         }
+        
+        [Theory, AutoData]
+        public void Map_CountTreesOnSlope_can_count_rightwards_to_infinity(int n)
+        {
+            var map = new Map(Example);
+
+            map.CountTreesOnSlope(right: 1, down: 0, momentum: n * WithOfExample)
+                .Should().Be(n * 2);
+        }
     }
 
     public class Map
@@ -51,12 +62,16 @@ namespace AoC20
             _lines = raw.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public int CountTreesOnSlope(int right, int down)
+        public int CountTreesOnSlope(int right, int down, int momentum = int.MaxValue)
         {
             var count = 0;
-            for (int i = 0; i < _lines.Length; i++)
+            var width = _lines[0].Length;
+            for (
+                int i = 0, j = 0;
+                i < _lines.Length && momentum > 0;
+                i += down, j += right, momentum -= 1)
             {
-                if (_lines[i][0] == '#')
+                if (_lines[i][j % width] == '#')
                 {
                     count += 1;
                 }
