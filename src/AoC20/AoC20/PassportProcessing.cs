@@ -24,9 +24,9 @@ hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
 
         [Fact]
-        public void Can_parse_first_passport()
+        public void Can_parse_many_passports()
         {
-            IEnumerable<Passport> passports = Parse(Example);
+            IEnumerable<Passport> passports = Parse(Example).ToArray();
 
             passports.First().Should().BeEquivalentTo(
                 new Dictionary<string, string>
@@ -40,16 +40,34 @@ iyr:2011 ecl:brn hgt:59in";
                     ["cid"] = "147",
                     ["hgt"] = "183cm",
                 });
+            passports.Should().HaveCount(4);
         }
 
         private IEnumerable<Passport> Parse(string batch)
         {
-            var l = batch.Split(Environment.NewLine).First();
-            var l2 = batch.Split(Environment.NewLine).Skip(1).First();
-            yield return
-                new Passport(
-                    ParseLineOfPassport(l)
-                        .Concat(ParseLineOfPassport(l2)));
+            var lines = batch.Split(Environment.NewLine);
+            var passportLines = Enumerable.Empty<string>();
+            foreach (var line in lines)
+            {
+                if (line == string.Empty)
+                {
+                    yield return
+                        new Passport(
+                            passportLines.SelectMany(ParseLineOfPassport));
+                    passportLines = Enumerable.Empty<string>();
+                }
+                else
+                {
+                    passportLines = passportLines.Append(line);
+                }
+            }
+
+            if (passportLines.Any())
+            {
+                yield return
+                    new Passport(
+                        passportLines.SelectMany(ParseLineOfPassport));
+            }
 
             IEnumerable<(string key, string value)> ParseLineOfPassport(string s)
             {
