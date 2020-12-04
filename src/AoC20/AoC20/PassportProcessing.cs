@@ -24,7 +24,7 @@ hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in";
 
         [Fact]
-        public void Test()
+        public void Can_parse_first_passport()
         {
             IEnumerable<Passport> passports = Parse(Example);
 
@@ -35,20 +35,31 @@ iyr:2011 ecl:brn hgt:59in";
                     ["pid"] = "860033327",
                     ["eyr"] = "2020",
                     ["hcl"] = "#fffffd",
+                    ["byr"] = "1937",
+                    ["iyr"] = "2017",
+                    ["cid"] = "147",
+                    ["hgt"] = "183cm",
                 });
         }
 
         private IEnumerable<Passport> Parse(string batch)
         {
             var l = batch.Split(Environment.NewLine).First();
+            var l2 = batch.Split(Environment.NewLine).Skip(1).First();
             yield return
                 new Passport(
-                    l.Split(" ")
-                        .Select(kvp =>
-                        {
-                            var tokens = kvp.Split(":");
-                            return (key: tokens[0], value: tokens[1]);
-                        }));
+                    ParseLineOfPassport(l)
+                        .Concat(ParseLineOfPassport(l2)));
+
+            IEnumerable<(string key, string value)> ParseLineOfPassport(string s)
+            {
+                return s.Split(" ")
+                    .Select(kvp =>
+                    {
+                        var tokens = kvp.Split(":");
+                        return (key: tokens[0], value: tokens[1]);
+                    });
+            }
         }
     }
 
