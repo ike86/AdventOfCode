@@ -1,6 +1,6 @@
 ﻿namespace AoC20
 {
-    public class PuzzleInput
+    public static partial class PuzzleInput
     {
         public const string ForDay01 = @"1863
 1750

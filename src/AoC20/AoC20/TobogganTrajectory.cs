@@ -57,6 +57,15 @@ namespace AoC20
             map.CountTreesOnSlope(right: 3, down: 1)
                 .Should().Be(7);
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            var map = new Map(PuzzleInput.ForDay03);
+
+            map.CountTreesOnSlope(right: 3, down: 1)
+                .Should().Be(225);
+        }
     }
 
     public class Map
