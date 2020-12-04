@@ -43,6 +43,14 @@ iyr:2011 ecl:brn hgt:59in";
             passports.Should().HaveCount(4);
         }
 
+        [Fact]
+        public void Can_count_valid_passports()
+        {
+            IEnumerable<Passport> passports = Parse(Example).ToArray();
+
+            passports.Count(p => p.IsValid()).Should().Be(2);
+        }
+
         private IEnumerable<Passport> Parse(string batch)
         {
             var lines = batch.Split(Environment.NewLine);
@@ -83,12 +91,35 @@ iyr:2011 ecl:brn hgt:59in";
 
     public class Passport : Dictionary<string, string>
     {
+        private const string BirthYear = "byr";
+        private const string IssueYear = "iyr";
+        private const string ExpirationYear = "eyr";
+        private const string Height= "hgt";
+        private const string HairColor = "hcl";
+        private const string EyeColor = "ecl";
+        private const string PassportID = "pid";
+        private const string CountryID = "cid";
+        
         public Passport(IEnumerable<(string key, string value)> kvps)
         {
             foreach (var kvp in kvps)
             {
                 this.Add(kvp.key, kvp.value);
             }
+        }
+
+        public bool IsValid()
+        {
+            var expectedFieldsMissing =
+                new[] {BirthYear, IssueYear, ExpirationYear, Height, HairColor, EyeColor, PassportID}
+                    .Except(this.Keys)
+                    .ToArray();
+
+            return IsEmpty(expectedFieldsMissing)
+                   || (expectedFieldsMissing.Length == 1
+                       && expectedFieldsMissing.Single() == CountryID);
+
+            bool IsEmpty(string[] strings) => !strings.Any();
         }
     }
 
