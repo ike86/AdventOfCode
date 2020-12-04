@@ -48,6 +48,15 @@ namespace AoC20
             map.CountTreesOnSlope(right: 1, down: 0, momentum: n * WithOfExample)
                 .Should().Be(n * 2);
         }
+        
+        [Fact]
+        public void Pass_example()
+        {
+            var map = new Map(Example);
+
+            map.CountTreesOnSlope(right: 3, down: 1)
+                .Should().Be(7);
+        }
     }
 
     public class Map
