@@ -22,21 +22,37 @@ namespace AoC20
 
             p.Row.Should().Be(new Range(64, 127));
         }
+        
+        // FBFBBFFRLR
+            
+        [Fact]
+        public void Calculate_row()
+        {
+            var p = new BoardingPass("FB");
+
+            p.Row.Should().Be(new Range(32, 63));
+        }
     }
 
     public class BoardingPass
     {
         public BoardingPass(string raw)
         {
-            var start = 0;
-            var end = 127;
-            Range range;
+            var range = new Range(0,127);
             if(raw.First() == 'F')
-                range= new Range(start, end / 2);
+                range= new Range(range.Start, range.End.Value / 2);
             else if (raw.First() == 'B')
-                range = new Range(end / 2 + 1, end);
+                range = new Range(range.End.Value / 2 + 1, range.End);
             else
                 throw new ArgumentOutOfRangeException();
+            
+            if(raw.Skip(1).First() == 'F')
+                range= new Range(range.Start, range.End.Value / 2);
+            else if (raw.Skip(1).First() == 'B')
+                range = new Range(range.End.Value / 2 + 1, range.End);
+            else
+                throw new ArgumentOutOfRangeException();
+            
             Row = range;
         }
 
