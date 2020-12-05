@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -7,55 +6,73 @@ namespace AoC20
 {
     public class Day05
     {
-        [Fact]
-        public void Step_one_towards_the_front()
+        [Theory]
+        [InlineData(0, 0, 127)]
+        [InlineData(1, 0, 63)]
+        [InlineData(2, 32, 63)]
+        [InlineData(3, 32, 47)]
+        [InlineData(4, 40, 47)]
+        [InlineData(5, 44, 47)]
+        [InlineData(6, 44, 45)]
+        [InlineData(7, 44, 44)]
+        public void Calculate_row_range(int n, int start, int end)
         {
-            var p = new BoardingPass("F");
+            var p = new BoardingPass("FBFBBFFRLR", n);
 
-            p.Row.Should().Be(new Range(0, 63));
+            p.RowRange.Should().Be(new Range(start, end));
         }
         
-        [Fact]
-        public void Step_one_towards_the_back()
-        {
-            var p = new BoardingPass("B");
-
-            p.Row.Should().Be(new Range(64, 127));
-        }
-        
-        // FBFBBFFRLR
-            
         [Fact]
         public void Calculate_row()
         {
-            var p = new BoardingPass("FB");
+            var p = new BoardingPass("FBFBBFFRLR");
 
-            p.Row.Should().Be(new Range(32, 63));
+            p.Row.Should().Be(44);
         }
     }
 
     public class BoardingPass
     {
-        public BoardingPass(string raw)
+        public BoardingPass(string raw, int n = 7)
         {
             var range = new Range(0,127);
-            if(raw.First() == 'F')
-                range= new Range(range.Start, range.End.Value / 2);
-            else if (raw.First() == 'B')
-                range = new Range(range.End.Value / 2 + 1, range.End);
-            else
-                throw new ArgumentOutOfRangeException();
+            for (int i = 0; i < n; i++)
+            {
+                if (raw[i] == 'F')
+                    range = LowerHalfOf(range);
+                else if (raw[i] == 'B')
+                    range = UpperHalfOf(range);
+                else
+                    throw new ArgumentOutOfRangeException();
+            }
             
-            if(raw.Skip(1).First() == 'F')
-                range= new Range(range.Start, range.End.Value / 2);
-            else if (raw.Skip(1).First() == 'B')
-                range = new Range(range.End.Value / 2 + 1, range.End);
-            else
-                throw new ArgumentOutOfRangeException();
-            
-            Row = range;
+            RowRange = range;
         }
 
-        public Range Row { get; set; }
+        public Range RowRange { get; }
+        public int Row
+        {
+            get
+            {
+                if (RowRange.Start.Value != RowRange.End.Value)
+                    throw new InvalidOperationException();
+
+                return RowRange.Start.Value;
+            }
+        }
+
+        private static Range UpperHalfOf(Range range)
+        {
+            return new Range(
+                range.Start.Value + ((range.End.Value - range.Start.Value) / 2) + 1,
+                range.End);
+        }
+
+        private static Range LowerHalfOf(Range range)
+        {
+            return new Range(
+                range.Start,
+                range.End.Value -((range.End.Value - range.Start.Value) / 2) - 1);
+        }
     }
 }
