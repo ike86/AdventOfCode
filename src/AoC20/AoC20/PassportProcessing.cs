@@ -96,6 +96,14 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
             passports.Should().OnlyContain(p => p.IsValid());
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            IEnumerable<Passport> passports = Parse(PuzzleInput.ForDay04).ToArray();
+
+            passports.Count(p => p.IsValid()).Should().Be(140);
+        }
 
         private IEnumerable<Passport> Parse(string batch)
         {
