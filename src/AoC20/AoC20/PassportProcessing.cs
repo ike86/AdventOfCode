@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Xunit;
 
@@ -50,13 +51,50 @@ iyr:2011 ecl:brn hgt:59in";
 
             passports.Count(p => p.IsValid()).Should().Be(2);
         }
+
+        private const string InvalidPassports =
+            @"eyr:1972 cid:100
+hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+iyr:2019
+hcl:#602927 eyr:1967 hgt:170cm
+ecl:grn pid:012533040 byr:1946
+
+hcl:dab227 iyr:2012
+ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+hgt:59cm ecl:zzz
+eyr:2038 hcl:74454a iyr:2023
+pid:3556412378 byr:2007";
         
         [Fact]
-        public void Solve_puzzle()
+        public void Invalid_passports()
         {
-            IEnumerable<Passport> passports = Parse(PuzzleInput.ForDay04).ToArray();
+            IEnumerable<Passport> passports = Parse(InvalidPassports).ToArray();
 
-            passports.Count(p => p.IsValid()).Should().Be(222);
+            passports.Should().NotContain(p => p.IsValid());
+        }
+        
+        private const string ValidPassports =
+            @"pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+hcl:#623a2f
+
+eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
+
+hcl:#888785
+hgt:164cm byr:2001 iyr:2015 cid:88
+pid:545766238 ecl:hzl
+eyr:2022
+
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
+        
+        [Fact]
+        public void Valid_passports()
+        {
+            IEnumerable<Passport> passports = Parse(ValidPassports).ToArray();
+
+            passports.Should().OnlyContain(p => p.IsValid());
         }
 
         private IEnumerable<Passport> Parse(string batch)
@@ -107,7 +145,23 @@ iyr:2011 ecl:brn hgt:59in";
         private const string EyeColor = "ecl";
         private const string PassportID = "pid";
         private const string CountryID = "cid";
-        
+
+        private static readonly IEnumerable<string> _eyeColors =
+            new[] {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
+
+        private readonly Dictionary<string, Func<string, bool>> _validatorOf =
+            new Dictionary<string, Func<string, bool>>
+            {
+                [BirthYear] = IsIntBetween(1920, 2020),
+                [IssueYear] = IsIntBetween(2010, 2020),
+                [ExpirationYear] = IsIntBetween(2020, 2030),
+                [Height] = IsValidHeight(),
+                [HairColor] = value => Regex.IsMatch(value, "^#[0-9a-f]{6}$"),
+                [EyeColor] = value => _eyeColors.Any(c => value == c),
+                [PassportID] = value => Regex.IsMatch(value, "^[0-9]{9}$"),
+                [CountryID] = value => true,
+            };
+
         public Passport(IEnumerable<(string key, string value)> kvps)
         {
             foreach (var kvp in kvps)
@@ -123,15 +177,44 @@ iyr:2011 ecl:brn hgt:59in";
                     .Except(this.Keys)
                     .ToArray();
 
-            return IsEmpty(expectedFieldsMissing)
+            return
+                (IsEmpty(expectedFieldsMissing)
                    || (expectedFieldsMissing.Length == 1
-                       && expectedFieldsMissing.Single() == CountryID);
+                       && expectedFieldsMissing.Single() == CountryID))
+                && this.Select(kvp => _validatorOf[kvp.Key](kvp.Value)).All(b => b);
 
             bool IsEmpty(string[] strings) => !strings.Any();
         }
-    }
 
-    public class PassportProcessing
-    {
+        private static Func<string, bool> IsIntBetween(int min, int max) =>
+            value =>
+            {
+                if (int.TryParse(value, out var i))
+                {
+                    return min <= i && i <= max;
+                }
+
+                return false;
+            };
+
+        private static Func<string, bool> IsValidHeight() =>
+            value =>
+            {
+                const string cm = "cm";
+                if (value.EndsWith(cm))
+                {
+                    var number = value.Replace(cm, string.Empty);
+                    return IsIntBetween(150, 193)(number);
+                }
+
+                const string inch = "in";
+                if (value.EndsWith(inch))
+                {
+                    var number = value.Replace(inch, string.Empty);
+                    return IsIntBetween(59, 76)(number);
+                }
+
+                return false;
+            };
     }
 }
