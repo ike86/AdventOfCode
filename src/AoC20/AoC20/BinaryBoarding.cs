@@ -14,6 +14,14 @@ namespace AoC20
 
             p.Row.Should().Be(new Range(0, 63));
         }
+        
+        [Fact]
+        public void Step_one_towards_the_back()
+        {
+            var p = new BoardingPass("B");
+
+            p.Row.Should().Be(new Range(64, 127));
+        }
     }
 
     public class BoardingPass
@@ -22,7 +30,14 @@ namespace AoC20
         {
             var start = 0;
             var end = 127;
-            Row = new Range(start, end / 2);
+            Range range;
+            if(raw.First() == 'F')
+                range= new Range(start, end / 2);
+            else if (raw.First() == 'B')
+                range = new Range(end / 2 + 1, end);
+            else
+                throw new ArgumentOutOfRangeException();
+            Row = range;
         }
 
         public Range Row { get; set; }
