@@ -29,27 +29,68 @@ namespace AoC20
 
             p.Row.Should().Be(44);
         }
+        
+        [Theory]
+        [InlineData(7, 0, 7)]
+        [InlineData(8, 4, 7)]
+        [InlineData(9, 4, 5)]
+        [InlineData(10, 5, 5)]
+        public void Calculate_row_and_column_range(int n, int start, int end)
+        {
+            var p = new BoardingPass("FBFBBFFRLR", n);
+
+            p.ColumnRange.Should().Be(new Range(start,end));
+        }
+        
+        [Fact]
+        public void Calculate_column()
+        {
+            var p = new BoardingPass("FBFBBFFRLR");
+
+            p.Column.Should().Be(5);
+        }
     }
 
     public class BoardingPass
     {
-        public BoardingPass(string raw, int n = 7)
+        private const int ExpectedLength = 10;
+        private const int LengthOfRowCode = 7;
+
+        public BoardingPass(string raw, int n = ExpectedLength)
         {
-            var range = new Range(0,127);
-            for (int i = 0; i < n; i++)
             {
-                if (raw[i] == 'F')
-                    range = LowerHalfOf(range);
-                else if (raw[i] == 'B')
-                    range = UpperHalfOf(range);
-                else
-                    throw new ArgumentOutOfRangeException();
+                var range = new Range(0, 127);
+                for (int i = 0; i < Math.Min(n, LengthOfRowCode); i++)
+                {
+                    if (raw[i] == 'F')
+                        range = LowerHalfOf(range);
+                    else if (raw[i] == 'B')
+                        range = UpperHalfOf(range);
+                    else
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                RowRange = range;
             }
-            
-            RowRange = range;
+
+            {
+                var range = new Range(0, LengthOfRowCode);
+                for (int i = LengthOfRowCode; i < Math.Min(n, ExpectedLength); i++)
+                {
+                    if (raw[i] == 'L')
+                        range = LowerHalfOf(range);
+                    else if (raw[i] == 'R')
+                        range = UpperHalfOf(range);
+                    else
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                ColumnRange = range;
+            }
         }
 
         public Range RowRange { get; }
+        
         public int Row
         {
             get
@@ -58,6 +99,19 @@ namespace AoC20
                     throw new InvalidOperationException();
 
                 return RowRange.Start.Value;
+            }
+        }
+
+        public Range ColumnRange { get; }
+        
+        public int Column
+        {
+            get
+            {
+                if (ColumnRange.Start.Value != ColumnRange.End.Value)
+                    throw new InvalidOperationException();
+
+                return ColumnRange.Start.Value;
             }
         }
 
