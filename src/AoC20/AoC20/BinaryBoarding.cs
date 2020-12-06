@@ -68,6 +68,24 @@ namespace AoC20
                 .Max(b => b.SeatId)
                 .Should().Be(947);
         }
+        
+        [Fact]
+        public void Solve_puzzle_part_2()
+        {
+            var seatIds =
+                PuzzleInput.ForDay05
+                .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => new BoardingPass(l))
+                .OrderBy(p => p.SeatId)
+                .Select(p => p.SeatId)
+                .ToArray();
+            var mySeat = (seatIds
+                .Zip(seatIds.Skip(1), (seat, nextSeat) => (seat, nextSeat))
+                .First(t => t.nextSeat - t.seat > 1)
+                .seat + 1);
+            mySeat
+                .Should().Be(636);
+        }
     }
 
     public class BoardingPass
