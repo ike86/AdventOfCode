@@ -49,6 +49,14 @@ namespace AoC20
 
             p.Column.Should().Be(5);
         }
+        
+        [Fact]
+        public void Calculate_seatId()
+        {
+            var p = new BoardingPass("FBFBBFFRLR");
+
+            p.SeatId.Should().Be(357);
+        }
     }
 
     public class BoardingPass
@@ -114,6 +122,8 @@ namespace AoC20
                 return ColumnRange.Start.Value;
             }
         }
+
+        public int SeatId => Row * 8 + Column;
 
         private static Range UpperHalfOf(Range range)
         {
