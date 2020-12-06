@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -56,6 +57,16 @@ namespace AoC20
             var p = new BoardingPass("FBFBBFFRLR");
 
             p.SeatId.Should().Be(357);
+        }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            PuzzleInput.ForDay05
+                .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => new BoardingPass(l))
+                .Max(b => b.SeatId)
+                .Should().Be(947);
         }
     }
 
