@@ -31,10 +31,10 @@ b";
             Sum(ManyGroups).Should().Be(6);
         }
         
-        [Fact(Skip = "not there yet")]
+        [Fact]
         public void Solve_puzzle()
         {
-            Sum(PuzzleInput.ForDay06).Should().Be(6590);
+            Sum(PuzzleInput.ForDay06).Should().Be(3288);
         }
 
         private int Sum(string raw)
