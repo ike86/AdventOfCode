@@ -8,22 +8,6 @@ namespace AoC20
 {
     public class Day06
     {
-        [Fact]
-        public void Group_of_one()
-        {
-            Sum("abcx").Should().Be(4);
-        }
-        
-        private const string GroupOfMany = @"abcx
-abcy
-abcz";
-        
-        [Fact]
-        public void Group_of_many()
-        {
-            Sum(GroupOfMany).Should().Be(6);
-        }
-
         private const string ManyGroups =
             @"abc
 
@@ -44,10 +28,10 @@ b";
         [Fact]
         public void Many_groups()
         {
-            Sum(ManyGroups).Should().Be(11);
+            Sum(ManyGroups).Should().Be(6);
         }
         
-        [Fact]
+        [Fact(Skip = "not there yet")]
         public void Solve_puzzle()
         {
             Sum(PuzzleInput.ForDay06).Should().Be(6590);
@@ -75,11 +59,12 @@ b";
 
             return
                 groups.Sum(
-                    members => members.Aggregate(
-                            seed: new HashSet<char>(),
+                    members => members.Skip(1)
+                        .Aggregate(
+                            seed: new HashSet<char>(members.First()),
                             (set, yesAnswers) =>
                             {
-                                set.UnionWith(new HashSet<char>(yesAnswers));
+                                set.IntersectWith(new HashSet<char>(yesAnswers));
                                 return set;
                             })
                         .Count);
