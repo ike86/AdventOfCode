@@ -52,6 +52,12 @@ dotted black bags contain no other bags.";
         {
             new RuleSet(Example).CanContainShinyGold(color).Should().BeTrue();
         }
+        
+        [Fact]
+        public void How_many_can_contain_shiny_gold()
+        {
+            new RuleSet(Example).HowManyCanContainShinyGold().Should().Be(4);
+        }
     }
 
     public class Rule
@@ -122,6 +128,14 @@ dotted black bags contain no other bags.";
                     t => t.color == "shiny gold"
                          || CanContainShinyGold(t.color))
                 ?? false;
+        }
+
+        public int HowManyCanContainShinyGold()
+        {
+            return Rules.Where(rule => CanContainShinyGold(rule.OuterColor))
+                .Select(rule => rule.OuterColor)
+                .Distinct()
+                .Count();
         }
     }
 }
