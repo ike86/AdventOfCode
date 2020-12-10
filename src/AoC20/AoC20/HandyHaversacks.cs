@@ -42,6 +42,14 @@ dotted black bags contain no other bags.";
             new RuleSet("dotted black bags contain no other bags.").Rules.Should().BeEquivalentTo(
                 new Rule("dotted black"));
         }
+
+        [Theory]
+        [InlineData("bright white")]
+        [InlineData("muted yellow")]
+        public void Can_contain_shiny_gold(string color)
+        {
+            new RuleSet(Example).CanContainShinyGold(color).Should().BeTrue();
+        }
     }
 
     public class Rule
@@ -65,6 +73,8 @@ dotted black bags contain no other bags.";
         {
             Rules = ParseRules(raw);
         }
+
+        public IEnumerable<Rule> Rules { get; }
 
         private static Rule[] ParseRules(string raw)
         {
@@ -102,6 +112,12 @@ dotted black bags contain no other bags.";
             return (int.Parse(tokens[0]), string.Join(' ', tokens.Skip(1)));
         }
 
-        public IEnumerable<Rule> Rules { get; }
+        public bool CanContainShinyGold(string color)
+        {
+            return
+                Rules.FirstOrDefault(rule => rule.OuterColor == color)
+                ?.AllowedBags.Any(t => t.color == "shiny gold")
+                ?? false;
+        }
     }
 }
