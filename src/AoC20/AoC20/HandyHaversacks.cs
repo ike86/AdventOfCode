@@ -58,6 +58,12 @@ dotted black bags contain no other bags.";
         {
             new RuleSet(Example).HowManyCanContainShinyGold().Should().Be(4);
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            new RuleSet(PuzzleInput.ForDay07).HowManyCanContainShinyGold().Should().Be(257);
+        }
     }
 
     public class Rule
