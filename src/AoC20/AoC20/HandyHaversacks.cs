@@ -46,6 +46,8 @@ dotted black bags contain no other bags.";
         [Theory]
         [InlineData("bright white")]
         [InlineData("muted yellow")]
+        [InlineData("dark orange")]
+        [InlineData("light red")]
         public void Can_contain_shiny_gold(string color)
         {
             new RuleSet(Example).CanContainShinyGold(color).Should().BeTrue();
@@ -116,7 +118,9 @@ dotted black bags contain no other bags.";
         {
             return
                 Rules.FirstOrDefault(rule => rule.OuterColor == color)
-                ?.AllowedBags.Any(t => t.color == "shiny gold")
+                ?.AllowedBags.Any(
+                    t => t.color == "shiny gold"
+                         || CanContainShinyGold(t.color))
                 ?? false;
         }
     }
