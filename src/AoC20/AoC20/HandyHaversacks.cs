@@ -74,6 +74,12 @@ dotted black bags contain no other bags.";
         {
             new RuleSet(Example2).HowManyIndividualBags("shiny gold").Should().Be(32);
         }
+        
+        [Fact]
+        public void Solve_puzzle_part_2()
+        {
+            new RuleSet(PuzzleInput.ForDay07).HowManyIndividualBags("shiny gold").Should().Be(1038);
+        }
     }
 
     public class RuleSet
