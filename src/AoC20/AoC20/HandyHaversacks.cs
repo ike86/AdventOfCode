@@ -64,67 +64,26 @@ dotted black bags contain no other bags.";
         {
             new RuleSet(PuzzleInput.ForDay07).HowManyCanContainShinyGold().Should().Be(257);
         }
-    }
 
-    public class Rule
-    {
-        public Rule(string outerColor, params (int number, string color)[] allowedBags)
+        private const string Example2 =
+            Example + "\r\n"
+                    + "shiny gold bags contain 1 dark olive bag.";
+
+        [Fact]
+        public void How_many_individual_bags_are_contained_in_a_shiny_gold()
         {
-            OuterColor = outerColor;
-            AllowedBags = allowedBags;
+            new RuleSet(Example2).HowManyIndividualBags("shiny gold").Should().Be(32);
         }
-
-        public string OuterColor { get; }
-
-        public IEnumerable<(int number, string color)> AllowedBags { get; }
     }
 
     public class RuleSet
     {
-        private static readonly IEnumerable<string> Separators = new[] {"bags contain", "bag,", "bags,", "bag.", "bags."};
-
         public RuleSet(string raw)
         {
-            Rules = ParseRules(raw);
+            Rules = RuleSetParser.ParseRules(raw);
         }
 
         public IEnumerable<Rule> Rules { get; }
-
-        private static Rule[] ParseRules(string raw)
-        {
-            return raw.Split(Environment.NewLine)
-                .Select(ParseRule)
-                .ToArray();
-        }
-
-        private static Rule ParseRule(string line)
-        {
-            var tokens =
-                line.Split(Separators.ToArray(), StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .ToArray();
-
-            return new Rule(tokens[0], ParseAllowedBags(tokens));
-        }
-
-        private static (int, string t)[] ParseAllowedBags(string[] tokens)
-        {
-            if (tokens[1] == "no other")
-            {
-                return Enumerable.Empty<(int, string)>().ToArray();
-            }
-            
-            return tokens.Skip(1)
-                .Select(t => ParseNumberAndColor(t))
-                .ToArray();
-        }
-
-        private static (int, string t) ParseNumberAndColor(string s)
-        {
-            var tokens = s.Split(' ');
-            
-            return (int.Parse(tokens[0]), string.Join(' ', tokens.Skip(1)));
-        }
 
         public bool CanContainShinyGold(string color)
         {
@@ -142,6 +101,68 @@ dotted black bags contain no other bags.";
                 .Select(rule => rule.OuterColor)
                 .Distinct()
                 .Count();
+        }
+
+        public int HowManyIndividualBags(string color)
+        {
+            var maybeBag = Rules.FirstOrDefault(rule => rule.OuterColor == color);
+            return
+                maybeBag?.AllowedBags.Sum(t => t.number + t.number * HowManyIndividualBags(t.color))
+                ?? 0;
+        }
+    }
+
+    public class Rule
+    {
+        public Rule(string outerColor, params (int number, string color)[] allowedBags)
+        {
+            OuterColor = outerColor;
+            AllowedBags = allowedBags;
+        }
+
+        public string OuterColor { get; }
+
+        public IEnumerable<(int number, string color)> AllowedBags { get; }
+    }
+
+    public class RuleSetParser
+    {
+        private static readonly IEnumerable<string> Separators = new[] {"bags contain", "bag,", "bags,", "bag.", "bags."};
+
+        public static Rule[] ParseRules(string raw)
+        {
+            return raw.Split(Environment.NewLine)
+                .Select(ParseRule)
+                .ToArray<Rule>();
+        }
+
+        private static Rule ParseRule(string line)
+        {
+            var tokens =
+                line.Split(Separators.ToArray(), StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .ToArray();
+
+            return new Rule(tokens[0], ParseAllowedBags(tokens));
+        }
+
+        private static (int, string t)[] ParseAllowedBags(string[] tokens)
+        {
+            if (tokens[1] == "no other")
+            {
+                return Enumerable.Empty<(int, string)>().ToArray();
+            }
+            
+            return tokens.Skip(1)
+                .Select<string, (int, string t)>(t => ParseNumberAndColor(t))
+                .ToArray();
+        }
+
+        private static (int, string t) ParseNumberAndColor(string s)
+        {
+            var tokens = s.Split(' ');
+            
+            return (int.Parse(tokens[0]), string.Join(' ', tokens.Skip(1)));
         }
     }
 }
