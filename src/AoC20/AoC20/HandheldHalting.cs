@@ -119,6 +119,15 @@ acc +6";
                     bootCode.Instructions.Skip(2).First(),
                     opt => opt.RespectingRuntimeTypes());
         }
+        
+        [Fact]
+        public void Executing_with_infinite_loop_protection_halts_with_5_as_accumulator()
+        {
+            var bootCode = new BootCode(Exmaple);
+
+            bootCode.ExecuteWithInfiniteLoopProtection().Accumulator
+                .Should().Be(5);
+        }
     }
 
     public interface IInstruction
@@ -180,6 +189,7 @@ acc +6";
             Instructions = old.Instructions;
             ExecutedInstructions = old.ExecutedInstructions.Append(old.NextInstruction);
             NextInstructionPointer = old.NextInstructionPointer;
+            Accumulator = old.Accumulator;
         }
 
         public IEnumerable<IInstruction> Instructions { get; }
@@ -211,11 +221,22 @@ acc +6";
             };
         }
 
-        public BootCode Execute(int numberOfInstructions)
+        public BootCode Execute(int numberOfInstructions) =>
+            Execute(numberOfInstructions, withInfiniteLoopProtection: false);
+
+        public BootCode ExecuteWithInfiniteLoopProtection() => Execute(0, withInfiniteLoopProtection: true);
+
+        public BootCode Execute(int numberOfInstructions, bool withInfiniteLoopProtection)
         {
             var bootCode = this;
-            for (var i = 0; i < numberOfInstructions; i++)
+            for (var i = 0; i < numberOfInstructions || withInfiniteLoopProtection; i++)
             {
+                if (withInfiniteLoopProtection
+                    && bootCode.ExecutedInstructions.Any(ins => ins == bootCode.NextInstruction))
+                {
+                    return bootCode;
+                }
+
                 bootCode =
                     bootCode.NextInstruction.Convert(
                         noop =>
@@ -227,7 +248,7 @@ acc +6";
                             new BootCode(bootCode)
                             {
                                 NextInstructionPointer = bootCode.NextInstructionPointer + 1,
-                                Accumulator = bootCode.Accumulator + 1,
+                                Accumulator = bootCode.Accumulator + accumulate.Change,
                             },
                         jump =>
                             new BootCode(bootCode)
