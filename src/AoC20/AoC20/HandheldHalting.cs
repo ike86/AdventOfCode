@@ -56,12 +56,14 @@ acc +6";
                 .Should().Be(bootCode.Instructions.First());
         }
         
-        // [Fact]
-        // public void Executing_Noop_moves_next_instruction_forward()
-        // {
-        //     new BootCode(Exmaple).Execute(1).ExecutedInstructions.FirstOrDefault()
-        //         .Should().BeOfType(typeof(Noop));
-        // }
+        [Fact]
+        public void Executing_Noop_moves_next_instruction_forward()
+        {
+            var bootCode = new BootCode(Exmaple);
+
+            bootCode.Execute(1).NextInstruction
+                .Should().Be(bootCode.Instructions.Skip(1).First());
+        }
     }
 
     public interface IInstruction
@@ -111,7 +113,7 @@ acc +6";
         
         public IEnumerable<IInstruction> ExecutedInstructions { get; private set; }
 
-        public IInstruction NextInstruction { get; }
+        public IInstruction NextInstruction { get; private set; }
 
         private static IInstruction[] ParseInstructions(string raw)
         {
@@ -134,7 +136,12 @@ acc +6";
 
         public BootCode Execute(int numberOfInstructions)
         {
-            return new BootCode(this) { ExecutedInstructions = ExecutedInstructions.Append(Instructions.First()) };
+            return
+                new BootCode(this)
+                {
+                    ExecutedInstructions = ExecutedInstructions.Append(Instructions.First()),
+                    NextInstruction = Instructions.Skip(1).First(), 
+                };
         }
     }
 }
