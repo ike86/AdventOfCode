@@ -79,6 +79,15 @@ acc +6";
             bootCode.Execute(2).Accumulator
                 .Should().Be(bootCode.Accumulator + 1);
         }
+        
+        [Fact]
+        public void Executing_Accumulate_moves_next_instruction_forward()
+        {
+            var bootCode = new BootCode(Exmaple);
+
+            bootCode.Execute(2).NextInstruction
+                .Should().Be(bootCode.Instructions.Skip(2).First());
+        }
     }
 
     public interface IInstruction
@@ -115,20 +124,22 @@ acc +6";
         {
             Instructions = ParseInstructions(raw);
             ExecutedInstructions = Enumerable.Empty<IInstruction>();
-            NextInstruction = Instructions.First();
         }
 
         private BootCode(BootCode old)
         {
             Instructions = old.Instructions;
             ExecutedInstructions = old.ExecutedInstructions;
+            NextInstructionPointer = old.NextInstructionPointer;
         }
 
         public IEnumerable<IInstruction> Instructions { get; }
         
         public IEnumerable<IInstruction> ExecutedInstructions { get; private set; }
 
-        public IInstruction NextInstruction { get; private set; }
+        public int NextInstructionPointer { get; private set; }
+
+        public IInstruction NextInstruction => Instructions.ElementAt(NextInstructionPointer);
 
         public int Accumulator { get; private set; }
 
@@ -153,13 +164,31 @@ acc +6";
 
         public BootCode Execute(int numberOfInstructions)
         {
-            return
-                new BootCode(this) // note, that this implementation is buggy, yet all tests pass
+            var bootCode = this;
+            for (var i = 0; i < numberOfInstructions; i++)
+            {
+                if (bootCode.NextInstruction is Noop)
                 {
-                    ExecutedInstructions = ExecutedInstructions.Append(Instructions.First()),
-                    NextInstruction = Instructions.Skip(1).First(),
-                    Accumulator = Accumulator + 1,
-                };
+                    bootCode =
+                        new BootCode(this)
+                        {
+                            ExecutedInstructions = bootCode.ExecutedInstructions.Append(bootCode.NextInstruction),
+                            NextInstructionPointer = bootCode.NextInstructionPointer + 1,
+                        };
+                }
+                else if (bootCode.NextInstruction is Accumulate acc) 
+                {
+                    bootCode =
+                        new BootCode(this)
+                        {
+                            ExecutedInstructions = bootCode.ExecutedInstructions.Append(Instructions.First()),
+                            NextInstructionPointer = bootCode.NextInstructionPointer + 1,
+                            Accumulator = bootCode.Accumulator + 1,
+                        };
+                }
+            }
+
+            return bootCode;
         }
     }
 }
