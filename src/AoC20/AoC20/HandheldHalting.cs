@@ -22,9 +22,17 @@ acc +6";
         [Fact]
         public void Can_parse_Noop()
         {
-            new BootCode(Exmaple).Instructions
+            new BootCode(Exmaple).Instructions.Take(1)
                 .Should().BeEquivalentTo(
                     new Instruction("nop", 0));
+        }
+        
+        [Fact]
+        public void Can_parse_Accumulate()
+        {
+            new BootCode(Exmaple).Instructions.Skip(1)
+                .Should().BeEquivalentTo(
+                    new Instruction("acc", 1));
         }
     }
 
@@ -49,7 +57,18 @@ acc +6";
                 raw.Split(Environment.NewLine)
                 .First()
                 .Split(' ');
-            Instructions = new[] { new Instruction(tokens[0], int.Parse(tokens[1])) };
+            
+            var tokens2 =
+                raw.Split(Environment.NewLine)
+                    .Skip(1)
+                    .First()
+                    .Split(' ');
+            Instructions =
+                new[]
+                    {
+                        new Instruction(tokens[0], int.Parse(tokens[1])),
+                        new Instruction(tokens2[0], int.Parse(tokens2[1])),
+                };
         }
 
         public IEnumerable<Instruction> Instructions { get; }
