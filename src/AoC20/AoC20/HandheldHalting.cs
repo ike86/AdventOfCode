@@ -30,9 +30,17 @@ acc +6";
         [Fact]
         public void Can_parse_Accumulate()
         {
-            new BootCode(Exmaple).Instructions.Skip(1)
+            new BootCode(Exmaple).Instructions.Skip(1).Take(1)
                 .Should().BeEquivalentTo(
                     new Instruction("acc", 1));
+        }
+        
+        [Fact]
+        public void Can_parse_Jump()
+        {
+            new BootCode(Exmaple).Instructions.Skip(2).Take(1)
+                .Should().BeEquivalentTo(
+                    new Instruction("jmp", 4));
         }
     }
 
@@ -53,22 +61,11 @@ acc +6";
     {
         public BootCode(string raw)
         {
-            var tokens =
-                raw.Split(Environment.NewLine)
-                .First()
-                .Split(' ');
-            
-            var tokens2 =
-                raw.Split(Environment.NewLine)
-                    .Skip(1)
-                    .First()
-                    .Split(' ');
             Instructions =
-                new[]
-                    {
-                        new Instruction(tokens[0], int.Parse(tokens[1])),
-                        new Instruction(tokens2[0], int.Parse(tokens2[1])),
-                };
+                raw.Split(Environment.NewLine)
+                    .Select(line => line.Split(' '))
+                    .Select(tokens => new Instruction(tokens[0], int.Parse(tokens[1])))
+                    .ToArray();
         }
 
         public IEnumerable<Instruction> Instructions { get; }
