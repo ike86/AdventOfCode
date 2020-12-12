@@ -81,6 +81,17 @@ acc +6";
         }
         
         [Fact]
+        public void Executing_Accumulate_adds_it_to_executed()
+        {
+            var bootCode = new BootCode(Exmaple);
+
+            bootCode.Execute(2).ExecutedInstructions
+                .Should().ContainEquivalentOf(
+                    bootCode.Instructions.Skip(1).First(),
+                    opt => opt.RespectingRuntimeTypes());
+        }
+        
+        [Fact]
         public void Executing_Accumulate_moves_instruction_pointer_forward()
         {
             var bootCode = new BootCode(Exmaple);
@@ -105,6 +116,7 @@ acc +6";
 
     public class Noop : IInstruction
     {
+        // public string MemberForTheSakeOfStructuralEquivalencyAssertions => "(╯°□°)╯︵ ┻━┻";
     }
 
     public class Accumulate : IInstruction
@@ -190,7 +202,7 @@ acc +6";
                     bootCode =
                         new BootCode(this)
                         {
-                            ExecutedInstructions = bootCode.ExecutedInstructions.Append(Instructions.First()),
+                            ExecutedInstructions = bootCode.ExecutedInstructions.Append(bootCode.NextInstruction),
                             NextInstructionPointer = bootCode.NextInstructionPointer + 1,
                             Accumulator = bootCode.Accumulator + 1,
                         };
