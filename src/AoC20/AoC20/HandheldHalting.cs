@@ -64,6 +64,22 @@ acc +6";
             bootCode.Execute(1).NextInstruction
                 .Should().Be(bootCode.Instructions.Skip(1).First());
         }
+        
+        [Fact]
+        public void Accumulator_is_zero_by_default()
+        {
+            new BootCode(Exmaple).Accumulator
+                .Should().Be(0);
+        }
+        
+        // [Fact]
+        // public void Executing_Accumulate_changes_accumulator_by_its_value()
+        // {
+        //     var bootCode = new BootCode(Exmaple);
+        //
+        //     bootCode.Execute(1).NextInstruction
+        //         .Should().Be(bootCode.Instructions.Skip(1).First());
+        // }
     }
 
     public interface IInstruction
@@ -114,6 +130,8 @@ acc +6";
         public IEnumerable<IInstruction> ExecutedInstructions { get; private set; }
 
         public IInstruction NextInstruction { get; private set; }
+
+        public int Accumulator { get; }
 
         private static IInstruction[] ParseInstructions(string raw)
         {
