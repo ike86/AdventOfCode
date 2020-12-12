@@ -127,7 +127,6 @@ acc +6";
 
     public class Noop : IInstruction
     {
-        // public string MemberForTheSakeOfStructuralEquivalencyAssertions => "(╯°□°)╯︵ ┻━┻";
     }
 
     public class Accumulate : IInstruction
@@ -148,6 +147,24 @@ acc +6";
         }
 
         public int Offset { get; }
+    }
+
+    public static class InstructionExtensions
+    {
+        public static TResult Convert<TResult>(
+            this IInstruction instruction,
+            Func<Noop, TResult> noopCase,
+            Func<Accumulate, TResult> accumulateCase,
+            Func<Jump, TResult> jumpCase)
+        {
+            return instruction switch
+            {
+                Noop n => noopCase(n),
+                Accumulate a => accumulateCase(a),
+                Jump j => jumpCase(j),
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        }
     }
 
     public class BootCode
@@ -199,32 +216,25 @@ acc +6";
             var bootCode = this;
             for (var i = 0; i < numberOfInstructions; i++)
             {
-                if (bootCode.NextInstruction is Noop)
-                {
-                    bootCode =
-                        new BootCode(bootCode)
-                        {
-                            NextInstructionPointer = bootCode.NextInstructionPointer + 1,
-                        };
-                }
-                else if (bootCode.NextInstruction is Accumulate acc) 
-                {
-                    bootCode =
-                        new BootCode(bootCode)
-                        {
-                            NextInstructionPointer = bootCode.NextInstructionPointer + 1,
-                            Accumulator = bootCode.Accumulator + 1,
-                        };
-                }
-                else if (bootCode.NextInstruction is Jump jump)
-                {
-                    bootCode =
-                        new BootCode(bootCode)
-                        {
-                            ExecutedInstructions = bootCode.ExecutedInstructions.Append(bootCode.NextInstruction),
-                            NextInstructionPointer = bootCode.NextInstructionPointer + jump.Offset,
-                        };
-                }
+                bootCode =
+                    bootCode.NextInstruction.Convert(
+                        noop =>
+                            new BootCode(bootCode)
+                            {
+                                NextInstructionPointer = bootCode.NextInstructionPointer + 1,
+                            },
+                        accumulate =>
+                            new BootCode(bootCode)
+                            {
+                                NextInstructionPointer = bootCode.NextInstructionPointer + 1,
+                                Accumulator = bootCode.Accumulator + 1,
+                            },
+                        jump =>
+                            new BootCode(bootCode)
+                            {
+                                ExecutedInstructions = bootCode.ExecutedInstructions.Append(bootCode.NextInstruction),
+                                NextInstructionPointer = bootCode.NextInstructionPointer + jump.Offset,
+                            });
             }
 
             return bootCode;
