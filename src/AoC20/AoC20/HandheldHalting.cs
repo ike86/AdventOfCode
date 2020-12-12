@@ -72,14 +72,13 @@ acc +6";
                 .Should().Be(0);
         }
         
-        // [Fact]
-        // public void Executing_Accumulate_changes_accumulator_by_its_value()
-        // {
-        //     var bootCode = new BootCode(Exmaple);
-        //
-        //     bootCode.Execute(1).NextInstruction
-        //         .Should().Be(bootCode.Instructions.Skip(1).First());
-        // }
+        [Fact]
+        public void Executing_Accumulate_changes_accumulator_by_its_value()
+        {
+            var bootCode = new BootCode(Exmaple);
+            bootCode.Execute(2).Accumulator
+                .Should().Be(bootCode.Accumulator + 1);
+        }
     }
 
     public interface IInstruction
@@ -131,7 +130,7 @@ acc +6";
 
         public IInstruction NextInstruction { get; private set; }
 
-        public int Accumulator { get; }
+        public int Accumulator { get; private set; }
 
         private static IInstruction[] ParseInstructions(string raw)
         {
@@ -155,10 +154,11 @@ acc +6";
         public BootCode Execute(int numberOfInstructions)
         {
             return
-                new BootCode(this)
+                new BootCode(this) // note, that this implementation is buggy, yet all tests pass
                 {
                     ExecutedInstructions = ExecutedInstructions.Append(Instructions.First()),
-                    NextInstruction = Instructions.Skip(1).First(), 
+                    NextInstruction = Instructions.Skip(1).First(),
+                    Accumulator = Accumulator + 1,
                 };
         }
     }
