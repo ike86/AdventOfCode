@@ -81,12 +81,21 @@ acc +6";
         }
         
         [Fact]
-        public void Executing_Accumulate_moves_next_instruction_forward()
+        public void Executing_Accumulate_moves_instruction_pointer_forward()
         {
             var bootCode = new BootCode(Exmaple);
 
             bootCode.Execute(2).NextInstruction
                 .Should().Be(bootCode.Instructions.Skip(2).First());
+        }
+        
+        [Fact]
+        public void Executing_Jump_moves_instruction_pointer_by_its_offset()
+        {
+            var bootCode = new BootCode(Exmaple);
+
+            bootCode.Execute(3).NextInstruction
+                .Should().Be(bootCode.Instructions.Skip(6).First());
         }
     }
 
@@ -184,6 +193,14 @@ acc +6";
                             ExecutedInstructions = bootCode.ExecutedInstructions.Append(Instructions.First()),
                             NextInstructionPointer = bootCode.NextInstructionPointer + 1,
                             Accumulator = bootCode.Accumulator + 1,
+                        };
+                }
+                else if (bootCode.NextInstruction is Jump jump)
+                {
+                    bootCode =
+                        new BootCode(this)
+                        {
+                            NextInstructionPointer = bootCode.NextInstructionPointer + jump.Offset,
                         };
                 }
             }
