@@ -123,11 +123,16 @@ acc +6";
         [Fact]
         public void Executing_with_infinite_loop_protection_halts_with_5_as_accumulator()
         {
-            var bootCode = new BootCode(Exmaple);
-
-            bootCode.ExecuteWithInfiniteLoopProtection().Accumulator
+            new BootCode(Exmaple).ExecuteWithInfiniteLoopProtection().Accumulator
                 .Should().Be(5);
         }
+        
+        // [Fact]
+        // public void Solve_puzzle()
+        // {
+        //     new BootCode(PuzzleInput.ForDay08).ExecuteWithInfiniteLoopProtection().Accumulator
+        //         .Should().Be(0);
+        // }
     }
 
     public interface IInstruction
@@ -184,11 +189,11 @@ acc +6";
             ExecutedInstructions = Enumerable.Empty<IInstruction>();
         }
 
-        private BootCode(BootCode old)
+        private BootCode(BootCode old, int offset)
         {
             Instructions = old.Instructions;
             ExecutedInstructions = old.ExecutedInstructions.Append(old.NextInstruction);
-            NextInstructionPointer = old.NextInstructionPointer;
+            NextInstructionPointer = old.NextInstructionPointer + offset;
             Accumulator = old.Accumulator;
         }
 
@@ -239,23 +244,13 @@ acc +6";
 
                 bootCode =
                     bootCode.NextInstruction.Convert(
-                        noop =>
-                            new BootCode(bootCode)
-                            {
-                                NextInstructionPointer = bootCode.NextInstructionPointer + 1,
-                            },
+                        noop => new BootCode(bootCode, 1),
                         accumulate =>
-                            new BootCode(bootCode)
+                            new BootCode(bootCode, 1)
                             {
-                                NextInstructionPointer = bootCode.NextInstructionPointer + 1,
                                 Accumulator = bootCode.Accumulator + accumulate.Change,
                             },
-                        jump =>
-                            new BootCode(bootCode)
-                            {
-                                ExecutedInstructions = bootCode.ExecutedInstructions.Append(bootCode.NextInstruction),
-                                NextInstructionPointer = bootCode.NextInstructionPointer + jump.Offset,
-                            });
+                        jump => new BootCode(bootCode, jump.Offset));
             }
 
             return bootCode;
