@@ -127,12 +127,12 @@ acc +6";
                 .Should().Be(5);
         }
         
-        // [Fact]
-        // public void Solve_puzzle()
-        // {
-        //     new BootCode(PuzzleInput.ForDay08).ExecuteWithInfiniteLoopProtection().Accumulator
-        //         .Should().Be(0);
-        // }
+        [Fact]
+        public void Solve_puzzle()
+        {
+            new BootCode(PuzzleInput.ForDay08).ExecuteWithInfiniteLoopProtection().Accumulator
+                .Should().Be(1859);
+        }
     }
 
     public interface IInstruction
