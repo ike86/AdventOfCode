@@ -39,6 +39,13 @@ acc +6";
             new BootCode(Exmaple).Instructions.Skip(2).Take(1)
                 .Should().BeEquivalentTo(new Jump(4));
         }
+
+        [Fact]
+        public void Executing_Noop_adds_it_to_executed()
+        {
+            new BootCode(Exmaple).Execute(1).ExecutedInstructions.FirstOrDefault()
+                .Should().BeOfType(typeof(Noop));
+        }
     }
 
     public interface IInstruction
@@ -74,10 +81,19 @@ acc +6";
         public BootCode(string raw)
         {
             Instructions = ParseInstructions(raw);
+            ExecutedInstructions = Enumerable.Empty<IInstruction>();
+        }
+
+        private BootCode(BootCode old)
+        {
+            Instructions = old.Instructions;
+            ExecutedInstructions = old.ExecutedInstructions;
         }
 
         public IEnumerable<IInstruction> Instructions { get; }
         
+        public IEnumerable<IInstruction> ExecutedInstructions { get; private set; }
+
         private static IInstruction[] ParseInstructions(string raw)
         {
             return raw.Split(Environment.NewLine)
@@ -95,6 +111,11 @@ acc +6";
                 "acc" => new Accumulate(int.Parse(tokens[1])),
                 _ => throw new ArgumentOutOfRangeException()
             };
+        }
+
+        public BootCode Execute(int numberOfInstructions)
+        {
+            return new BootCode(this) { ExecutedInstructions = ExecutedInstructions.Append(Instructions.First()) };
         }
     }
 }
