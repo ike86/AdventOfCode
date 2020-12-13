@@ -9,7 +9,7 @@ namespace AoC20
 {
     public class Day08
     {
-        private const string Exmaple =
+        private const string Example =
             @"nop +0
 acc +1
 jmp +4
@@ -23,35 +23,35 @@ acc +6";
         [Fact]
         public void Can_parse_Noop()
         {
-            new BootCode(Exmaple).Instructions.First()
+            new BootCode(Example).Instructions.First()
                 .Should().BeOfType(typeof(Noop));
         }
 
         [Fact]
         public void Can_parse_Accumulate()
         {
-            new BootCode(Exmaple).Instructions.Skip(1).Take(1)
+            new BootCode(Example).Instructions.Skip(1).Take(1)
                 .Should().BeEquivalentTo(new Accumulate(1));
         }
 
         [Fact]
         public void Can_parse_Jump()
         {
-            new BootCode(Exmaple).Instructions.Skip(2).Take(1)
+            new BootCode(Example).Instructions.Skip(2).Take(1)
                 .Should().BeEquivalentTo(new Jump(4));
         }
 
         [Fact]
         public void Executing_Noop_adds_it_to_executed()
         {
-            new BootCode(Exmaple).Execute(1).ExecutedInstructions.FirstOrDefault()
+            new BootCode(Example).Execute(1).ExecutedInstructions.FirstOrDefault()
                 .Should().BeOfType(typeof(Noop));
         }
         
         [Fact]
         public void NextInstruction_is_the_first_one_by_default()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.NextInstruction
                 .Should().Be(bootCode.Instructions.First());
@@ -60,7 +60,7 @@ acc +6";
         [Fact]
         public void Executing_Noop_moves_next_instruction_forward()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.Execute(1).NextInstruction
                 .Should().Be(bootCode.Instructions.Skip(1).First());
@@ -69,14 +69,14 @@ acc +6";
         [Fact]
         public void Accumulator_is_zero_by_default()
         {
-            new BootCode(Exmaple).Accumulator
+            new BootCode(Example).Accumulator
                 .Should().Be(0);
         }
         
         [Fact]
         public void Executing_Accumulate_changes_accumulator_by_its_value()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
             bootCode.Execute(2).Accumulator
                 .Should().Be(bootCode.Accumulator + 1);
         }
@@ -84,7 +84,7 @@ acc +6";
         [Fact]
         public void Executing_Accumulate_adds_it_to_executed()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.Execute(2).ExecutedInstructions
                 .Should().ContainEquivalentOf(
@@ -95,7 +95,7 @@ acc +6";
         [Fact]
         public void Executing_Accumulate_moves_instruction_pointer_forward()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.Execute(2).NextInstruction
                 .Should().Be(bootCode.Instructions.Skip(2).First());
@@ -104,7 +104,7 @@ acc +6";
         [Fact]
         public void Executing_Jump_moves_instruction_pointer_by_its_offset()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.Execute(3).NextInstruction
                 .Should().Be(bootCode.Instructions.Skip(6).First());
@@ -113,7 +113,7 @@ acc +6";
         [Fact]
         public void Executing_Jump_adds_it_to_executed()
         {
-            var bootCode = new BootCode(Exmaple);
+            var bootCode = new BootCode(Example);
 
             bootCode.Execute(3).ExecutedInstructions
                 .Should().ContainEquivalentOf(
@@ -124,7 +124,7 @@ acc +6";
         [Fact]
         public void Executing_with_infinite_loop_protection_halts_with_5_as_accumulator()
         {
-            new BootCode(Exmaple).ExecuteWithInfiniteLoopProtection().Accumulator
+            new BootCode(Example).ExecuteWithInfiniteLoopProtection().Accumulator
                 .Should().Be(5);
         }
         
@@ -142,14 +142,14 @@ acc +6";
             
             fixAttempts.Select(x => x.ExecuteWithInfiniteLoopProtection())
                 .Last(x => x.Terminated).Accumulator
-                .Should().Be(0);
+                .Should().Be(1235);
         }
         
         [Fact]
         public void GetFixAttemptsOf_only_changes_one_instruction()
         {
-            var corrupted = new BootCode(PuzzleInput.ForDay08);
-            var fixAttempts = GetFixAttemptsOf(PuzzleInput.ForDay08);
+            var corrupted = new BootCode(Example);
+            var fixAttempts = GetFixAttemptsOf(Example);
 
             fixAttempts.Should().OnlyContain(x => x.Instructions.Except(corrupted.Instructions).Count() == 1);
         }
@@ -186,7 +186,7 @@ acc +6";
     {
     }
 
-    public class Noop : IInstruction
+    public struct Noop : IInstruction
     {
         public Noop(int n)
         {
@@ -196,7 +196,7 @@ acc +6";
         public int N { get; }
     }
 
-    public class Accumulate : IInstruction
+    public struct Accumulate : IInstruction
     {
         public Accumulate(int change)
         {
@@ -206,7 +206,7 @@ acc +6";
         public int Change { get; }
     }
 
-    public class Jump : IInstruction
+    public struct Jump : IInstruction
     {
         public Jump(int offset)
         {
@@ -216,7 +216,7 @@ acc +6";
         public int Offset { get; }
     }
 
-    public class Terminate : IInstruction
+    public struct Terminate : IInstruction
     {
     }
 
