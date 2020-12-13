@@ -145,7 +145,21 @@ acc +6";
 
         private IEnumerable<BootCode> GetFixAttemptsOf(string raw)
         {
-            yield return new BootCode(raw);
+            var corrupted = new BootCode(raw);
+            foreach (var (instruction, i) in corrupted.Instructions.Select((instruction, i) => (instruction, i)))
+            {
+                var mutant =
+                    instruction.Convert(
+                        noop => new BootCode(corrupted.Instructions.ReplaceAt(i, new Jump(noop.N))),
+                        accumulate => corrupted,
+                        jump => new BootCode(corrupted.Instructions.ReplaceAt(i, new Noop(jump.Offset))),
+                        terminate => corrupted);
+
+                if (mutant != corrupted)
+                {
+                    yield return mutant;
+                }
+            }
         }
     }
 
@@ -155,6 +169,12 @@ acc +6";
 
     public class Noop : IInstruction
     {
+        public Noop(int n)
+        {
+            N = n;
+        }
+        
+        public int N { get; }
     }
 
     public class Accumulate : IInstruction
@@ -177,19 +197,25 @@ acc +6";
         public int Offset { get; }
     }
 
+    public class Terminate : IInstruction
+    {
+    }
+
     public static class InstructionExtensions
     {
         public static TResult Convert<TResult>(
             this IInstruction instruction,
             Func<Noop, TResult> noopCase,
             Func<Accumulate, TResult> accumulateCase,
-            Func<Jump, TResult> jumpCase)
+            Func<Jump, TResult> jumpCase,
+            Func<Terminate,TResult> terminateCase)
         {
             return instruction switch
             {
                 Noop n => noopCase(n),
                 Accumulate a => accumulateCase(a),
                 Jump j => jumpCase(j),
+                Terminate t => terminateCase(t),
                 _ => throw new ArgumentOutOfRangeException(),
             };
         }
@@ -222,7 +248,20 @@ acc +6";
 
         public int NextInstructionPointer { get; private set; }
 
-        public IInstruction NextInstruction => Instructions.ElementAt(NextInstructionPointer);
+        public IInstruction NextInstruction
+        {
+            get
+            {
+                try
+                {
+                    return Instructions.ElementAt(NextInstructionPointer);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return new Terminate();
+                }
+            }
+        }
 
         public int Accumulator { get; private set; }
 
@@ -238,11 +277,12 @@ acc +6";
 
         private static IInstruction ParseInstruction(string[] tokens)
         {
+            var n = int.Parse(tokens[1]);
             return tokens[0] switch
             {
-                "nop" => new Noop(),
-                "jmp" => new Jump(int.Parse(tokens[1])),
-                "acc" => new Accumulate(int.Parse(tokens[1])),
+                "nop" => new Noop(n),
+                "jmp" => new Jump(n),
+                "acc" => new Accumulate(n),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -255,7 +295,11 @@ acc +6";
         public BootCode Execute(int numberOfInstructions, bool withInfiniteLoopProtection)
         {
             var bootCode = this;
-            for (var i = 0; i < numberOfInstructions || withInfiniteLoopProtection; i++)
+            for (
+                var i = 0;
+                (i < numberOfInstructions || withInfiniteLoopProtection)
+                && !bootCode.Terminated;
+                i++)
             {
                 if (withInfiniteLoopProtection
                     && bootCode.ExecutedInstructions.Any(ins => ins == bootCode.NextInstruction))
@@ -271,10 +315,22 @@ acc +6";
                             {
                                 Accumulator = bootCode.Accumulator + accumulate.Change,
                             },
-                        jump => new BootCode(bootCode, jump.Offset));
+                        jump => new BootCode(bootCode, jump.Offset),
+                        terminate => new BootCode(bootCode, offset: 0) {Terminated = true});
             }
 
-            return new BootCode(bootCode, offset: 0) {Terminated = true};
+            return bootCode;
+        }
+    }
+
+    public static class EnumerableExtensions
+    {
+        public static IEnumerable<T> ReplaceAt<T>(this IEnumerable<T> source, int i, T value)
+        {
+            source = source.ToArray();
+            var left = source.Take(i - 1);
+            var right = source.TakeLast(source.Count() - i - 1);
+            return left.Append(value).Concat(right);
         }
     }
 }
