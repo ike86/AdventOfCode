@@ -140,7 +140,8 @@ acc +6";
             var fixAttempts = GetFixAttemptsOf(PuzzleInput.ForDay08);
             
             fixAttempts.Select(x => x.ExecuteWithInfiniteLoopProtection())
-                .Should().Contain(x => x.Terminated);
+                .Last(x => x.Terminated).Accumulator
+                .Should().Be(0);
         }
 
         private IEnumerable<BootCode> GetFixAttemptsOf(string raw)
