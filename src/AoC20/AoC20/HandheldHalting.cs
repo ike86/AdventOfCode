@@ -183,9 +183,13 @@ acc +6";
 
     public class BootCode
     {
-        public BootCode(string raw)
+        public BootCode(string raw) : this(ParseInstructions(raw))
         {
-            Instructions = ParseInstructions(raw);
+        }
+        
+        public BootCode(IEnumerable<IInstruction> instructions)
+        {
+            Instructions = instructions.ToArray();
             ExecutedInstructions = Enumerable.Empty<IInstruction>();
         }
 
