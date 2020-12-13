@@ -195,6 +195,7 @@ acc +6";
             ExecutedInstructions = old.ExecutedInstructions.Append(old.NextInstruction);
             NextInstructionPointer = old.NextInstructionPointer + offset;
             Accumulator = old.Accumulator;
+            Terminated = old.Terminated;
         }
 
         public IEnumerable<IInstruction> Instructions { get; }
@@ -206,6 +207,8 @@ acc +6";
         public IInstruction NextInstruction => Instructions.ElementAt(NextInstructionPointer);
 
         public int Accumulator { get; private set; }
+
+        public bool Terminated { get; private set; }
 
         private static IInstruction[] ParseInstructions(string raw)
         {
@@ -244,16 +247,16 @@ acc +6";
 
                 bootCode =
                     bootCode.NextInstruction.Convert(
-                        noop => new BootCode(bootCode, 1),
+                        noop => new BootCode(bootCode, offset: 1),
                         accumulate =>
-                            new BootCode(bootCode, 1)
+                            new BootCode(bootCode, offset: 1)
                             {
                                 Accumulator = bootCode.Accumulator + accumulate.Change,
                             },
                         jump => new BootCode(bootCode, jump.Offset));
             }
 
-            return bootCode;
+            return new BootCode(bootCode, offset: 0) {Terminated = true};
         }
     }
 }
