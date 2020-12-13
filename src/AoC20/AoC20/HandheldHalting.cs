@@ -133,6 +133,20 @@ acc +6";
             new BootCode(PuzzleInput.ForDay08).ExecuteWithInfiniteLoopProtection().Accumulator
                 .Should().Be(1859);
         }
+        
+        [Fact]
+        public void Solve_puzzle_part_2()
+        {
+            var fixAttempts = GetFixAttemptsOf(PuzzleInput.ForDay08);
+            
+            fixAttempts.Select(x => x.ExecuteWithInfiniteLoopProtection())
+                .Should().Contain(x => x.Terminated);
+        }
+
+        private IEnumerable<BootCode> GetFixAttemptsOf(string raw)
+        {
+            yield return new BootCode(raw);
+        }
     }
 
     public interface IInstruction
