@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -142,6 +143,23 @@ acc +6";
             fixAttempts.Select(x => x.ExecuteWithInfiniteLoopProtection())
                 .Last(x => x.Terminated).Accumulator
                 .Should().Be(0);
+        }
+        
+        [Fact]
+        public void GetFixAttemptsOf_only_changes_one_instruction()
+        {
+            var corrupted = new BootCode(PuzzleInput.ForDay08);
+            var fixAttempts = GetFixAttemptsOf(PuzzleInput.ForDay08);
+
+            fixAttempts.Should().OnlyContain(x => x.Instructions.Except(corrupted.Instructions).Count() == 1);
+        }
+
+        [Theory, AutoData]
+        public void ReplaceAt_works_as_expected(int[] ns, int m)
+        {
+            ns.ReplaceAt(0, m).Should().BeEquivalentTo(m, ns[1], ns[2]);
+            ns.ReplaceAt(1, m).Should().BeEquivalentTo(ns[0], m, ns[2]);
+            ns.ReplaceAt(2, m).Should().BeEquivalentTo(ns[0], ns[1], m);
         }
 
         private IEnumerable<BootCode> GetFixAttemptsOf(string raw)
@@ -329,7 +347,7 @@ acc +6";
         public static IEnumerable<T> ReplaceAt<T>(this IEnumerable<T> source, int i, T value)
         {
             source = source.ToArray();
-            var left = source.Take(i - 1);
+            var left = source.Take(i);
             var right = source.TakeLast(source.Count() - i - 1);
             return left.Append(value).Concat(right);
         }
