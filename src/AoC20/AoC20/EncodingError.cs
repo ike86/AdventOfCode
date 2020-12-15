@@ -87,6 +87,13 @@ namespace AoC20.Day09
             new Decoder(Example).GetSubSequenceWithSumOfOutlier(5)
                 .Should().BeEquivalentTo(15, 25, 47, 40);
         }
+        
+        [Fact]
+        public void Solve_puzzle_part_2()
+        {
+            var seq = new Decoder(PuzzleInput.ForDay09).GetSubSequenceWithSumOfOutlier(25);
+            (seq.Min() + seq.Max()).Should().Be(35602097L);
+        }
     }
 
     public class Decoder
