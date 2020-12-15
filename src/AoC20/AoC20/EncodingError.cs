@@ -42,8 +42,12 @@ namespace AoC20
             var possibleSums =
                 preamble.Join(preamble, _ => 0, _ => 0, (a, b) => (a, b))
                     .Where(tuple => tuple.a != tuple.b)
-                    .Select(tuple => tuple.a + tuple.b);
-            possibleSums.Should().HaveCount(6);
+                    .Select(tuple => tuple.a + tuple.b)
+                    .ToArray();
+
+            var impossibleSum = possibleSums.Max() + 1;
+
+            possibleSums.Should().NotContain(impossibleSum);
         }
     }
 
