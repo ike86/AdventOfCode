@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -49,6 +50,30 @@ namespace AoC20.Day09
             new Decoder(preamble.Append(impossibleSum)).GetFirstNotSumOfPrevious(3)
                 .Should().Be(impossibleSum);
         }
+
+        private const int Many = 3;
+        
+        [Theory, AutoData]
+        public void GetFirstNotSumOfPrevious_three_returns_first_outlier_2(
+            int[] preamble,
+            [Range(0, Many * Many - Many - 1)] int sumIndex)
+        {
+            var possibleSums =
+                preamble.GetAntiReflexivePairs()
+                    .Select(tuple => tuple.a + tuple.b)
+                    .ToArray();
+            var numbers = preamble.Append(possibleSums[sumIndex]).ToArray();
+            
+            possibleSums = numbers.GetAntiReflexivePairs()
+                .Select(tuple => tuple.a + tuple.b)
+                .ToArray();
+            var impossibleSum = possibleSums.Max() + 1;
+            numbers = numbers.Append(impossibleSum).ToArray();
+
+            numbers.Should().HaveCount(Many + 2);
+            new Decoder(numbers).GetFirstNotSumOfPrevious(3)
+                .Should().Be(impossibleSum);
+        }
     }
 
     public class Decoder
@@ -67,12 +92,15 @@ namespace AoC20.Day09
 
         public int GetFirstNotSumOfPrevious(int n)
         {
-            var prevN = _numbers.Take(n).ToArray();
-            var current = _numbers.ElementAt(n);
-            if (prevN.GetAntiReflexivePairs()
-                    .None(tuple => tuple.a + tuple.b == current))
+            for (int i = 0; i < _numbers.Count() - n; i++)
             {
-                return current;
+                var prevN = _numbers.Skip(i).Take(n).ToArray();
+                var current = _numbers.ElementAt(n + i);
+                if (prevN.GetAntiReflexivePairs()
+                        .None(tuple => tuple.a + tuple.b == current))
+                {
+                    return current;
+                }
             }
 
             throw new InvalidOperationException("Could not find an outlier.");
