@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
-namespace AoC20
+namespace AoC20.Day09
 {
-    public class Day09
+    public class Test
     {
         private const string Example =
             @"35
@@ -37,30 +38,62 @@ namespace AoC20
         }
 
         [Theory, AutoData]
-        public void GetFirstNotSumOfPrevious_three_returns_first_outlier(int[] preamble, [Range(0, 9 - 3 - 1)] int i)
+        public void GetFirstNotSumOfPrevious_three_returns_first_outlier(int[] preamble)
         {
             var possibleSums =
-                preamble.Join(preamble, _ => 0, _ => 0, (a, b) => (a, b))
-                    .Where(tuple => tuple.a != tuple.b)
+                preamble.GetAntiReflexivePairs()
                     .Select(tuple => tuple.a + tuple.b)
                     .ToArray();
-
             var impossibleSum = possibleSums.Max() + 1;
 
-            possibleSums.Should().NotContain(impossibleSum);
+            new Decoder(preamble.Append(impossibleSum)).GetFirstNotSumOfPrevious(3)
+                .Should().Be(impossibleSum);
         }
     }
 
     public class Decoder
     {
+        private readonly IEnumerable<int> _numbers;
+
         public Decoder(string raw)
         {
             
         }
 
+        public Decoder(IEnumerable<int> numbers)
+        {
+            _numbers = numbers.ToArray();
+        }
+
         public int GetFirstNotSumOfPrevious(int n)
         {
-            return default;
+            var prevN = _numbers.Take(n).ToArray();
+            var current = _numbers.ElementAt(n);
+            if (prevN.GetAntiReflexivePairs()
+                    .None(tuple => tuple.a + tuple.b == current))
+            {
+                return current;
+            }
+
+            throw new InvalidOperationException("Could not find an outlier.");
         }
+    }
+
+    public static class EnumerableExtensions
+    {
+        public static IEnumerable<(int a, int b)> GetAntiReflexivePairs(this IEnumerable<int> source)
+        {
+            source = source.ToArray();
+            return
+                source.Join(
+                        source,
+                        _ => 0,
+                        _ => 0,
+                        (a, b) => (a, b))
+                    .Where(tuple => tuple.a != tuple.b);
+        }
+
+        public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+            => !source.Any(predicate);
     }
 }
