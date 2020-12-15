@@ -39,7 +39,7 @@ namespace AoC20.Day09
         }
 
         [Theory, AutoData]
-        public void GetFirstNotSumOfPrevious_three_returns_first_outlier(int[] preamble)
+        public void GetFirstNotSumOfPrevious_three_returns_first_outlier(long[] preamble)
         {
             var possibleSums =
                 preamble.GetAntiReflexivePairs()
@@ -55,7 +55,7 @@ namespace AoC20.Day09
         
         [Theory, AutoData]
         public void GetFirstNotSumOfPrevious_three_returns_first_outlier_2(
-            int[] preamble,
+            long[] preamble,
             [Range(0, Many * Many - Many - 1)] int sumIndex)
         {
             var possibleSums =
@@ -74,28 +74,34 @@ namespace AoC20.Day09
             new Decoder(numbers).GetFirstNotSumOfPrevious(3)
                 .Should().Be(impossibleSum);
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            new Decoder(PuzzleInput.ForDay09).GetFirstNotSumOfPrevious(25).Should().Be(257342611L);
+        }
     }
 
     public class Decoder
     {
-        private readonly IEnumerable<int> _numbers;
+        private readonly IEnumerable<long> _numbers;
 
         public Decoder(string raw)
         {
             _numbers =
                 raw.Split(Environment.NewLine)
-                    .Select(line => int.Parse(line))
+                    .Select(line => long.Parse(line))
                     .ToArray();
         }
 
-        public Decoder(IEnumerable<int> numbers)
+        public Decoder(IEnumerable<long> numbers)
         {
             _numbers = numbers.ToArray();
         }
 
-        public int GetFirstNotSumOfPrevious(int n)
+        public long GetFirstNotSumOfPrevious(int n)
         {
-            for (int i = 0; i < _numbers.Count() - n; i++)
+            for (var i = 0; i < _numbers.Count() - n; i++)
             {
                 var prevN = _numbers.Skip(i).Take(n).ToArray();
                 var current = _numbers.ElementAt(n + i);
@@ -112,7 +118,7 @@ namespace AoC20.Day09
 
     public static class EnumerableExtensions
     {
-        public static IEnumerable<(int a, int b)> GetAntiReflexivePairs(this IEnumerable<int> source)
+        public static IEnumerable<(long a, long b)> GetAntiReflexivePairs(this IEnumerable<long> source)
         {
             source = source.ToArray();
             return
