@@ -80,6 +80,13 @@ namespace AoC20.Day09
         {
             new Decoder(PuzzleInput.ForDay09).GetFirstNotSumOfPrevious(25).Should().Be(257342611L);
         }
+        
+        [Fact]
+        public void GetSubSequenceWithSumOfOutlier_returns_expected()
+        {
+            new Decoder(Example).GetSubSequenceWithSumOfOutlier(5)
+                .Should().BeEquivalentTo(15, 25, 47, 40);
+        }
     }
 
     public class Decoder
@@ -113,6 +120,24 @@ namespace AoC20.Day09
             }
 
             throw new InvalidOperationException("Could not find an outlier.");
+        }
+
+        public IEnumerable<long> GetSubSequenceWithSumOfOutlier(int n)
+        {
+            var outlier = GetFirstNotSumOfPrevious(n);
+            var seq = _numbers.ToArray();
+            for (int i = 0; i < seq.Count(); i++)
+            {
+                var sum = 0L;
+                for (int j = 0; j < seq.Count() - i; j++)
+                {
+                    sum += seq[i + j];
+                    if (sum > outlier) break;
+                    if (sum == outlier) return seq.Skip(i).Take(j + 1).ToArray();
+                }
+            }
+            
+            throw new InvalidOperationException("Could not sub-sequence.");
         }
     }
 
