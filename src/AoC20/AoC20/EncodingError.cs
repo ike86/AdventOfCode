@@ -32,7 +32,7 @@ namespace AoC20.Day09
 309
 576";
         
-        [Fact(Skip = "This is a high level goal")]
+        [Fact]
         public void GetFirstNotSumOfPrevious_five_returns_expected_for_the_example()
         {
             new Decoder(Example).GetFirstNotSumOfPrevious(5).Should().Be(127);
@@ -82,7 +82,10 @@ namespace AoC20.Day09
 
         public Decoder(string raw)
         {
-            
+            _numbers =
+                raw.Split(Environment.NewLine)
+                    .Select(line => int.Parse(line))
+                    .ToArray();
         }
 
         public Decoder(IEnumerable<int> numbers)
