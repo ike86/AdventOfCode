@@ -141,9 +141,15 @@ L.L
 
         public IEnumerable<IPosition> AdjacentTo(int i, int j)
         {
-            yield return this[1,0];
-            yield return this[0,1];
-            yield return this[1,1];
+            if(_positions.Length -1 >= 1)
+                yield return this[1,0];
+            
+            if(_positions[0].Length -1 >= 1)
+                yield return this[0,1];
+            
+            if (_positions.Length - 1 >= 1
+                && _positions[1].Length - 1 >= 1)
+                yield return this[1, 1];
         }
     }
 
