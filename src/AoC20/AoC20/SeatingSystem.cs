@@ -68,6 +68,16 @@ L.L
             result[0, 0].Should().Be(WaitingArea.Floor);
         }
         
+        [Fact]
+        public void Lone_occupied_seat_stays_occupied()
+        {
+            var s = new Simulation(new WaitingArea("#"));
+
+            var result = s.RunRounds(1);
+
+            result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
+        }
+        
         [Fact(Skip = "jumped ahead too much")]
         public void Bottom_right_empty_seat_becomes_occupied()
         {
