@@ -57,6 +57,30 @@ L.L
 
             result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
         }
+        
+        [Fact]
+        public void Floor_stays_floor()
+        {
+            var s = new Simulation(new WaitingArea("."));
+
+            var result = s.RunRounds(1);
+
+            result[0, 0].Should().Be(WaitingArea.Floor);
+        }
+        
+        [Fact(Skip = "jumped ahead too much")]
+        public void Bottom_right_empty_seat_becomes_occupied()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "LL" + Environment.NewLine
+                      + "LL"));
+
+            var result = s.RunRounds(1);
+
+            result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
+        }
     }
 
     public class Simulation
@@ -70,7 +94,9 @@ L.L
 
         public WaitingArea RunRounds(int n)
         {
-            _initialState[0, 0] = WaitingArea.OccupiedSeat;
+            if(_initialState[0, 0] is EmptySeat)
+                _initialState[0, 0] = WaitingArea.OccupiedSeat;
+
             return _initialState;
         }
     }
