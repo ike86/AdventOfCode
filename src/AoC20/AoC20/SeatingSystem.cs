@@ -14,6 +14,9 @@ namespace AoC20
         public void Empty_seat() => new WaitingArea("L")[0, 0].Should().Be(WaitingArea.EmptySeat);
         
         [Fact]
+        public void Occupied_seat() => new WaitingArea("#")[0, 0].Should().Be(WaitingArea.OccupiedSeat);
+        
+        [Fact]
         public void Parse_row()
         {
             var a = new WaitingArea(".L.");
@@ -58,6 +61,8 @@ L.L
         public static IPosition Floor { get; } = new Floor();
         
         public static IPosition EmptySeat { get; } = new EmptySeat();
+        
+        public static IPosition OccupiedSeat { get; } = new OccupiedSeat();
 
         public IPosition this[int i, int j] => _positions[i][j];
     }
@@ -71,6 +76,10 @@ L.L
     }
 
     public class EmptySeat : IPosition
+    {
+    }
+
+    public class OccupiedSeat : IPosition
     {
     }
 
@@ -96,6 +105,8 @@ L.L
                 return WaitingArea.Floor;
             else if(rawPosition == 'L')
                 return WaitingArea.EmptySeat;
+            else if (rawPosition == '#')
+                return WaitingArea.OccupiedSeat;
             else
                 throw new ArgumentOutOfRangeException();
         }
