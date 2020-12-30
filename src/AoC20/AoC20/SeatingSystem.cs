@@ -92,6 +92,23 @@ L.L
 
             result[0, 0].Should().Be(WaitingArea.EmptySeat);
         }
+        
+        [Fact]
+        public void All_empty_becomes_all_occupied()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "LL" + Environment.NewLine
+                      + "LL"));
+
+            var result = s.RunRounds(1);
+
+            result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
+            result[0, 1].Should().Be(WaitingArea.OccupiedSeat);
+            result[1, 0].Should().Be(WaitingArea.OccupiedSeat);
+            result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
+        }
     }
 
     public class Simulation
@@ -105,17 +122,43 @@ L.L
 
         public WaitingArea RunRounds(int n)
         {
-            if (_initialState[0, 0] is EmptySeat)
+            var mutations = GetMutations().ToArray();
+
+            return mutations.Aggregate(seed: _initialState, (a, m) => m.Execute(a));
+        }
+
+        private IEnumerable<Occupy> GetMutations()
+        {
+            foreach (var (i, j, position) in _initialState.AllIndexedPositions())
             {
-                var adjacent = _initialState.AdjacentTo(0, 0);
-                if(adjacent.Any(p => p is OccupiedSeat))
-                    return _initialState;
-                
-                _initialState[0, 0] = WaitingArea.OccupiedSeat;
+                if (position is EmptySeat)
+                {
+                    var adjacent = _initialState.AdjacentTo(i, j);
+                    if (adjacent.Any(p => p is OccupiedSeat))
+                        continue;
+
+                    yield return new Occupy(i, j);
+                }
+            }
+        }
+
+        private class Occupy
+        {
+            private readonly int _i;
+            private readonly int _j;
+
+            public Occupy(int i, int j)
+            {
+                _i = i;
+                _j = j;
             }
 
-            return _initialState;
-        }
+            public WaitingArea Execute(WaitingArea a)
+            {
+                a[_i, _j] = WaitingArea.OccupiedSeat;
+                return a;
+            }
+        }  
     }
 
     public class WaitingArea
@@ -141,15 +184,27 @@ L.L
 
         public IEnumerable<IPosition> AdjacentTo(int i, int j)
         {
-            if(_positions.Length -1 >= 1)
-                yield return this[1,0];
-            
-            if(_positions[0].Length -1 >= 1)
-                yield return this[0,1];
-            
-            if (_positions.Length - 1 >= 1
-                && _positions[1].Length - 1 >= 1)
-                yield return this[1, 1];
+            return
+                new[] {-1, 0, 1}.Join(new[] {-1, 0, 1}, _ => 0, _ => 0, (di, dj) => (di, dj))
+                    .Where(t => t.di != 0 && t.dj != 0)
+                    .Select(t => (i: i + t.di, j: j + t.dj))
+                    .Where(t =>
+                        t.i >= 0
+                        && t.j >= 0
+                        && t.i <= _positions.Length - 1
+                        && t.j <= _positions[i].Length - 1)
+                    .Select(t => this[t.i, t.j]);
+        }
+
+        public IEnumerable<(int i, int j, IPosition position)> AllIndexedPositions()
+        {
+            for (int i = 0; i < _positions.Length; i++)
+            {
+                for (int j = 0; j < _positions[i].Length; j++)
+                {
+                    yield return (i, j, this[i, j]);
+                }
+            }
         }
     }
 
