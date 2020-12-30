@@ -109,6 +109,21 @@ L.L
             result[1, 0].Should().Be(WaitingArea.OccupiedSeat);
             result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
         }
+        
+        [Fact]
+        public void Occupied_seat_with_less_than_4_occupied_adjacent_stays_occupied()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "#L#" + Environment.NewLine
+                      + ".#L" + Environment.NewLine
+                      + "L#."));
+
+            var result = s.RunRounds(1);
+
+            result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
+        }
     }
 
     public class Simulation
