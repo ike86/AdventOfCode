@@ -22,6 +22,28 @@ namespace AoC20
             a[0, 1].Should().Be(WaitingArea.EmptySeat);
             a[0, 2].Should().Be(WaitingArea.Floor);
         }
+        private const string ParseExample =
+@".L.
+L.L
+.L.";
+        
+        [Fact]
+        public void Parse_waiting_area()
+        {
+            var a = new WaitingArea(ParseExample);
+            
+            a[0, 0].Should().Be(WaitingArea.Floor);
+            a[0, 1].Should().Be(WaitingArea.EmptySeat);
+            a[0, 2].Should().Be(WaitingArea.Floor);
+            
+            a[1, 0].Should().Be(WaitingArea.EmptySeat);
+            a[1, 1].Should().Be(WaitingArea.Floor);
+            a[1, 2].Should().Be(WaitingArea.EmptySeat);
+            
+            a[2, 0].Should().Be(WaitingArea.Floor);
+            a[2, 1].Should().Be(WaitingArea.EmptySeat);
+            a[2, 2].Should().Be(WaitingArea.Floor);
+        }
     }
 
     public class WaitingArea
@@ -30,24 +52,7 @@ namespace AoC20
 
         public WaitingArea(string rawInitialLayout)
         {
-            _positions = new[] {ParseRowOfPositions(rawInitialLayout)};
-        }
-
-        private static IPosition[] ParseRowOfPositions(string rawInitialLayout)
-        {
-            return rawInitialLayout
-                .Select(ch => ParsePosition(ch))
-                .ToArray();
-        }
-
-        private static IPosition ParsePosition(char rawPosition)
-        {
-            if (rawPosition == '.')
-                return Floor;
-            else if(rawPosition == 'L')
-                return EmptySeat;
-            else
-                throw new ArgumentOutOfRangeException();
+            _positions = WaitingAreaParser.Parse(rawInitialLayout);
         }
 
         public static IPosition Floor { get; } = new Floor();
@@ -67,5 +72,32 @@ namespace AoC20
 
     public class EmptySeat : IPosition
     {
+    }
+
+    public class WaitingAreaParser
+    {
+        public static IPosition[][] Parse(string rawInitialLayout)
+        {
+            return rawInitialLayout.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                .Select(rawRow => ParseRowOfPositions(rawRow))
+                .ToArray();
+        }
+
+        private static IPosition[] ParseRowOfPositions(string rawRow)
+        {
+            return rawRow
+                .Select(ch => ParsePosition(ch))
+                .ToArray();
+        }
+
+        private static IPosition ParsePosition(char rawPosition)
+        {
+            if (rawPosition == '.')
+                return WaitingArea.Floor;
+            else if(rawPosition == 'L')
+                return WaitingArea.EmptySeat;
+            else
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }
