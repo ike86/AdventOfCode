@@ -124,6 +124,35 @@ L.L
 
             result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
         }
+        
+        [Fact]
+        public void Occupied_seat_with_4_occupied_adjacent_becomes_empty()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "#L#" + Environment.NewLine
+                      + "##L" + Environment.NewLine
+                      + "L#."));
+
+            var result = s.RunRounds(1);
+
+            result[1, 1].Should().Be(WaitingArea.EmptySeat);
+        }
+        
+        [Fact]
+        public void Adjacent_works_as_expected()
+        {
+            var a =
+                new WaitingArea(
+                    ".L#" + Environment.NewLine
+                  + "#.L" + Environment.NewLine
+                  + "L#.");
+
+            a.AdjacentTo(0, 0).Should().HaveCount(3);
+            a.AdjacentTo(1, 0).Should().HaveCount(5);
+            a.AdjacentTo(1, 1).Should().HaveCount(8);
+        }
     }
 
     public class Simulation
@@ -142,7 +171,7 @@ L.L
             return mutations.Aggregate(seed: _initialState, (a, m) => m.Execute(a));
         }
 
-        private IEnumerable<Occupy> GetMutations()
+        private IEnumerable<IMutation> GetMutations()
         {
             foreach (var (i, j, position) in _initialState.AllIndexedPositions())
             {
@@ -154,10 +183,22 @@ L.L
 
                     yield return new Occupy(i, j);
                 }
+
+                if (position is OccupiedSeat)
+                {
+                    var adjacent = _initialState.AdjacentTo(i, j).ToArray();
+                    if (adjacent.Count(p => p is OccupiedSeat) >= 4)
+                        yield return new Empty(i, j);
+                }
             }
         }
+        
+        private interface IMutation
+        {
+            WaitingArea Execute(WaitingArea a);
+        }
 
-        private class Occupy
+        private class Occupy : IMutation
         {
             private readonly int _i;
             private readonly int _j;
@@ -174,7 +215,25 @@ L.L
                 return a;
             }
         }  
+        private class Empty : IMutation
+        {
+            private readonly int _i;
+            private readonly int _j;
+
+            public Empty(int i, int j)
+            {
+                _i = i;
+                _j = j;
+            }
+
+            public WaitingArea Execute(WaitingArea a)
+            {
+                a[_i, _j] = WaitingArea.EmptySeat;
+                return a;
+            }
+        }
     }
+
 
     public class WaitingArea
     {
@@ -201,7 +260,7 @@ L.L
         {
             return
                 new[] {-1, 0, 1}.Join(new[] {-1, 0, 1}, _ => 0, _ => 0, (di, dj) => (di, dj))
-                    .Where(t => t.di != 0 && t.dj != 0)
+                    .Where(t => t != (0, 0))
                     .Select(t => (i: i + t.di, j: j + t.dj))
                     .Where(t =>
                         t.i >= 0
