@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -78,18 +79,18 @@ L.L
             result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
         }
         
-        [Fact(Skip = "jumped ahead too much")]
-        public void Bottom_right_empty_seat_becomes_occupied()
+        [Fact]
+        public void Top_left_empty_seat_stays_empty_if_any_adjacent_is_occupied()
         {
             var s =
                 new Simulation(
                     new WaitingArea(
-                        "LL" + Environment.NewLine
-                      + "LL"));
+                        "L#" + Environment.NewLine
+                      + "##"));
 
             var result = s.RunRounds(1);
 
-            result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
+            result[0, 0].Should().Be(WaitingArea.EmptySeat);
         }
     }
 
@@ -104,8 +105,14 @@ L.L
 
         public WaitingArea RunRounds(int n)
         {
-            if(_initialState[0, 0] is EmptySeat)
+            if (_initialState[0, 0] is EmptySeat)
+            {
+                var adjacent = _initialState.AdjacentTo(0, 0);
+                if(adjacent.Any(p => p is OccupiedSeat))
+                    return _initialState;
+                
                 _initialState[0, 0] = WaitingArea.OccupiedSeat;
+            }
 
             return _initialState;
         }
@@ -130,6 +137,13 @@ L.L
         {
             get => _positions[i][j];
             set => _positions[i][j] = value;
+        }
+
+        public IEnumerable<IPosition> AdjacentTo(int i, int j)
+        {
+            yield return this[1,0];
+            yield return this[0,1];
+            yield return this[1,1];
         }
     }
 
