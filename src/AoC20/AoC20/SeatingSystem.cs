@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -11,6 +12,16 @@ namespace AoC20
         
         [Fact]
         public void Empty_seat() => new WaitingArea("L")[0, 0].Should().Be(WaitingArea.EmptySeat);
+        
+        [Fact]
+        public void Parse_row()
+        {
+            var a = new WaitingArea(".L.");
+            
+            a[0, 0].Should().Be(WaitingArea.Floor);
+            a[0, 1].Should().Be(WaitingArea.EmptySeat);
+            a[0, 2].Should().Be(WaitingArea.Floor);
+        }
     }
 
     public class WaitingArea
@@ -19,14 +30,21 @@ namespace AoC20
 
         public WaitingArea(string rawInitialLayout)
         {
-            _positions = new[] {new[] {ParsePosition(rawInitialLayout)}};
+            _positions = new[] {ParseRowOfPositions(rawInitialLayout)};
         }
 
-        private static IPosition ParsePosition(string rawPosition)
+        private static IPosition[] ParseRowOfPositions(string rawInitialLayout)
         {
-            if (rawPosition == ".")
+            return rawInitialLayout
+                .Select(ch => ParsePosition(ch))
+                .ToArray();
+        }
+
+        private static IPosition ParsePosition(char rawPosition)
+        {
+            if (rawPosition == '.')
                 return Floor;
-            else if(rawPosition == "L")
+            else if(rawPosition == 'L')
                 return EmptySeat;
             else
                 throw new ArgumentOutOfRangeException();
