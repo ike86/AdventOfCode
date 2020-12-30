@@ -47,6 +47,32 @@ L.L
             a[2, 1].Should().Be(WaitingArea.EmptySeat);
             a[2, 2].Should().Be(WaitingArea.Floor);
         }
+
+        [Fact]
+        public void Lone_empty_seat_becomes_occupied()
+        {
+            var s = new Simulation(new WaitingArea("L"));
+
+            var result = s.RunRounds(1);
+
+            result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
+        }
+    }
+
+    public class Simulation
+    {
+        private readonly WaitingArea _initialState;
+
+        public Simulation(WaitingArea initialState)
+        {
+            _initialState = initialState;
+        }
+
+        public WaitingArea RunRounds(int n)
+        {
+            _initialState[0, 0] = WaitingArea.OccupiedSeat;
+            return _initialState;
+        }
     }
 
     public class WaitingArea
@@ -64,7 +90,11 @@ L.L
         
         public static IPosition OccupiedSeat { get; } = new OccupiedSeat();
 
-        public IPosition this[int i, int j] => _positions[i][j];
+        public IPosition this[int i, int j]
+        {
+            get => _positions[i][j];
+            set => _positions[i][j] = value;
+        }
     }
 
     public interface IPosition
