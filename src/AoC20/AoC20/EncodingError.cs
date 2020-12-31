@@ -6,7 +6,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
-namespace AoC20.Day09
+namespace AoC20
 {
     public class Test
     {
@@ -148,7 +148,7 @@ namespace AoC20.Day09
         }
     }
 
-    public static class EnumerableExtensions
+    public static partial class EnumerableExtensions
     {
         public static IEnumerable<(long a, long b)> GetAntiReflexivePairs(this IEnumerable<long> source)
         {

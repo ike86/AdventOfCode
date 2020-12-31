@@ -342,7 +342,7 @@ acc +6";
         }
     }
 
-    public static class EnumerableExtensions
+    public static partial class EnumerableExtensions
     {
         public static IEnumerable<T> ReplaceAt<T>(this IEnumerable<T> source, int i, T value)
         {

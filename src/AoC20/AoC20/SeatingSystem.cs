@@ -198,6 +198,22 @@ L.L
                     _ => throw new ArgumentOutOfRangeException()
                 });
         }
+        
+        [Fact]
+        public void Simulation_terminates_when_nothing_changes()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "L.L" + Environment.NewLine
+                      + ".L." + Environment.NewLine
+                      + "L.L"));
+
+            Action act = () => s.Run();
+
+            act.ExecutionTime().Should()
+                .BeCloseTo(TimeSpan.FromMilliseconds(100), precision: TimeSpan.FromMilliseconds(100));
+        }
     }
 
     public class Simulation
@@ -207,6 +223,18 @@ L.L
         public Simulation(WaitingArea initialState)
         {
             _initialState = initialState;
+        }
+
+        public WaitingArea Run()
+        {
+            while (true)
+            {
+                var mutations = GetMutations().ToArray();
+                if (mutations.IsEmpty())
+                    return _initialState;
+                
+                _initialState = mutations.Aggregate(seed: _initialState, (a, m) => m.Execute(a));
+            }
         }
 
         public WaitingArea RunRounds(int n)
@@ -374,5 +402,10 @@ L.L
             else
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    public static partial class EnumerableExtensions
+    {
+        public static bool IsEmpty<T>(this IEnumerable<T> source) => !source.Any();
     }
 }
