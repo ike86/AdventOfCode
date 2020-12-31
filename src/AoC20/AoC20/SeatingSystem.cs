@@ -214,6 +214,40 @@ L.L
             act.ExecutionTime().Should()
                 .BeCloseTo(TimeSpan.FromMilliseconds(100), precision: TimeSpan.FromMilliseconds(100));
         }
+
+        private const string InitialStateOfExample =
+            @"L.LL.LL.LL
+LLLLLLL.LL
+L.L.L..L..
+LLLL.LL.LL
+L.LL.LL.LL
+L.LLLLL.LL
+..L.L.....
+LLLLLLLLLL
+L.LLLLLL.L
+L.LLLLL.LL";
+
+        private const string EndStateOfExample =
+            @"#.#L.L#.##
+#LLL#LL.L#
+L.#.L..#..
+#L##.##.L#
+#.#L.LL.LL
+#.#L#L#.##
+..L.L.....
+#L#L##L#L#
+#.LLLLLL.L
+#.#L#L#.##";
+        
+        [Fact]
+        public void Example()
+        {
+            var s = new Simulation(new WaitingArea(InitialStateOfExample));
+
+            var result =  s.Run();
+
+            result.Should().BeEquivalentTo(new WaitingArea(EndStateOfExample));
+        }
     }
 
     public class Simulation
@@ -332,6 +366,8 @@ L.L
             get => _positions[i][j];
             set => _positions[i][j] = value;
         }
+
+        internal IEnumerable<IEnumerable<IPosition>> Positions => _positions;
 
         public IEnumerable<IPosition> AdjacentTo(int i, int j)
         {
