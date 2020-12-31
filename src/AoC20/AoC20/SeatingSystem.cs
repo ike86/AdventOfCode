@@ -111,6 +111,25 @@ L.L
         }
         
         [Fact]
+        public void All_empty_3x3_becomes_all_occupied()
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "LLL" + Environment.NewLine
+                      + "LLL" + Environment.NewLine
+                      + "LLL"));
+
+            var result = s.RunRounds(1);
+
+            result[1, 0].Should().Be(WaitingArea.OccupiedSeat);
+            result[0, 1].Should().Be(WaitingArea.OccupiedSeat);
+            result[1, 2].Should().Be(WaitingArea.OccupiedSeat);
+            result[2, 1].Should().Be(WaitingArea.OccupiedSeat);
+            result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
+        }
+        
+        [Fact]
         public void Occupied_seat_with_less_than_4_occupied_adjacent_stays_occupied()
         {
             var s =
