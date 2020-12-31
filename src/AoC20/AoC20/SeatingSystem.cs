@@ -248,6 +248,17 @@ L.#.L..#..
 
             result.Should().BeEquivalentTo(new WaitingArea(EndStateOfExample));
         }
+        
+        [Fact]
+        public void Solve_puzzle()
+        {
+            var s = new Simulation(new WaitingArea(PuzzleInput.ForDay11));
+
+            var result =  s.Run();
+
+            result.Positions.SelectMany(x => x).Count(p => p is OccupiedSeat)
+                .Should().Be(2427);
+        }
     }
 
     public class Simulation
