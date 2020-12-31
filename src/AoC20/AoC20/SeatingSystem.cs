@@ -172,11 +172,37 @@ L.L
             a.AdjacentTo(1, 0).Should().HaveCount(5);
             a.AdjacentTo(1, 1).Should().HaveCount(8);
         }
+        
+        [Theory]
+        [InlineData(1, "occupied")]
+        [InlineData(2, "empty")]
+        [InlineData(3, "empty")]
+        [InlineData(100, "empty")]
+        [InlineData(101, "empty")]
+        public void Seat_alters_from_empty_to_occupied_to_empty_and_stays_empty(int n, string expected)
+        {
+            var s =
+                new Simulation(
+                    new WaitingArea(
+                        "L.L" + Environment.NewLine
+                      + ".L." + Environment.NewLine
+                      + "L.L"));
+
+            var result = s.RunRounds(n);
+
+            result[1, 1].Should().Be(
+                expected switch
+                {
+                    "occupied" => WaitingArea.OccupiedSeat,
+                    "empty" => WaitingArea.EmptySeat,
+                    _ => throw new ArgumentOutOfRangeException()
+                });
+        }
     }
 
     public class Simulation
     {
-        private readonly WaitingArea _initialState;
+        private WaitingArea _initialState;
 
         public Simulation(WaitingArea initialState)
         {
@@ -185,9 +211,13 @@ L.L
 
         public WaitingArea RunRounds(int n)
         {
-            var mutations = GetMutations().ToArray();
+            for (int i = 0; i < n; i++)
+            {
+                var mutations = GetMutations().ToArray();
+                _initialState = mutations.Aggregate(seed: _initialState, (a, m) => m.Execute(a));
+            }
 
-            return mutations.Aggregate(seed: _initialState, (a, m) => m.Execute(a));
+            return _initialState;
         }
 
         private IEnumerable<IMutation> GetMutations()
