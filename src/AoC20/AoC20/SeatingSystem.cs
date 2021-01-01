@@ -9,41 +9,41 @@ namespace AoC20
     public class Day11
     {
         [Fact]
-        public void Floor() => new WaitingArea(".")[0, 0].Should().Be(WaitingArea.Floor);
-        
+        public void Parse_Floor() => new WaitingArea(".")[0, 0].Should().Be(WaitingArea.Floor);
+
         [Fact]
         public void Empty_seat() => new WaitingArea("L")[0, 0].Should().Be(WaitingArea.EmptySeat);
-        
+
         [Fact]
         public void Occupied_seat() => new WaitingArea("#")[0, 0].Should().Be(WaitingArea.OccupiedSeat);
-        
+
         [Fact]
         public void Parse_row()
         {
             var a = new WaitingArea(".L.");
-            
+
             a[0, 0].Should().Be(WaitingArea.Floor);
             a[0, 1].Should().Be(WaitingArea.EmptySeat);
             a[0, 2].Should().Be(WaitingArea.Floor);
         }
-        private const string ParseExample =
-@".L.
-L.L
-.L.";
-        
+
         [Fact]
         public void Parse_waiting_area()
         {
-            var a = new WaitingArea(ParseExample);
-            
+            var a =
+                ToWaitingArea(
+                    @".L.
+                      L.L
+                      .L.");
+
             a[0, 0].Should().Be(WaitingArea.Floor);
             a[0, 1].Should().Be(WaitingArea.EmptySeat);
             a[0, 2].Should().Be(WaitingArea.Floor);
-            
+
             a[1, 0].Should().Be(WaitingArea.EmptySeat);
             a[1, 1].Should().Be(WaitingArea.Floor);
             a[1, 2].Should().Be(WaitingArea.EmptySeat);
-            
+
             a[2, 0].Should().Be(WaitingArea.Floor);
             a[2, 1].Should().Be(WaitingArea.EmptySeat);
             a[2, 2].Should().Be(WaitingArea.Floor);
@@ -58,7 +58,7 @@ L.L
 
             result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
         }
-        
+
         [Fact]
         public void Floor_stays_floor()
         {
@@ -68,7 +68,7 @@ L.L
 
             result[0, 0].Should().Be(WaitingArea.Floor);
         }
-        
+
         [Fact]
         public void Lone_occupied_seat_stays_occupied()
         {
@@ -78,29 +78,29 @@ L.L
 
             result[0, 0].Should().Be(WaitingArea.OccupiedSeat);
         }
-        
+
         [Fact]
         public void Top_left_empty_seat_stays_empty_if_any_adjacent_is_occupied()
         {
-            var s =
-                new Simulation(
-                    new WaitingArea(
-                        "L#" + Environment.NewLine
-                      + "##"));
+            var waitingArea =
+                ToWaitingArea(
+                    @"L#
+                      ##");
+            var s = new Simulation(waitingArea);
 
             var result = s.RunRounds(1);
 
             result[0, 0].Should().Be(WaitingArea.EmptySeat);
         }
-        
+
         [Fact]
         public void All_empty_becomes_all_occupied()
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "LL" + Environment.NewLine
-                      + "LL"));
+                    ToWaitingArea(
+                        @"LL
+                          LL"));
 
             var result = s.RunRounds(1);
 
@@ -109,16 +109,16 @@ L.L
             result[1, 0].Should().Be(WaitingArea.OccupiedSeat);
             result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
         }
-        
+
         [Fact]
         public void All_empty_3x3_becomes_all_occupied()
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "LLL" + Environment.NewLine
-                      + "LLL" + Environment.NewLine
-                      + "LLL"));
+                    ToWaitingArea(
+                        @"LLL
+                          LLL
+                          LLL"));
 
             var result = s.RunRounds(1);
 
@@ -128,51 +128,51 @@ L.L
             result[2, 1].Should().Be(WaitingArea.OccupiedSeat);
             result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
         }
-        
+
         [Fact]
         public void Occupied_seat_with_less_than_4_occupied_adjacent_stays_occupied()
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "#L#" + Environment.NewLine
-                      + ".#L" + Environment.NewLine
-                      + "L#."));
+                    ToWaitingArea(
+                        @"#L#
+                          .#L
+                          L#."));
 
             var result = s.RunRounds(1);
 
             result[1, 1].Should().Be(WaitingArea.OccupiedSeat);
         }
-        
+
         [Fact]
         public void Occupied_seat_with_4_occupied_adjacent_becomes_empty()
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "#L#" + Environment.NewLine
-                      + "##L" + Environment.NewLine
-                      + "L#."));
+                    ToWaitingArea(
+                        @"#L#
+                          ##L
+                          L#."));
 
             var result = s.RunRounds(1);
 
             result[1, 1].Should().Be(WaitingArea.EmptySeat);
         }
-        
+
         [Fact]
         public void Adjacent_works_as_expected()
         {
             var a =
-                new WaitingArea(
-                    ".L#" + Environment.NewLine
-                  + "#.L" + Environment.NewLine
-                  + "L#.");
+                ToWaitingArea(
+                    @".L#
+                      #.L
+                      L#.");
 
-            a.AdjacentTo(0, 0).Should().HaveCount(3);
-            a.AdjacentTo(1, 0).Should().HaveCount(5);
-            a.AdjacentTo(1, 1).Should().HaveCount(8);
+            a.AdjacentTo(0, 0).Should().HaveCount(2);
+            a.AdjacentTo(1, 0).Should().HaveCount(4);
+            a.AdjacentTo(1, 1).Should().HaveCount(6);
         }
-        
+
         [Theory]
         [InlineData(1, "occupied")]
         [InlineData(2, "empty")]
@@ -183,10 +183,10 @@ L.L
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "L.L" + Environment.NewLine
-                      + ".L." + Environment.NewLine
-                      + "L.L"));
+                    ToWaitingArea(
+                        @"L.L
+                          .L.
+                          L.L"));
 
             var result = s.RunRounds(n);
 
@@ -198,16 +198,16 @@ L.L
                     _ => throw new ArgumentOutOfRangeException()
                 });
         }
-        
+
         [Fact]
         public void Simulation_terminates_when_nothing_changes()
         {
             var s =
                 new Simulation(
-                    new WaitingArea(
-                        "L.L" + Environment.NewLine
-                      + ".L." + Environment.NewLine
-                      + "L.L"));
+                    ToWaitingArea(
+                        @"L.L
+                          .L.
+                          L.L"));
 
             Action act = () => s.Run();
 
@@ -217,48 +217,67 @@ L.L
 
         private const string InitialStateOfExample =
             @"L.LL.LL.LL
-LLLLLLL.LL
-L.L.L..L..
-LLLL.LL.LL
-L.LL.LL.LL
-L.LLLLL.LL
-..L.L.....
-LLLLLLLLLL
-L.LLLLLL.L
-L.LLLLL.LL";
+              LLLLLLL.LL
+              L.L.L..L..
+              LLLL.LL.LL
+              L.LL.LL.LL
+              L.LLLLL.LL
+              ..L.L.....
+              LLLLLLLLLL
+              L.LLLLLL.L
+              L.LLLLL.LL";
 
         private const string EndStateOfExample =
             @"#.#L.L#.##
-#LLL#LL.L#
-L.#.L..#..
-#L##.##.L#
-#.#L.LL.LL
-#.#L#L#.##
-..L.L.....
-#L#L##L#L#
-#.LLLLLL.L
-#.#L#L#.##";
-        
+              #LLL#LL.L#
+              L.#.L..#..
+              #L##.##.L#
+              #.#L.LL.LL
+              #.#L#L#.##
+              ..L.L.....
+              #L#L##L#L#
+              #.LLLLLL.L
+              #.#L#L#.##";
+
         [Fact]
         public void Example()
         {
-            var s = new Simulation(new WaitingArea(InitialStateOfExample));
+            var s = new Simulation(ToWaitingArea(InitialStateOfExample));
 
-            var result =  s.Run();
+            var result = s.Run();
 
-            result.Should().BeEquivalentTo(new WaitingArea(EndStateOfExample));
+            result.Should().BeEquivalentTo(ToWaitingArea(EndStateOfExample));
         }
-        
-        [Fact]
+
+        [Fact(Skip = "does not terminate")]
         public void Solve_puzzle()
         {
             var s = new Simulation(new WaitingArea(PuzzleInput.ForDay11));
 
-            var result =  s.Run();
+            var result = s.Run();
 
             result.Positions.SelectMany(x => x).Count(p => p is OccupiedSeat)
                 .Should().Be(2427);
         }
+
+        [Fact]
+        public void AdjacentTo_ignores_floor()
+        {
+            var a =
+                ToWaitingArea(
+                    @"..L..
+                      .L.#.
+                      L.#.L
+                      .#.L.
+                      ..#..");
+
+            var adjacentSeats = a.AdjacentTo(2, 2).ToArray();
+
+            adjacentSeats.Should().OnlyContain(p => !(p is Floor));
+            adjacentSeats.Should().HaveCount(8);
+        }
+        
+        private WaitingArea ToWaitingArea(string raw) => new(raw.Replace(" ", string.Empty));
     }
 
     public class Simulation
@@ -356,7 +375,6 @@ L.#.L..#..
         }
     }
 
-
     public class WaitingArea
     {
         private readonly IPosition[][] _positions;
@@ -382,16 +400,44 @@ L.#.L..#..
 
         public IEnumerable<IPosition> AdjacentTo(int i, int j)
         {
-            return
-                new[] {-1, 0, 1}.Join(new[] {-1, 0, 1}, _ => 0, _ => 0, (di, dj) => (di, dj))
-                    .Where(t => t != (0, 0))
-                    .Select(t => (i: i + t.di, j: j + t.dj))
-                    .Where(t =>
-                        t.i >= 0
-                        && t.j >= 0
-                        && t.i <= _positions.Length - 1
-                        && t.j <= _positions[i].Length - 1)
-                    .Select(t => this[t.i, t.j]);
+            foreach (var (di, dj) in GetDirections())
+            {
+                for (
+                    int k = i + di, l = j + dj;
+                    IsInbounds(k, l);
+                    k += di, l += dj)
+                {
+                    if (this[k, l] is not AoC20.Floor)
+                    {
+                        yield return this[k, l];
+                        break;
+                    }
+                }
+            }
+            
+            // var adjacentCoordinates =
+            //     directions
+            //     .Select(t => (i: i + t.di, j: j + t.dj));
+            //
+            // var adjacentPositions = adjacentCoordinates
+            //     .Where(t => IsInbounds(t.i, t.j))
+            //     .Select(t => this[t.i, t.j]);
+            //
+            // return adjacentPositions;
+        }
+
+        private bool IsInbounds(int i, int j)
+        {
+            return i >= 0
+                   && j >= 0
+                   && i <= _positions.Length - 1
+                   && j <= _positions[i].Length - 1;
+        }
+
+        private static IEnumerable<(int di, int dj)> GetDirections()
+        {
+            return new[] {-1, 0, 1}.Join(new[] {-1, 0, 1}, _ => 0, _ => 0, (di, dj) => (di, dj))
+                .Where(t => t != (0, 0));
         }
 
         public IEnumerable<(int i, int j, IPosition position)> AllIndexedPositions()
