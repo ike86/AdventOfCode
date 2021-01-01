@@ -330,6 +330,28 @@ namespace AoC20
             adjacentSeats.Should().BeEmpty();
         }
         
+        private const string EndStateOfExample2 =
+            @"#.L#.L#.L#
+              #LLLLLL.LL
+              L.L.L..#..
+              ##L#.#L.L#
+              L.L#.LL.L#
+              #.LLLL#.LL
+              ..#.L.....
+              LLL###LLL#
+              #.LLLLL#.L
+              #.L#LL#.L#";
+        
+        [Fact]
+        public void Example_2()
+        {
+            var s = new Simulation(ToWaitingArea(InitialStateOfExample));
+
+            var result = s.Run();
+
+            result.Should().BeEquivalentTo(ToWaitingArea(EndStateOfExample2));
+        }
+        
         private WaitingArea ToWaitingArea(string raw) => new(raw.Replace(" ", string.Empty));
     }
 
