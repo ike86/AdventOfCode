@@ -249,17 +249,6 @@ namespace AoC20
             result.Should().BeEquivalentTo(ToWaitingArea(EndStateOfExample));
         }
 
-        [Fact(Skip = "does not terminate")]
-        public void Solve_puzzle()
-        {
-            var s = new Simulation(new WaitingArea(PuzzleInput.ForDay11));
-
-            var result = s.Run();
-
-            result.Positions.SelectMany(x => x).Count(p => p is OccupiedSeat)
-                .Should().Be(2427);
-        }
-
         [Fact]
         public void AdjacentTo_ignores_floor()
         {
@@ -350,6 +339,17 @@ namespace AoC20
             var result = s.Run();
 
             result.Should().BeEquivalentTo(ToWaitingArea(EndStateOfExample2));
+        }
+
+        [Fact]
+        public void Solve_puzzle()
+        {
+            var s = new Simulation(new WaitingArea(PuzzleInput.ForDay11));
+
+            var result = s.Run();
+
+            result.Positions.SelectMany(x => x).Count(p => p is OccupiedSeat)
+                .Should().Be(2199);
         }
         
         private WaitingArea ToWaitingArea(string raw) => new(raw.Replace(" ", string.Empty));
