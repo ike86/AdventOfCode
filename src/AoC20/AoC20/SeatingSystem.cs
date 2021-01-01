@@ -277,6 +277,59 @@ namespace AoC20
             adjacentSeats.Should().HaveCount(8);
         }
         
+        [Fact]
+        public void Part_2_example_1()
+        {
+            var a =
+                ToWaitingArea(
+                    @".......#.
+                      ...#.....
+                      .#.......
+                      .........
+                      ..#L....#
+                      ....#....
+                      .........
+                      #........
+                      ...#.....");
+
+            var adjacentSeats = a.AdjacentTo(4, 3).ToArray();
+
+            adjacentSeats.Should().HaveCount(8);
+        }
+        
+        [Fact]
+        public void Part_2_example_2()
+        {
+            var a =
+                ToWaitingArea(
+                    @".............
+                      .L.L.#.#.#.#.
+                      .............");
+
+            var adjacentSeats = a.AdjacentTo(1, 1).ToArray();
+
+            adjacentSeats.Should().HaveCount(1);
+            adjacentSeats.Single().Should().BeOfType(typeof(EmptySeat));
+        }
+        
+        [Fact]
+        public void Part_2_example_3()
+        {
+            var a =
+                ToWaitingArea(
+                    @".##.##.
+                      #.#.#.#
+                      ##...##
+                      ...L...
+                      ##...##
+                      #.#.#.#
+                      .##.##.");
+
+            var adjacentSeats = a.AdjacentTo(3, 3).ToArray();
+
+            adjacentSeats.Should().BeEmpty();
+        }
+        
         private WaitingArea ToWaitingArea(string raw) => new(raw.Replace(" ", string.Empty));
     }
 
