@@ -130,14 +130,14 @@ namespace AoC20
         }
 
         [Fact]
-        public void Occupied_seat_with_less_than_4_occupied_adjacent_stays_occupied()
+        public void Occupied_seat_with_less_than_5_occupied_adjacent_stays_occupied()
         {
             var s =
                 new Simulation(
                     ToWaitingArea(
                         @"#L#
                           .#L
-                          L#."));
+                          L##"));
 
             var result = s.RunRounds(1);
 
@@ -145,14 +145,14 @@ namespace AoC20
         }
 
         [Fact]
-        public void Occupied_seat_with_4_occupied_adjacent_becomes_empty()
+        public void Occupied_seat_with_5_occupied_adjacent_becomes_empty()
         {
             var s =
                 new Simulation(
                     ToWaitingArea(
                         @"#L#
                           ##L
-                          L#."));
+                          L##"));
 
             var result = s.RunRounds(1);
 
@@ -185,7 +185,7 @@ namespace AoC20
                 new Simulation(
                     ToWaitingArea(
                         @"L.L
-                          .L.
+                          .LL
                           L.L"));
 
             var result = s.RunRounds(n);
@@ -381,7 +381,7 @@ namespace AoC20
                 if (position is OccupiedSeat)
                 {
                     var adjacent = _initialState.AdjacentTo(i, j).ToArray();
-                    if (adjacent.Count(p => p is OccupiedSeat) >= 4)
+                    if (adjacent.Count(p => p is OccupiedSeat) >= 5)
                         yield return new Empty(i, j);
                 }
             }
