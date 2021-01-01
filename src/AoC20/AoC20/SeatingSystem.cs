@@ -489,16 +489,6 @@ namespace AoC20
                     }
                 }
             }
-            
-            // var adjacentCoordinates =
-            //     directions
-            //     .Select(t => (i: i + t.di, j: j + t.dj));
-            //
-            // var adjacentPositions = adjacentCoordinates
-            //     .Where(t => IsInbounds(t.i, t.j))
-            //     .Select(t => this[t.i, t.j]);
-            //
-            // return adjacentPositions;
         }
 
         private bool IsInbounds(int i, int j)
