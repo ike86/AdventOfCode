@@ -32,14 +32,48 @@ namespace AoC21
 
         private static int NumberOfDepthMeasurementIncreases(string sonarSweepReport)
         {
-            var depthMeasurements =
-                sonarSweepReport.Split(Environment.NewLine)
-                    .Select(int.Parse)
+            var depthMeasurements = ParseDepthMeasurements(sonarSweepReport);
+
+            return NumberOfIncreases(depthMeasurements);
+        }
+
+        private static int[] ParseDepthMeasurements(string sonarSweepReport)
+        {
+            return sonarSweepReport.Split(Environment.NewLine)
+                .Select(int.Parse)
+                .ToArray();
+        }
+
+        private static int NumberOfIncreases(int[] depthMeasurements)
+        {
+            return depthMeasurements.Zip(depthMeasurements.Skip(1))
+                .Count(t => t.First < t.Second);
+        }
+
+        [Fact]
+        public void Test_example_2()
+        {
+            NumberOfIncreasesInSlidingWindows(SonarSweepReportExample).Should().Be(5);
+        }
+
+        private static int NumberOfIncreasesInSlidingWindows(string sonarSweepReport)
+        {
+            var depthMeasurements = ParseDepthMeasurements(sonarSweepReport);
+
+            var slidingWindow =
+                depthMeasurements
+                    .Zip(depthMeasurements.Skip(1))
+                    .Zip(depthMeasurements.Skip(2), (t, Third) => (t.First, t.Second, Third))
+                    .Select(t => t.First + t.Second + t.Third)
                     .ToArray();
 
-            return
-                depthMeasurements.Zip(depthMeasurements.Skip(1))
-                    .Count(t => t.First < t.Second);
+            return NumberOfIncreases(slidingWindow);
+        }
+        
+        [Fact]
+        public void Solve_day_1_part_2()
+        {
+            NumberOfIncreasesInSlidingWindows(PuzzleInput).Should().Be(1103);
         }
 
         private const string PuzzleInput = @"151
