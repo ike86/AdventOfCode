@@ -6,7 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs"/>
+        <Compile Include="Day01.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FsUnit.xUnit" Version="5.1.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     </ItemGroup>
 
 </Project>
