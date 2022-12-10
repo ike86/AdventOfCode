@@ -7,12 +7,47 @@ module Day01 =
     let maybeParse (s: string) : int option =
         match Int32.TryParse s with
         | true, number -> Some number
-        | _ -> None
+        | _            -> None
 
     let parse (s: string) : int option [] =
         s.Split([| '\n' |])
         |> Array.map maybeParse
         |> Seq.toArray
+
+    let filterSome<'T> (a: 'T option []) =
+        a
+        |> Array.map Option.toArray
+        |> Array.map Array.toSeq
+        |> Array.toSeq
+        |> Seq.reduce Seq.append
+        |> Seq.toArray
+
+    let mostCalories (maybeCalories: int option []) : int =
+        // None
+        // 1, 2, 3, N, 4, N, 5, 6
+        let noneIndices =
+            Array.indexed maybeCalories
+            |> Array.choose
+                   (fun t -> match t with
+                             | _, Some _ -> None
+                             | i, None   -> Some i)
+        //       3,       5
+        let extended =
+            Array.concat [ [| 0 |] ; noneIndices ; [| maybeCalories.Length-1 |] ]
+        // 0,    3,       5, 7
+
+        let caloriesPerElf =
+            extended
+            |> Array.windowed 2
+            // 0,3   3,5      5,7
+            |> Array.map (fun indices -> maybeCalories[indices[0]..indices[1]])
+            |> Array.map filterSome
+
+        let sumCaloriesPerElf =
+            caloriesPerElf
+            |> Array.map Array.sum
+
+        Array.max sumCaloriesPerElf
 
     // One important consideration is food - in particular,
     // the number of Calories each Elf is carrying (your puzzle input).
@@ -81,3 +116,9 @@ open Day01
                    Some 9000
                    None
                    Some 10000 |]
+
+        [<Fact>]
+        let ``mostCalories returns most calories carried by an elf for Example`` () =
+            parse Example.input
+            |> mostCalories
+            |> should equal 24000
