@@ -2,6 +2,7 @@
 
 open System
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Day01 =
 
     let maybeParse (s: string) : int option =
@@ -92,9 +93,8 @@ module Day01 =
     //
     // Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
 
-open Xunit
-open FsUnit.Xunit
-open Day01
+    open Xunit
+    open FsUnit.Xunit
 
     module ``Given a calories inventory list`` =
         [<Fact>]
@@ -122,3 +122,9 @@ open Day01
             parse Example.input
             |> mostCalories
             |> should equal 24000
+
+        [<Fact>]
+        let ``mostCalories returns most calories carried by an elf`` () =
+            parse Day01.Puzzle.input
+            |> mostCalories
+            |> should equal 69501
