@@ -14,9 +14,19 @@ module Day02 =
 
         member this.Value =
             match this with
-            | Rock    -> 1
-            | Paper   -> 2
+            | Rock -> 1
+            | Paper -> 2
             | Scissor -> 3
+
+    let round (opponent: HandShape, me: HandShape) : Result =
+        let d = opponent.Value - me.Value
+        match d with
+        | 0 -> Draw
+        | -1 -> IWin
+        | -2 -> OpponentWins
+        | 1 -> OpponentWins
+        | 2 -> IWin
+        | _ -> failwith "Should not happen"
 
     type StrategyGuide = (HandShape * HandShape) []
 
@@ -68,3 +78,24 @@ module Day02 =
             parse Example.input
             |> totalScore
             |> should equal 15
+
+    type ``round tests``() =
+        static member TestRoundData =
+            [| (Rock, Paper, IWin)
+               (Paper, Rock, OpponentWins)
+               (Paper, Scissor, IWin)
+               (Scissor, Paper, OpponentWins)
+               (Scissor, Rock, IWin)
+               (Rock, Scissor, OpponentWins)
+               (Rock, Rock, Draw)
+               (Paper, Paper, Draw)
+               (Scissor, Scissor, Draw) |]
+            |> Array.toSeq
+            |> Seq.map (fun t ->
+                let opponent, me, result = t
+                [| (opponent :> obj); (me :> obj); (result :> obj) |])
+
+        [<Theory>]
+        [<MemberData(nameof ``round tests``.TestRoundData)>]
+        static member ``test round``(opponent, me, result) =
+            round (opponent, me) |> should equal result
