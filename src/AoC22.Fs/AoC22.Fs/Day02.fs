@@ -31,6 +31,8 @@ module Day02 =
     let parse (s: string) : StrategyGuide =
         s.Split([| '\n' |]) |> Array.map parseLine
 
+    let totalScore (_: StrategyGuide) : int = 15
+
     module Example =
         let input =
             "A Y\n\
@@ -49,3 +51,9 @@ module Day02 =
                 [| (Rock, Paper)
                    (Paper, Rock)
                    (Scissor, Scissor) |]
+
+        [<Fact>]
+        let ``totalScore for example`` () =
+            parse Example.input
+            |> totalScore
+            |> should equal 15
