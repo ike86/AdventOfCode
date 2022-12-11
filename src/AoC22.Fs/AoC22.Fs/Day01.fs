@@ -23,8 +23,7 @@ module Day01 =
         |> Seq.reduce Seq.append
         |> Seq.toArray
 
-    let mostCalories (maybeCalories: int option []) : int =
-        // None
+    let caloriesPerElf (maybeCalories: int option []) : int[][] =
         // 1, 2, 3, N, 4, N, 5, 6
         let noneIndices =
             Array.indexed maybeCalories
@@ -38,16 +37,15 @@ module Day01 =
                            noneIndices
                            [| maybeCalories.Length - 1 |] ]
         // 0,    3,       5, 7
+        extended
+        |> Array.windowed 2
+        // 0,3   3,5      5,7
+        |> Array.map (fun indices -> maybeCalories[indices[0] .. indices[1]])
+        |> Array.map filterSome
 
-        let caloriesPerElf =
-            extended
-            |> Array.windowed 2
-            // 0,3   3,5      5,7
-            |> Array.map (fun indices -> maybeCalories[indices[0] .. indices[1]])
-            |> Array.map filterSome
-
+    let mostCalories (maybeCalories: int option []) : int =
         let sumCaloriesPerElf =
-            caloriesPerElf |> Array.map Array.sum
+            caloriesPerElf maybeCalories |> Array.map Array.sum
 
         Array.max sumCaloriesPerElf
 

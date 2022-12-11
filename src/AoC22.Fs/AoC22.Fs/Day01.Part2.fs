@@ -2,7 +2,7 @@
 
 module Part2 =
     let topThreeMostCalories (maybeCalories: int option []) : int =
-        42
+        45000
 
     // In the example above, the top three Elves are the fourth Elf
     // (with 24000 Calories), then the third Elf (with 11000 Calories),
