@@ -15,12 +15,14 @@ module Day02 =
             | "A" -> Rock
             | "B" -> Paper
             | "C" -> Scissor
+            | _ -> failwith "Unexpected hand shape"
 
         let me =
             match tokens[1] with
             | "X" -> Rock
             | "Y" -> Paper
             | "Z" -> Scissor
+            | _ -> failwith "Unexpected hand shape"
 
         (opponent, me)
 
