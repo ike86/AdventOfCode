@@ -7,7 +7,7 @@ module Day02 =
         | Paper
         | Scissor
 
-    let parse (s: string) =
+    let parseLine (s: string) =
         let tokens = s.Split ' '
 
         let opponent =
@@ -24,6 +24,9 @@ module Day02 =
 
         (opponent, me)
 
+    let parse (s: string) : (HandShape * HandShape) [] =
+        s.Split([| '\n' |]) |> Array.map parseLine
+
     module Example =
         let input =
             "A Y\n\
@@ -34,7 +37,7 @@ module Day02 =
     open FsUnit.Xunit
 
     module ``Given a strategy guide`` =
-        [<Fact(Skip="WIP")>]
+        [<Fact>]
         let ``parse yields the list of hand shape pairs`` () =
             parse Example.input
             |> should
@@ -42,17 +45,15 @@ module Day02 =
                 [| (Rock, Paper)
                    (Paper, Rock)
                    (Scissor, Scissor) |]
-        let WIPf ((input, opponent, me): string * 'a * 'b): unit =
-            parse input |> should equal (opponent, me)
+
+        let WIPf ((input, opponent, me): string * 'a * 'b) : unit =
+            parseLine input |> should equal (opponent, me)
 
         [<Fact>]
-        let WIP () =
-            WIPf ("A Y", Rock, Paper)
+        let WIP () = WIPf("A Y", Rock, Paper)
 
         [<Fact>]
-        let WIP2 () =
-            WIPf ("B X", Paper, Rock)
+        let WIP2 () = WIPf("B X", Paper, Rock)
 
         [<Fact>]
-        let WIP3 () =
-            WIPf ("C Z", Scissor, Scissor)
+        let WIP3 () = WIPf("C Z", Scissor, Scissor)
