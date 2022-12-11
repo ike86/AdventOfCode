@@ -62,7 +62,8 @@ module Day02 =
     let parse (s: string) : StrategyGuide =
         s.Split([| '\n' |]) |> Array.map parseLine
 
-    let totalScore (_: StrategyGuide) : int = 15
+    let totalScore (strategyGuide: StrategyGuide) : int =
+        strategyGuide |> Array.map scoreRound |> Array.sum
 
     module Example =
         let input =
