@@ -1,5 +1,8 @@
 ﻿namespace AoC22.Fs
 
+open System
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Day02 =
 
     type Result =
@@ -55,12 +58,13 @@ module Day02 =
             | "X" -> Rock
             | "Y" -> Paper
             | "Z" -> Scissor
-            | _ -> failwith "Unexpected hand shape"
+            | x -> failwith $"Unexpected hand shape {x}"
 
         (opponent, me)
 
     let parse (s: string) : StrategyGuide =
-        s.Split([| '\n' |]) |> Array.map parseLine
+        s.Split([| '\n'; '\r' |], StringSplitOptions.RemoveEmptyEntries)
+        |> Array.map parseLine
 
     let totalScore (strategyGuide: StrategyGuide) : int =
         strategyGuide |> Array.map scoreRound |> Array.sum
@@ -89,6 +93,12 @@ module Day02 =
             parse Example.input
             |> totalScore
             |> should equal 15
+
+        [<Fact>]
+        let ``totalScore `` () =
+            parse Day02.Puzzle.input
+            |> totalScore
+            |> should equal 13005
 
     type ``round tests``() =
         static member TestRoundData =
