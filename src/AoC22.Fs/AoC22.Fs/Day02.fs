@@ -45,15 +45,3 @@ module Day02 =
                 [| (Rock, Paper)
                    (Paper, Rock)
                    (Scissor, Scissor) |]
-
-        let WIPf ((input, opponent, me): string * 'a * 'b) : unit =
-            parseLine input |> should equal (opponent, me)
-
-        [<Fact>]
-        let WIP () = WIPf("A Y", Rock, Paper)
-
-        [<Fact>]
-        let WIP2 () = WIPf("B X", Paper, Rock)
-
-        [<Fact>]
-        let WIP3 () = WIPf("C Z", Scissor, Scissor)
