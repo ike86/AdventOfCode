@@ -14,11 +14,13 @@ module Day02 =
             match tokens[0] with
             | "A" -> Rock
             | "B" -> Paper
+            | "C" -> Scissor
 
         let me =
             match tokens[1] with
             | "X" -> Rock
             | "Y" -> Paper
+            | "Z" -> Scissor
 
         (opponent, me)
 
@@ -50,3 +52,7 @@ module Day02 =
         [<Fact>]
         let WIP2 () =
             WIPf ("B X", Paper, Rock)
+
+        [<Fact>]
+        let WIP3 () =
+            WIPf ("C Z", Scissor, Scissor)
