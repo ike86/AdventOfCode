@@ -13,9 +13,11 @@ module Day02 =
         let opponent =
             match tokens[0] with
             | "A" -> Rock
+            | "B" -> Paper
 
         let me =
             match tokens[1] with
+            | "X" -> Rock
             | "Y" -> Paper
 
         (opponent, me)
@@ -38,7 +40,13 @@ module Day02 =
                 [| (Rock, Paper)
                    (Paper, Rock)
                    (Scissor, Scissor) |]
+        let WIPf ((input, opponent, me): string * 'a * 'b): unit =
+            parse input |> should equal (opponent, me)
 
         [<Fact>]
         let WIP () =
-            parse "A Y" |> should equal (Rock, Paper)
+            WIPf ("A Y", Rock, Paper)
+
+        [<Fact>]
+        let WIP2 () =
+            WIPf ("B X", Paper, Rock)
