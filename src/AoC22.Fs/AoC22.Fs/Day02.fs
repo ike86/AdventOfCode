@@ -7,6 +7,12 @@ module Day02 =
         | Paper
         | Scissor
 
+        member this.Value =
+            match this with
+            | Rock    -> 1
+            | Paper   -> 2
+            | Scissor -> 3
+
     type StrategyGuide = (HandShape * HandShape) []
 
     let parseLine (s: string) =
