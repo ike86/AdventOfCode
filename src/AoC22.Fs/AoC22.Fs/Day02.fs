@@ -7,6 +7,12 @@ module Day02 =
         | IWin
         | Draw
 
+        member this.Score =
+            match this with
+            | OpponentWins -> 0
+            | Draw -> 3
+            | IWin -> 6
+
     type HandShape =
         | Rock
         | Paper
@@ -27,6 +33,10 @@ module Day02 =
         | 1 -> OpponentWins
         | 2 -> IWin
         | _ -> failwith "Should not happen"
+
+    let scoreRound (opponent: HandShape, me: HandShape) : int =
+        let result = round (opponent, me)
+        me.Value + result.Score
 
     type StrategyGuide = (HandShape * HandShape) []
 
@@ -99,3 +109,24 @@ module Day02 =
         [<MemberData(nameof ``round tests``.TestRoundData)>]
         static member ``test round``(opponent, me, result) =
             round (opponent, me) |> should equal result
+
+    type ``scoreRound tests``() =
+        static member TestScoreRoundData =
+            [| (Rock, Paper, Paper.Value + IWin.Score)
+               (Paper, Rock, Rock.Value + OpponentWins.Score)
+               (Paper, Scissor, Scissor.Value + IWin.Score)
+               (Scissor, Paper, Paper.Value + OpponentWins.Score)
+               (Scissor, Rock, Rock.Value + IWin.Score)
+               (Rock, Scissor, Scissor.Value + OpponentWins.Score)
+               (Rock, Rock, Rock.Value + Draw.Score)
+               (Paper, Paper, Paper.Value + Draw.Score)
+               (Scissor, Scissor, Scissor.Value + Draw.Score) |]
+            |> Array.toSeq
+            |> Seq.map (fun t ->
+                let opponent, me, score = t
+                [| (opponent :> obj); (me :> obj); (score :> obj) |])
+
+        [<Theory>]
+        [<MemberData(nameof ``scoreRound tests``.TestScoreRoundData)>]
+        static member ``test scoreRound``(opponent, me, score) =
+            scoreRound (opponent, me) |> should equal score
