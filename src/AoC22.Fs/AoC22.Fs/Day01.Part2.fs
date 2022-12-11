@@ -1,5 +1,7 @@
 ﻿namespace AoC22.Fs.Day01
 
+open AoC22.Fs
+
 module Part2 =
     let topThreeMostCalories (maybeCalories: int option []) : int =
         sumCaloriesPerElf maybeCalories
@@ -17,7 +19,13 @@ module Part2 =
 
     module ``Given a calories inventory list`` =
         [<Fact>]
-        let ``topThreeMostCalories carried by an elf for Example`` () =
+        let ``topThreeMostCalories carried by elves for Example`` () =
             parse Example.input
             |> topThreeMostCalories
             |> should equal 45000
+
+        [<Fact>]
+        let ``topThreeMostCalories carried by elves`` () =
+            parse Day01.Puzzle.input
+            |> topThreeMostCalories
+            |> should equal 202346
