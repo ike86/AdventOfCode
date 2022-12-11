@@ -2,7 +2,10 @@
 
 module Part2 =
     let topThreeMostCalories (maybeCalories: int option []) : int =
-        45000
+        sumCaloriesPerElf maybeCalories
+        |> Array.sortDescending
+        |> Array.take 3
+        |> Array.sum
 
     // In the example above, the top three Elves are the fourth Elf
     // (with 24000 Calories), then the third Elf (with 11000 Calories),
