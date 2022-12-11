@@ -7,6 +7,8 @@ module Day02 =
         | Paper
         | Scissor
 
+    type StrategyGuide = (HandShape * HandShape) []
+
     let parseLine (s: string) =
         let tokens = s.Split ' '
 
@@ -26,7 +28,7 @@ module Day02 =
 
         (opponent, me)
 
-    let parse (s: string) : (HandShape * HandShape) [] =
+    let parse (s: string) : StrategyGuide =
         s.Split([| '\n' |]) |> Array.map parseLine
 
     module Example =
