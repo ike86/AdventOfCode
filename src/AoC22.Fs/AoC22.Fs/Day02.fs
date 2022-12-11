@@ -2,6 +2,11 @@
 
 module Day02 =
 
+    type Result =
+        | OpponentWins
+        | IWin
+        | Draw
+
     type HandShape =
         | Rock
         | Paper
