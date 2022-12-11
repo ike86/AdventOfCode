@@ -23,7 +23,7 @@ module Day01 =
         |> Seq.reduce Seq.append
         |> Seq.toArray
 
-    let caloriesPerElf (maybeCalories: int option []) : int[][] =
+    let caloriesPerElf (maybeCalories: int option []) : int [] [] =
         // 1, 2, 3, N, 4, N, 5, 6
         let noneIndices =
             Array.indexed maybeCalories
@@ -43,11 +43,12 @@ module Day01 =
         |> Array.map (fun indices -> maybeCalories[indices[0] .. indices[1]])
         |> Array.map filterSome
 
-    let mostCalories (maybeCalories: int option []) : int =
-        let sumCaloriesPerElf =
-            caloriesPerElf maybeCalories |> Array.map Array.sum
+    let sumCaloriesPerElf (maybeCalories: int option []) =
+        caloriesPerElf maybeCalories
+        |> Array.map Array.sum
 
-        Array.max sumCaloriesPerElf
+    let mostCalories (maybeCalories: int option []) : int =
+        sumCaloriesPerElf maybeCalories |> Array.max
 
     // One important consideration is food - in particular,
     // the number of Calories each Elf is carrying (your puzzle input).
