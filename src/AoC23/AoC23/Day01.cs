@@ -77,7 +77,7 @@ zoneight234
 7pqrstsixteen";
 
     [Fact]
-    public void Test_example2() => SumOfCalibrationValues(Example2).Should().Be(281);
+    public void Test_example2() => SumOfCalibrationValues_2(Example2).Should().Be(281);
 
     [Fact]
     public void Test_Parse() =>
@@ -90,9 +90,56 @@ zoneight234
                     new { Value = (int?)3 },
                 });
 
+    [Fact]
+    public void Test_Parse_2() =>
+        Parse("abcone2three")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = (int?)1 },
+                    new { Value = (int?)2 },
+                    new { Value = (int?)3 },
+                });
+
+    [Fact]
+    public void Test_Parse_3() =>
+        Parse("zoneight234")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = (int?)1 },
+                    new { Value = (int?)2 },
+                    new { Value = (int?)3 },
+                    new { Value = (int?)4 },
+                });
+
+    private static int SumOfCalibrationValues_2(string calibrationDocument)
+    {
+        var calibrationValues = GetCalibrationValues(calibrationDocument);
+        return calibrationValues.Sum();
+    }
+
+    [Fact]
+    public void Test_GetCalibrationValues() =>
+        GetCalibrationValues(Example2)
+            .Should().BeEquivalentTo(new[] { 29, 83, 13, 24, 42, 14, 76 });
+
+    private static IEnumerable<int> GetCalibrationValues(string calibrationDocument)
+    {
+        var rows = calibrationDocument.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        var calibrationValues = rows.Select(
+                row =>
+                {
+                    var digits = Parse(row).ToArray();
+                    return $"{digits.First().Value}{digits.Last().Value}";
+                })
+            .Select(int.Parse);
+        return calibrationValues;
+    }
+
     private static IEnumerable<IToken> Parse(string s)
     {
-        for (int i = 0, j = 0; i < s.Length; i++)
+        for (int i = 0, j = 0; i <= s.Length; i++)
         {
             if (SpelledOutDigit.TryParse(s[j..i], out var spelledOut))
             {
@@ -152,8 +199,8 @@ zoneight234
 
         public static bool TryParse(string s, [NotNullWhen(true)] out IToken? token)
         {
-            if (s.Length == 1
-                && int.TryParse(s, out var i))
+            if (s.Length > 0
+                && int.TryParse(s.Last().ToString(), out var i))
             {
                 token = new Digit(i);
                 return true;
