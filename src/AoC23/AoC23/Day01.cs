@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentAssertions;
 using Xunit;
 
 namespace AoC23;
@@ -37,18 +38,131 @@ treb7uchet";
         return rows.Select(
                 row =>
                 {
-                    var digits =
-                        row
-                            .Where(char.IsDigit)
-                            .ToArray();
+                    var digits = row.Where(char.IsDigit).ToArray();
                     return $"{digits.First()}{digits.Last()}";
                 })
             .Select(int.Parse)
             .Sum();
     }
-    
+
     [Fact]
     public void Test_puzzle() => SumOfCalibrationValues(PuzzleInput).Should().Be(53921);
+
+    /*
+     * Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters:
+    one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
+
+    Equipped with this new information, you now need to find the real first and last digit on each line. For example:
+
+    two1nine
+    eightwothree
+    abcone2threexyz
+    xtwone3four
+    4nineeightseven2
+    zoneight234
+    7pqrstsixteen
+
+    In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. Adding these together produces 281.
+
+    What is the sum of all of the calibration values?
+     */
+    private const string Example2 =
+        @"
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen";
+
+    [Fact]
+    public void Test_example2() => SumOfCalibrationValues(Example2).Should().Be(281);
+
+    [Fact]
+    public void Test_Parse() =>
+        Parse("abcone2threexyz")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = (int?)1 },
+                    new { Value = (int?)2 },
+                    new { Value = (int?)3 },
+                });
+
+    private static IEnumerable<IToken> Parse(string s)
+    {
+        for (int i = 0, j = 0; i < s.Length; i++)
+        {
+            if (SpelledOutDigit.TryParse(s[j..i], out var spelledOut))
+            {
+                j = i;
+                yield return spelledOut;
+            }
+            else if (Digit.TryParse(s[j..i], out var digit))
+            {
+                j = i;
+                yield return digit;
+            }
+        }
+    }
+
+    private interface IToken
+    {
+        public int Value { get; }
+    }
+
+    private class SpelledOutDigit : IToken
+    {
+        private static readonly Dictionary<string, int> Words = new()
+        {
+            ["one"] = 1, ["two"] = 2, ["three"] = 3, ["four"] = 4, ["five"] = 5, ["six"] = 6, ["seven"] = 7,
+            ["eight"] = 8, ["nine"] = 9
+        };
+
+        private SpelledOutDigit(int value)
+        {
+            Value = value;
+        }
+
+        public int Value { get; }
+
+        public static bool TryParse(string s, [NotNullWhen(true)] out IToken? token)
+        {
+            var maybe = Words.Keys.FirstOrDefault(s.EndsWith);
+            if (maybe != null)
+            {
+                token = new SpelledOutDigit(Words[maybe]);
+                return true;
+            }
+
+            token = null;
+            return false;
+        }
+    }
+
+    private class Digit : IToken
+    {
+        private Digit(int value)
+        {
+            Value = value;
+        }
+
+        public int Value { get; }
+
+        public static bool TryParse(string s, [NotNullWhen(true)] out IToken? token)
+        {
+            if (s.Length == 1
+                && int.TryParse(s, out var i))
+            {
+                token = new Digit(i);
+                return true;
+            }
+
+            token = null;
+            return false;
+        }
+    }
 
     private const string PuzzleInput =
         @"dssmtmrkonedbbhdhjbf9hq
