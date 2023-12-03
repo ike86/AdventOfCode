@@ -4,7 +4,7 @@ using Xunit;
 
 namespace AoC23;
 
-public class Day01
+public partial class Day01
 {
     /* The newly-improved calibration document consists of lines of text;
      each line originally contained a specific calibration value that the Elves now need to recover.
