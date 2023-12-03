@@ -113,6 +113,21 @@ zoneight234
                     new { Value = (int?)4 },
                 });
 
+    [Fact]
+    public void Test_Parse_4() =>
+        Parse("sevenonezknqnkfqbzffjvfivetwo94two")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = (int?)7 },
+                    new { Value = (int?)1 },
+                    new { Value = (int?)5 },
+                    new { Value = (int?)2 },
+                    new { Value = (int?)9 },
+                    new { Value = (int?)4 },
+                    new { Value = (int?)2 },
+                });
+
     private static int SumOfCalibrationValues_2(string calibrationDocument)
     {
         var calibrationValues = GetCalibrationValues(calibrationDocument);
@@ -210,6 +225,9 @@ zoneight234
             return false;
         }
     }
+
+    [Fact]
+    public void Test_puzzle_2() => SumOfCalibrationValues_2(PuzzleInput).Should().NotBe(54678);
 
     private const string PuzzleInput =
         @"dssmtmrkonedbbhdhjbf9hq
