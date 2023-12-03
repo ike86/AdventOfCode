@@ -85,9 +85,9 @@ zoneight234
             .Should().BeEquivalentTo(
                 new[]
                 {
-                    new { Value = (int?)1 },
-                    new { Value = (int?)2 },
-                    new { Value = (int?)3 },
+                    new { Value = 1 },
+                    new { Value = 2 },
+                    new { Value = 3 },
                 });
 
     [Fact]
@@ -96,9 +96,9 @@ zoneight234
             .Should().BeEquivalentTo(
                 new[]
                 {
-                    new { Value = (int?)1 },
-                    new { Value = (int?)2 },
-                    new { Value = (int?)3 },
+                    new { Value = 1 },
+                    new { Value = 2 },
+                    new { Value = 3 },
                 });
 
     [Fact]
@@ -107,10 +107,10 @@ zoneight234
             .Should().BeEquivalentTo(
                 new[]
                 {
-                    new { Value = (int?)1 },
-                    new { Value = (int?)2 },
-                    new { Value = (int?)3 },
-                    new { Value = (int?)4 },
+                    new { Value = 1 },
+                    new { Value = 2 },
+                    new { Value = 3 },
+                    new { Value = 4 },
                 });
 
     [Fact]
@@ -119,13 +119,13 @@ zoneight234
             .Should().BeEquivalentTo(
                 new[]
                 {
-                    new { Value = (int?)7 },
-                    new { Value = (int?)1 },
-                    new { Value = (int?)5 },
-                    new { Value = (int?)2 },
-                    new { Value = (int?)9 },
-                    new { Value = (int?)4 },
-                    new { Value = (int?)2 },
+                    new { Value = 7 },
+                    new { Value = 1 },
+                    new { Value = 5 },
+                    new { Value = 2 },
+                    new { Value = 9 },
+                    new { Value = 4 },
+                    new { Value = 2 },
                 });
 
     private static int SumOfCalibrationValues_2(string calibrationDocument)
