@@ -149,6 +149,16 @@ zoneight234
                     new { Value = 2 },
                     new { Value = 9 },
                     new { Value = 1 },
+                });
+
+    [Fact]
+    public void Test_ParseBackwards_6() =>
+        ParseBackwards("2gtbkszmrtmnineoneightmx")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = 2 },
+                    new { Value = 9 },
                     new { Value = 8 },
                 });
 
@@ -173,8 +183,9 @@ zoneight234
                 row =>
                 {
                     var digits = Parse(row).ToArray();
-                    if (digits.Any())
-                        return $"{digits.First().Value}{digits.Last().Value}";
+                    var digitsBackwards = ParseBackwards(row).ToArray();
+                    if (digits.Any() && digitsBackwards.Any())
+                        return $"{digits.First().Value}{digitsBackwards.First().Value}";
                     return null;
                 })
             .Where(s => s is not null)
@@ -186,12 +197,29 @@ zoneight234
     {
         for (int i = 0, j = 0; i <= s.Length; i++)
         {
-            if (SpelledOutDigit.TryParse(s[j..i], out var spelledOut))
+            if (SpelledOutDigit.TryParse(s[j..i].EndsWith, out var spelledOut))
             {
                 j = i;
                 yield return spelledOut;
             }
-            else if (Digit.TryParse(s[j..i], out var digit))
+            else if (Digit.TryParse(s[j..i], x => x.Last(), out var digit))
+            {
+                j = i;
+                yield return digit;
+            }
+        }
+    }
+
+    private static IEnumerable<IToken> ParseBackwards(string s)
+    {
+        for (int i = s.Length, j = s.Length; i >= 0; i--)
+        {
+            if (SpelledOutDigit.TryParse(s[i..j].StartsWith, out var spelledOut))
+            {
+                j = i;
+                yield return spelledOut;
+            }
+            else if (Digit.TryParse(s[i..j], x => x.First(), out var digit))
             {
                 j = i;
                 yield return digit;
@@ -219,9 +247,9 @@ zoneight234
 
         public int Value { get; }
 
-        public static bool TryParse(string s, [NotNullWhen(true)] out IToken? token)
+        public static bool TryParse(Func<string, bool> matches, [NotNullWhen(true)] out IToken? token)
         {
-            var maybe = Words.Keys.FirstOrDefault(s.EndsWith);
+            var maybe = Words.Keys.FirstOrDefault(matches);
             if (maybe != null)
             {
                 token = new SpelledOutDigit(Words[maybe]);
@@ -242,10 +270,10 @@ zoneight234
 
         public int Value { get; }
 
-        public static bool TryParse(string s, [NotNullWhen(true)] out IToken? token)
+        public static bool TryParse(string s, Func<string, char> select, [NotNullWhen(true)] out IToken? token)
         {
             if (s.Length > 0
-                && int.TryParse(s.Last().ToString(), out var i))
+                && int.TryParse(select(s).ToString(), out var i))
             {
                 token = new Digit(i);
                 return true;
@@ -257,7 +285,7 @@ zoneight234
     }
 
     [Fact]
-    public void Test_puzzle_2() => SumOfCalibrationValues_2(PuzzleInput).Should().NotBe(54678);
+    public void Test_puzzle_2() => SumOfCalibrationValues_2(PuzzleInput).Should().Be(54676);
 
     private const string PuzzleInput =
         @"dssmtmrkonedbbhdhjbf9hq
