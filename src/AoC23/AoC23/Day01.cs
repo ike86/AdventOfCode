@@ -140,6 +140,21 @@ zoneight234
                     new { Value = 2 },
                 });
 
+    [Fact]
+    public void Test_Parse_6() =>
+        Parse("2gtbkszmrtmnineoneightmx")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = 2 },
+                    new { Value = 9 },
+                    new { Value = 1 },
+                    new { Value = 8 },
+                });
+
+    [Fact]
+    public void Test_tricky() => SumOfCalibrationValues_2("2gtbkszmrtmnineoneightmx").Should().Be(28);
+
     private static int SumOfCalibrationValues_2(string calibrationDocument)
     {
         var calibrationValues = GetCalibrationValues(calibrationDocument);
