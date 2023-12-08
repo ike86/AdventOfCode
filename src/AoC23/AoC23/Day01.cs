@@ -67,7 +67,7 @@ treb7uchet";
     What is the sum of all of the calibration values?
      */
     private const string Example2 =
-        @"
+        @"27
 two1nine
 eightwothree
 abcone2threexyz
@@ -77,7 +77,7 @@ zoneight234
 7pqrstsixteen";
 
     [Fact]
-    public void Test_example2() => SumOfCalibrationValues_2(Example2).Should().Be(281);
+    public void Test_example2() => SumOfCalibrationValues_2(Example2).Should().Be(308);
 
     [Fact]
     public void Test_Parse() =>
@@ -128,6 +128,18 @@ zoneight234
                     new { Value = 2 },
                 });
 
+    [Fact]
+    public void Test_Parse_5() =>
+        Parse("eight2臨鳏seven2")
+            .Should().BeEquivalentTo(
+                new[]
+                {
+                    new { Value = 8 },
+                    new { Value = 2 },
+                    new { Value = 7 },
+                    new { Value = 2 },
+                });
+
     private static int SumOfCalibrationValues_2(string calibrationDocument)
     {
         var calibrationValues = GetCalibrationValues(calibrationDocument);
@@ -137,7 +149,7 @@ zoneight234
     [Fact]
     public void Test_GetCalibrationValues() =>
         GetCalibrationValues(Example2)
-            .Should().BeEquivalentTo(new[] { 29, 83, 13, 24, 42, 14, 76 });
+            .Should().BeEquivalentTo(new[] { 27, 29, 83, 13, 24, 42, 14, 76 });
 
     private static IEnumerable<int> GetCalibrationValues(string calibrationDocument)
     {
@@ -146,9 +158,12 @@ zoneight234
                 row =>
                 {
                     var digits = Parse(row).ToArray();
-                    return $"{digits.First().Value}{digits.Last().Value}";
+                    if (digits.Any())
+                        return $"{digits.First().Value}{digits.Last().Value}";
+                    return null;
                 })
-            .Select(int.Parse);
+            .Where(s => s is not null)
+            .Select(int.Parse!);
         return calibrationValues;
     }
 
