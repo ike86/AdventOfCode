@@ -30,6 +30,12 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
             });
     }
 
+    private static IEnumerable<Game> ParseGames(string s)
+    {
+        return s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+            .Select(ParseGame);
+    }
+
     private static Game ParseGame(string game)
     {
         var id = int.Parse(game.Split(':').First().Split(" ").Last());
