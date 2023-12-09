@@ -66,6 +66,20 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
             .Should().BeEquivalentTo(new { R = 4, G = 2, B = 6 });
     }
 
+    [Fact]
+    public void Test_MinimumViableCubes_Power()
+    {
+        ParseGames(Example).First().MinimumViableCubes.Power
+            .Should().Be(48);
+    }
+
+    [Fact]
+    public void Test_example_part_2()
+    {
+        ParseGames(Example).Sum(x => x.MinimumViableCubes.Power)
+            .Should().Be(2286);
+    }
+
     private static IEnumerable<Game> ParseGames(string s)
     {
         return s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
@@ -111,7 +125,10 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
                 Revealed.Max(x => x.B));
     }
 
-    private record Reveal(int R, int G, int B);
+    private record Reveal(int R, int G, int B)
+    {
+        public int Power => R * G * B;
+    }
 
     private const string Puzzle = """
 Game 1: 1 blue, 2 green, 3 red; 7 red, 8 green; 1 green, 2 red, 1 blue; 2 green, 3 red, 1 blue; 8 green, 1 blue
