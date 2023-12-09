@@ -30,6 +30,15 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
             });
     }
 
+    [Fact]
+    public void Which_games_are_possible()
+    {
+        ParseGames(Example)
+            .Where(game => game.IsPossible)
+            .Select(game => game.Id)
+            .Should().BeEquivalentTo(new[] { 1, 2, 5 });
+    }
+
     private static IEnumerable<Game> ParseGames(string s)
     {
         return s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
@@ -64,7 +73,10 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
         return 0;
     }
 
-    private record Game(int Id, IEnumerable<Reveal> Revealed);
+    private record Game(int Id, IEnumerable<Reveal> Revealed)
+    {
+        public bool IsPossible => Revealed.All(x => x is { R: <= 12, G: <= 13, B: <= 14 });
+    }
 
     private record Reveal(int R, int G, int B);
 }
