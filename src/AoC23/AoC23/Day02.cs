@@ -59,6 +59,13 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
             .Should().Be(2505);
     }
 
+    [Fact]
+    public void Test_MinimumViableCubes()
+    {
+        ParseGames(Example).First().MinimumViableCubes
+            .Should().BeEquivalentTo(new { R = 4, G = 2, B = 6 });
+    }
+
     private static IEnumerable<Game> ParseGames(string s)
     {
         return s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
@@ -96,6 +103,12 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
     private record Game(int Id, IEnumerable<Reveal> Revealed)
     {
         public bool IsPossible => Revealed.All(x => x is { R: <= 12, G: <= 13, B: <= 14 });
+
+        public Reveal MinimumViableCubes =>
+            new(
+                Revealed.Max(x => x.R),
+                Revealed.Max(x => x.G),
+                Revealed.Max(x => x.B));
     }
 
     private record Reveal(int R, int G, int B);
