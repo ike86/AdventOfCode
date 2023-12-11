@@ -80,6 +80,13 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green
             .Should().Be(2286);
     }
 
+    [Fact]
+    public void Test_Puzzle_part_2()
+    {
+        ParseGames(Puzzle).Sum(x => x.MinimumViableCubes.Power)
+            .Should().Be(70265);
+    }
+
     private static IEnumerable<Game> ParseGames(string s)
     {
         return s.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
